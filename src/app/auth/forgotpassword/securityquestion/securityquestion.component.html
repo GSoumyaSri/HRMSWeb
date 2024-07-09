@@ -1,0 +1,38 @@
+<div class="content-container col-12 text-left" *ngIf="userQuestions.length > 0">
+    <div class="grid">
+        <form class="col-12">
+            <div class="grid m-0 p-0" *ngIf="this.userSecureQuestionsCount > 2">
+                <!-- <p >Refresh Questions</p> -->
+                <!-- <i class="pi pi-sync" style="font-size: 2rem" ></i> -->
+                <div class="col text-left p-0 pt-3">
+                    <p>Available Questions: <span class="text-orange-500">{{userSecureQuestionsCount}}</span> </p>
+
+                </div>
+                <div class="col text-right p-0">
+                    <button pbutton="" pripple="" type="button" icon="pi pi-bookmark" pTooltip="Refresh Questions"
+                        class="p-element p-ripple p-button-rounded p-button-primary
+                    p-button-text p-button p-component p-button-icon-only" (click)="initValidateUserQuestions()">
+                        <span class="p-button-icon pi pi-sync" aria-hidden="true"></span><span class="p-ink"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-12 p-0" *ngFor="let question of userQuestions"
+                [ngClass]="{'error':!question.userAnswer && (useranswer.dirty || useranswer.touched)}">
+                <label class="block text-900 font-medium text-md required mb-1 mt-5">{{question.question}}</label>
+                <input id="useranswer" [(ngModel)]="question.userAnswer" #useranswer="ngModel" [maxlength]="25"
+                    [ngModelOptions]="{standalone:true}" type="text" placeholder="Enter Answer" pInputText
+                    class="w-full md:w-100" required>
+                <span *ngIf="!question.userAnswer && (useranswer.dirty || useranswer.touched)">
+                    <div class="ng-invalid ng-touched p-error">
+                        Please Enter Answer.</div>
+                </span>
+            </div>
+            <div class="grid mt-3">
+                <div class="col-6"><button id="prev-button" type="button" pButton pRipple label="Back to  User Name"
+                        class="w-full p-3 text-md" (click)="navigateToPrev()"></button></div>
+                <div class="col-6"><button id="submit-button" type="submit" pButton pRipple label="Next"
+                        [disabled]="onDisabled()" class="w-full p-3  text-md" (click)="navigateToNext()"></button></div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,242 @@
+<div class="flex flex-column  justify-content-center">
+  <form [formGroup]="fbexperience" id="ExperienceDetailsDilog">
+    <div class="grid mt-3 p-5 content_scroll">
+      <div class="col-12 roles-container">
+        <div class="p-fluid p-formgrid grid">
+          <div class=" col-12 md:col-4 ">
+            <div class=" button-container">
+              <p-button type="button" id="Add_Experience_Details" label="Add Experience Details"
+                (click)="addExperienceDetails()"></p-button>
+            </div>
+          </div>
+          <div class="col-12 scrolling_content" formArrayName="experienceDetails">
+            <p-table #dt2 [value]="faExperienceDetail().controls" dataKey="id" [rows]="10" [rowHover]="true"
+              styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm" [paginator]="false"
+              [autoLayout]="true" responsiveLayout="scroll" [tableStyle]="{ width: 'max-content'}"
+              [rowsPerPageOptions]="[10,25,50]">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Company Name<label class="required"></label></th>
+                  <th>Company Emp Id</th>
+                  <th>Designation <label class="required"></label></th>
+                  <th>Country<label class="required"></label></th>
+                  <th>State<label class="required"></label></th>
+                  <th>Location<label class="required"></label></th>
+                  <th>Date Of Joining <label class="required"></label></th>
+                  <th>Date Of Relieving<label class="required"></label></th>
+                  <th>Skill Areas<label class="required"></label></th>
+                  <th *ngIf="fbexperience.controls['experienceDetails'].value.length > 1"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-experience let-experienceDetailsIndex="rowIndex">
+                <tr [formGroupName]="experienceDetailsIndex"
+                  [ngClass]="{'highlight-new-row': expDtlsformArrayControls(experienceDetailsIndex, 'workExperienceId').value  === null}">
+                  <td class="vertical-align-top">
+                    <input pInputText class="form-control" formControlName="companyName"
+                      (keydown)="restrictSpaces($event)" placeholder="Enter Company Name" alphaOnly maxlength="50"
+                      #companyName id="company_Name" [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'companyName')?.touched &&
+                    expDtlsformArrayControls(experienceDetailsIndex,'companyName')?.errors }">
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'companyName').touched && expDtlsformArrayControls(experienceDetailsIndex,'companyName').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'companyName').hasError('required')">
+                            Please Enter Company Name.
+                          </div>
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'companyName').hasError('minlength')">
+                            Please Min Length Is 2.
+                          </div>
+                        </span>
+                      </div>
+                      <div class="align-right w-40" style="width:30%; text-align:right;">
+                        <small>{{companyName.value.length}}/{{maxLength.name}} </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <input pInputText class="form-control" id="company_Employee_Id" formControlName="companyEmployeeId"
+                      (keydown)="restrictSpaces($event)" alphaNumeric placeholder="Enter Company Emp Id"
+                      #companyEmployeeId maxlength="10" [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'companyEmployeeId')?.touched &&
+                    expDtlsformArrayControls(experienceDetailsIndex,'companyEmployeeId')?.errors }">
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'companyEmployeeId').touched && expDtlsformArrayControls(experienceDetailsIndex, 'companyEmployeeId').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'companyEmployeeId').hasError('minlength')">
+                            Please Min Length Is 2.
+                          </div>
+                        </span>
+                      </div>
+                      <div class="align-right w-40" style="width:30%; text-align:right;">
+                        <small>{{companyEmployeeId.value.length}}/{{maxLength.phoneNo}} </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-dropdown id="designation" appendTo="body" optionLabel="name" placeholder="Select Designation"
+                      [options]="designation" optionValue="lookupDetailId" formControlName="designationId" [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'designationId')?.touched &&
+                    expDtlsformArrayControls(experienceDetailsIndex,'designationId')?.errors }"></p-dropdown>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'designationId').touched && expDtlsformArrayControls(experienceDetailsIndex,'designationId').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'designationId').hasError('required')">
+                            Please Select Designation.
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-dropdown inputId="dropdown" id="Address_country" [autoDisplayFirst]="false" appendTo="body"
+                      placeholder="Select Country" formControlName="countryId" [options]="countries"
+                      optionValue="lookupDetailId" optionLabel="name" (onChange)="onCountryChange($event.value)"
+                      [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'countryId')?.touched &&
+                    expDtlsformArrayControls(experienceDetailsIndex,'countryId')?.errors }">
+                    </p-dropdown>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'countryId').touched && expDtlsformArrayControls(experienceDetailsIndex,'countryId').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'countryId').hasError('required')">
+                            Please Select Country.
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-dropdown id="states_dropdown" appendTo="body" optionLabel="name" placeholder="Select State"
+                      [options]="statesPerRow[expDtlsformArrayControls(experienceDetailsIndex,'countryId').value]"
+                      optionValue="lookupDetailId" formControlName="stateId" [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'stateId')?.touched &&
+                      expDtlsformArrayControls(experienceDetailsIndex,'stateId')?.errors }"></p-dropdown>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'stateId').touched && expDtlsformArrayControls(experienceDetailsIndex,'stateId').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'countryId').untouched && expDtlsformArrayControls(experienceDetailsIndex,'stateId').touched ||
+                            expDtlsformArrayControls(experienceDetailsIndex,'countryId').invalid && expDtlsformArrayControls(experienceDetailsIndex,'stateId').touched">
+                            Please Select Country First.</div>
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf=" expDtlsformArrayControls(experienceDetailsIndex,'countryId').touched &&  expDtlsformArrayControls(experienceDetailsIndex,'stateId').errors?.['required'] && expDtlsformArrayControls(experienceDetailsIndex,'countryId').valid">
+                            Please Select State.</div>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <input pInputText class="form-control" id="company_Location" formControlName="companyLocation"
+                      (keydown)="restrictSpaces($event)" alphaOnly placeholder="Enter Location" maxlength="50"
+                      #companyLocation [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'companyLocation')?.touched &&
+                    expDtlsformArrayControls(experienceDetailsIndex,'companyLocation')?.errors }">
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'companyLocation').touched && expDtlsformArrayControls(experienceDetailsIndex,'companyLocation').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'companyLocation').hasError('required')">
+                            Please Enter Location.
+                          </div>
+                          <span
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'companyLocation').touched && expDtlsformArrayControls(experienceDetailsIndex, 'companyLocation').invalid">
+                            <div class="ng-invalid ng-touched p-error"
+                              *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'companyLocation').hasError('minlength')">
+                              Please Min Length Is 2.
+                            </div>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="align-right w-40" style="width:30%; text-align:right;">
+                        <small>{{companyLocation.value.length}}/{{maxLength.name}}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-calendar [showIcon]="true" formControlName="dateOfJoining" id="date_Of_Joining" appendTo="body"
+                      [maxDate]="maxDate" [readonlyInput]="true" placeholder="Select Date Of Joining" [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'dateOfJoining')?.touched &&
+                      expDtlsformArrayControls(experienceDetailsIndex,'dateOfJoining')?.errors }"></p-calendar>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'dateOfJoining').touched && expDtlsformArrayControls(experienceDetailsIndex,'dateOfJoining').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'dateOfJoining').hasError('required')">
+                            Please Select Date Of Joining.
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-calendar [showIcon]="true" [readonlyInput]="true"
+                      [minDate]="getMinDateForReliving(experienceDetailsIndex)" formControlName="dateOfReliving"
+                      appendTo="body" id="date_Of_Reliving" placeholder="Select Date Of Relieving"
+                      [style.pointer-events]="expDtlsformArrayControls(experienceDetailsIndex, 'dateOfJoining').value ? 'auto' : 'none'"
+                      (click)="expDtlsformArrayControls(experienceDetailsIndex, 'dateOfJoining').value ? null : $event.stopPropagation()"
+                      [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'dateOfReliving')?.touched &&
+                      expDtlsformArrayControls(experienceDetailsIndex,'dateOfReliving')?.errors }"></p-calendar>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'dateOfReliving').touched && expDtlsformArrayControls(experienceDetailsIndex, 'dateOfReliving').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'dateOfReliving').hasError('required') && !isDateOfRelievingEnabled(experienceDetailsIndex)">
+                            Please Select Date Of Joining First.
+                          </div>
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex, 'dateOfReliving').hasError('required') && isDateOfRelievingEnabled(experienceDetailsIndex)">
+                            Please Select Date Of Relieving.
+                          </div>
+                        </span>
+                      </div>
+
+                    </div>
+                  </td>
+                  <td class="vertical-align-top">
+                    <p-multiSelect placeholder="Select Skill Areas" inputId="multiselect" id="Experience_skillArea"
+                      optionValue="lookupDetailId" selectedItemsLabel="{0} Skills selected"
+                      (onChange)="onSelectSkill($event,experienceDetailsIndex)" formControlName="skillAreaIds"
+                      [options]="skillarea" optionLabel="name" [filter]="false" filterBy="name" appendTo="body"
+                      [ngClass]="{'is-invalid ng-dirty': expDtlsformArrayControls(experienceDetailsIndex,'skillAreaIds')?.touched &&
+                      expDtlsformArrayControls(experienceDetailsIndex,'skillAreaIds')?.errors }">
+                    </p-multiSelect>
+                    <div class="flex">
+                      <div class="align-left w-60" style="width:70%">
+                        <span
+                          *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'skillAreaIds').touched && expDtlsformArrayControls(experienceDetailsIndex,'skillAreaIds').invalid">
+                          <div class="ng-invalid ng-touched p-error"
+                            *ngIf="expDtlsformArrayControls(experienceDetailsIndex,'skillAreaIds').hasError('required')">
+                            Please Select Skill Areas.
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td *ngIf="fbexperience.controls['experienceDetails'].value.length > 1">
+                    <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                      *ngIf="!this.faExperienceDetail().controls[experienceDetailsIndex].get('workExperienceId')?.value"
+                      id="ExperienceDetailsDialog_RemoveBtn"
+                      (click)="faExperienceDetail().removeAt(experienceDetailsIndex)"></i>
+                    <i class="pi pi-fw pi-verified text-3xl"
+                      *ngIf="this.faExperienceDetail().controls[experienceDetailsIndex].get('workExperienceId')?.value"></i>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class=" footer dialog-footer">
+  <button id="Save_Experience_Details" pButton pRipple type="submit" label="Save Experience Details"
+    class="p-button-raised p-button-primary" [disabled]="fbexperience.invalid"
+    (click)="saveEmpExperienceDetails()"></button>
+</div>

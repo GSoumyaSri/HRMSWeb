@@ -1,0 +1,86 @@
+<div class="col-12">
+    <div class="grid ">
+        <div class="col-3"></div>
+        <div class="col-6">
+
+            <div class="card m-5 text-center">
+                <div class="grid ">
+                    <div class="card p-4 pb-0 orange-200 text-left applicant-p-block-home 
+                    md:col-6 sm:col-12 mb-0 align-items-center">
+                        <!-- Added class align-items-center -->
+                        <div class="text-center">
+                            <div class="avatar_emp_dboard">
+                                <img [src]="empDetails?.photo ? empDetails?.photo : defaultPhoto" [alt]="empDetails?.photo"
+                                    class="shadow-2 my-1 mx-0 employee_profile_pic avatar_emp_dboard" />
+                            </div>
+                            <br />
+                            <h5 class="m-5 mb-2 mt-0 text-primary">{{ empDetails?.employeeName}}</h5>
+                            <h6 class="m-5 mb-2 mt-0 text-green-500" pTooltip="Designation" tooltipPosition="bottom">{{
+                                empDetails?.designation}}</h6>
+                        </div>
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Employee Id"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.code}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi icon-intersex text-primary text-700 mr-2  dicon" pTooltip="Gender"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.gender}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi pi-envelope text-primary text-700 mr-2 dicon" pTooltip="Email Id"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.officeEmailId}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi icon-dateofjoining text-primary text-700 mr-2 dicon" pTooltip="Date of Joining"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.dateofJoin | date:dateOfJoining}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi pi-mobile text-primary text-700 mr-2 dicon" pTooltip="Mobile Number"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.mobileNumber}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi icon-birthday-cake text-primary text-700 mr-2 dicon" pTooltip="Date Of Birth"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.originalDOB | date:dateOfJoining}}</span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-2">
+                            <i class="pi icon-POC text-700 font-bold text-primary mr-2 dicon" pTooltip="Reporting To"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">
+                                <span>{{ empDetails?.reportingTo}}</span>
+                            </span>
+                        </span><br />
+                        <span class="inline-flex align-items-left mb-0">
+                            <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Experience In Company"
+                                tooltipPosition="top"></i>
+                            <span class="text-700 mr-2 dtext">{{ empDetails?.experienceInCompany}}</span>
+                        </span>
+                    </div>
+                    <div class="card p-4 pb-0 orange-200 text-left applicant-p-block-home 
+                    md:col-6 sm:col-12 mb-0 align-items-center">
+                    <div *ngFor="let doc of information?.relievingDocuments; let i = index">
+                        <div class="col-12 flex">
+                            <div class="col-5">
+                                <label>{{ i + 1 }}.</label>
+                                <label>{{ getDocumentName(doc.relievingDocId) }}</label>
+                            </div>
+                            
+                            <p-calendar [readonlyInput]="true" placeholder="Select Date" appendTo="body"
+                                        [showIcon]="true" [(ngModel)]="doc.willBeGivenAt"
+                                        [disabled]="true" class="col-7">
+                            </p-calendar>
+                        </div>
+                    </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>

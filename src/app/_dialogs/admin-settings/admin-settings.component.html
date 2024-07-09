@@ -1,0 +1,41 @@
+<div class=" align-items-center justify-content-center" *ngIf="fbAdminSettings?.controls">
+    <form [formGroup]="fbAdminSettings">
+        <div class="grid mt-3 p-5">
+            <div class="col-12 roles-container">
+                <div class="p-fluid p-formgrid grid content_scroll">
+                    <div class="field col-12 md:col-4" *ngFor="let key of fbAdminSettings?.controls | keyvalue">
+                        <label class="required">{{ transformKey(key?.key) }}:</label>
+
+                        <ng-container
+                            *ngIf="fbAdminSettings.get(key?.key)?.value === false || fbAdminSettings.get(key?.key)?.value === true; else elseBlock">
+                            <br />
+                            <p-inputSwitch [formControlName]="key?.key" id="adminSettings_{{key?.key}}"></p-inputSwitch>
+                        </ng-container>
+
+                        <ng-template #elseBlock>
+                            <input type="text" id="adminSettings_{{key?.key}}" pInputText [formControlName]="key?.key"
+                                numericOnly [maxlength]="3" (keydown)="restrictSpaces($event)"
+                                placeholder="Please Enter {{transformKey(key?.key)}}"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls[key?.key].touched && FormControls[key?.key].errors }" />
+                        </ng-template>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span>
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls[key?.key].touched && FormControls[key?.key].errors && FormControls[key?.key].errors?.['required']">
+                                        Please Enter {{ transformKey(key?.key) }}.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class=" footer dialog-footer" *ngIf="fbAdminSettings?.controls">
+    <div class=" button-container mt-1">
+        <p-button type="button" label="Save" [disabled]="fbAdminSettings.invalid" (click)="addAdminSettings()" id="HRNotifications_SaveBtn">
+        </p-button>
+    </div>
+</div>

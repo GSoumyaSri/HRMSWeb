@@ -1,0 +1,205 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-dataView #dv [value]="employeesForAllottedAssets" [paginator]="dv._layout == 'grid' ? true : false"
+                [alwaysShowPaginator]="false" [rows]="12"
+                filterBy="gender,employeeName,code,certificateDOB,dateofJoin,designation,officeEmailId,mobileNumber"
+                [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <div *ngIf="showSearchBar">
+                            <div class="p-inputgroup">
+                                <input id="search-name-id" type="text" #filter pInputText placeholder="Search Keyword"
+                                    (input)="onFilter(dv, $event)" />
+                                <span class="p-inputgroup-addon" (click)="clearcard(dv)" id="refresh_assetsSearchField"><i
+                                        class="pi pi-undo"></i></span>
+                            </div>
+                        </div>
+                        <p-dataViewLayoutOptions
+                            (click)="hideSearchBar(dv);clearcard(dv);searchKeyword=''" id="movingToGridorListview"></p-dataViewLayoutOptions>
+                        <p-button id="add-btn" class="p-element p-ripple  p-component p-2 pt-0 pb-0"
+                            (click)="openComponentDialog(addassetallotmentDialogComponent, null, ActionTypes.add)"
+                            icon="pi pi-plus" label="Allocate Asset"></p-button>
+                    </div>
+                </ng-template>
+                <ng-template let-employee pTemplate="listItem" let-item>
+                    <ng-container *ngIf="item === employeesForAllottedAssets[0]">
+                        <div class="col-12">
+                            <p-table #dtEmployees [value]="employeesForAllottedAssets" dataKey="id" [rows]="10"
+                                [rowHover]="true"
+                                styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm  pb-5"
+                                [paginator]="true"
+                                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                [showCurrentPageReport]="true" [alwaysShowPaginator]="false"
+                                [globalFilterFields]="globalFilterFields" columnResizeMode='fit' [autoLayout]="true"
+                                responsiveLayout="scroll" [resizableColumns]="true" [rowsPerPageOptions]="[10,25,50]">
+                                <ng-template pTemplate="caption">
+                                    <div class="flex justify-content-between flex-column sm:flex-row">
+                                        <button pButton label="Clear" class="p-button-outlined mb-2"
+                                            icon="pi pi-filter-slash" (click)="clear(dtEmployees)"></button>
+                                        <span class="p-input-icon-left mb-2">
+                                            <i class="pi pi-search"></i>
+                                            <input id="search-keyword" pInputText type="text"
+                                                [(ngModel)]="searchKeyword" #filter
+                                                (input)="onGlobalFilter(dtEmployees, $event)"
+                                                placeholder="Search Keyword" class="w-full" />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th></th>
+                                        <th>Image</th>
+                                        <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+                                            {{col?.label}}
+                                            <p-columnFilter type="text" [field]="col.header" display="menu" id="assestAllotments_columnFilter">
+                                            </p-columnFilter>
+                                            <p-sortIcon [field]="col.header" id="assestAllotments_columnSort"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-employee>
+                                    <tr>
+                                        <td class="text-center">
+                                            <button id="view-btn" pbutton="" pripple="" type="button" label="Primary"
+                                                pTooltip="View" tooltipPosition="top"
+                                                (click)="openComponentDialog(viewAssetAllotmentsDialogComponent, employee.employeeId, ActionTypes.view)"
+                                                class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                                ng-reflect-label="Primary">
+                                                <span class="p-button-label pi pi-chevron-right"></span>
+                                            </button>
+                                            <button id="redirect-to-add-btn" pbutton="" pripple="" type="button"
+                                                label="Primary" pTooltip="Add" tooltipPosition="top"
+                                                (click)="openComponentDialog(addassetallotmentDialogComponent, employee.employeeId, ActionTypes.add)"
+                                                class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                                ng-reflect-label="Primary">
+                                                <span class="p-button-label pi pi-plus"></span>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <img [src]="employee.photo ? employee.photo : employee?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                                                [alt]="employee.employeeName"
+                                                class="my-4 md:my-0 w-10 md:w-2rem shadow-2 mr-2" />
+                                        </td>
+                                        <td *ngFor="let col of headers">
+                                            <span *ngIf="col?.field != 'certificateDOB' && col?.field != 'dateofJoin'">
+                                                {{employee[col.field]}}
+                                            </span>
+                                            <span *ngIf="col?.field == 'certificateDOB' || col?.field == 'dateofJoin'">
+                                                {{employee[col.field] | date:mediumDate}}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td class="text-center m-5" colspan="15">No Employees Found.</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+
+                    </ng-container>
+                </ng-template>
+                <ng-template let-employee pTemplate="gridItem">
+                    <div class="col-12 md:col-6 lg:col-4 sm:col-6" >
+                        
+                        <div class="card m-2 border-1 card_hover surface-border pt-3 card-height"
+                            style="position: relative;">
+                            <div class="text-right">
+                                <button id="redirect-to-add-btn" pbutton="" pripple="" type="button" label="Primary"
+                                    (click)="openComponentDialog(addassetallotmentDialogComponent, employee.employeeId, ActionTypes.add)"
+                                    pTooltip="Allocate Assets" tooltipPosition="top"
+                                    class="p-element p-ripple p-button-text p-button p-component  p-1"
+                                    ng-reflect-label="Primary">
+                                    <span class="p-button-label pi pi-plus"></span>
+                                </button>
+                            </div>
+                            <div class=" mb-3 grid" id="view-btn" (click)="openComponentDialog(viewAssetAllotmentsDialogComponent, employee.employeeId, ActionTypes.view)">
+                                
+                                <div class="col-12 lg:col-4 md:col-12 p-1 text-left employee_profile_pic_div">
+                                    <div class="avatar_employee">
+                                        <img [src]="employee.photo ? employee.photo : employee?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                                            [alt]="employee.employeeName"
+                                            class="shadow-2 my-1 mx-0 employee_profile_pic  avatar" />
+                                    </div>
+                                    <div style="display:grid;">
+                                        <span class="text-600 font-medium text-md text-color">
+                                            <i class="pi pi-calendar text-300 text-primary text-1xl  pb-1" pTooltip="DOB"
+                                                tooltipPosition="top"></i> :
+                                            {{employee.certificateDOB| date: mediumDate}}
+                                        </span>
+                                        <span class="text-600 font-medium text-md text-color mt-1">
+                                            <i class="pi pi-phone text-500 text-primary text-1xl pb-1"
+                                                pTooltip="Mobile Number" tooltipPosition="top"></i> :
+                                            {{employee?.mobileNumber}}
+                                        </span>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="col-12 lg:col-8 md:col-12 p-2 px-3 employee_info text-color">
+                                                                    
+                                    <div class=" text-xl name_bold text-primary  mb-2 py-0">{{
+                                        employee?.employeeName }}</div>
+                                    <span class="text-500 font-medium text-md text-color">
+                                        <i class="pi icon-intersex text-600 text-primary text-2xl  pb-2"
+                                            pTooltip="Gender" tooltipPosition="top"></i> :
+                                        {{employee.gender}}
+                                    </span>
+                                    <br />
+                                    <span class="text-600 font-medium text-md text-color">
+                                        <i class="pi pi-id-card text-300 text-primary text-1xl pb-1"
+                                            pTooltip="Employee Id" tooltipPosition="top"></i> :
+                                        {{employee?.code}}
+                                    </span> <br />
+                                    <span class="text-600 font-medium text-md text-color">
+                                        <i class="pi pi-at text-500 text-primary text-1xl pb-1" pTooltip="Email Id"
+                                            tooltipPosition="top"></i> :
+                                        {{employee?.officeEmailId}}
+                                    </span>
+                                    <br />
+                                    <span class="text-600 font-medium text-md text-color">
+                                        <i class="pi pi-calendar text-500 text-primary text-1xl pb-1" pTooltip="DOJ"
+                                            tooltipPosition="top"> DOJ </i> :
+                                        {{employee.dateofJoin | date: mediumDate}}
+                                    </span>
+                                    <br />
+                                    <span class="text-600 font-medium text-md text-color">
+                                        <i class="pi pi-star text-500 text-primary text-1xl  pb-1"
+                                            pTooltip="Designation" tooltipPosition="top"></i> :
+                                        {{employee?.designation}}
+                                    </span>
+                                    <br />
+                                </div>
+                                <!-- <div class="relative col-12 p-0 mb-3  employee_info">
+                                    
+                                    <span class="text-600 font-medium text-md text-color">
+                                        <i class="pi pi-phone text-500 text-primary text-1xl pb-1"
+                                            pTooltip="Mobile Number" tooltipPosition="top"></i> :
+                                        {{employee?.mobileNumber}}
+                                    </span>
+                                    <br />
+                                </div> -->
+                                <!-- <div class="mb-3 flex col-2 p-0">
+                                    <button  pbutton="" pripple="" type="button" label="Primary"
+                                        (click)="openComponentDialog(viewAssetAllotmentsDialogComponent, employee.employeeId, ActionTypes.view)"
+                                        pTooltip="View" tooltipPosition="top"
+                                        class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                        ng-reflect-label="Primary">
+                                        <span class="p-button-label pi pi-chevron-right"></span>
+                                    </button>
+
+                                </div> -->
+                                
+                            </div>
+
+
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div>

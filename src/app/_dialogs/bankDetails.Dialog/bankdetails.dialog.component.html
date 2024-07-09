@@ -1,0 +1,136 @@
+<!-- BankDetails -->
+<div class="flex flex-column align-items-center justify-content-center">
+	<form [formGroup]="fbBankDetails" autocomplete="off">
+		<div class="grid mt-3 p-5">
+			<div class="col-12 roles-container">
+				<div class="p-fluid p-formgrid grid content_scroll">
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label class="required">Bank Name:</label>
+						<input type="text" id="bank_Name" pInputText formControlName="name" #bankname alphaOnly
+							[maxlength]="50" (keydown)="restrictSpaces($event)" placeholder="Please Enter Bank Name"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['name'].touched && FormControls['name'].errors }" />
+
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['name'].touched && FormControls['name'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['name'].errors?.['required']">
+										Please Enter Bank Name.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['name'].errors?.['minlength']">
+										Name Min Length Is 2.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{bankname.value.length}}/{{maxLength.name}} </small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label>Branch Name:</label>
+						<input type="text" id="branch_Name" pInputText formControlName="branchName" #branchname
+							alphaOnly [maxlength]="50" (keydown)="restrictSpaces($event)"
+							placeholder="Please Enter Branch Name"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['branchName'].touched && FormControls['branchName'].errors }" />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['branchName'].touched && FormControls['branchName'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['branchName'].errors?.['minlength']">
+										Name Min Length Is 2.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{branchname.value.length}}/{{maxLength.name}} </small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label class="required">IFSC Code:</label>
+						<input type="text" id="ifsc_Code" pInputText formControlName="ifsc" #ifscCode [maxlength]="11"
+							[minlength]="11" (keydown)="restrictSpaces($event)" placeholder="Please Enter IFSC Code"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['ifsc'].touched && FormControls['ifsc'].errors }" />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['ifsc'].touched && FormControls['ifsc'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['ifsc'].errors?.['required']">
+										Please Enter IFSC Code.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['ifsc'].errors?.['pattern']">
+										Invalid Ifsc Eg:SBIN0123456.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['ifsc'].errors?.['minlength']">
+										Ifsc Min Length Is 11.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{ifscCode.value.length}}/{{maxLength.ifscCode}} </small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label class="required">Account Number:</label>
+						<input type="text" id="account_Number" placeholder="Enter Account Number" pInputText #accountnumber
+							numericOnly [maxlength]="18" (keydown)="restrictSpaces($event)"
+							formControlName="confirmaccountNumber" (input)="disabledConfirmAccountNumber()"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['confirmaccountNumber'].touched && FormControls['confirmaccountNumber'].errors }" />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span
+									*ngIf="FormControls['confirmaccountNumber'].touched && FormControls['confirmaccountNumber'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['confirmaccountNumber'].errors?.['required']">
+										Please Enter Account Number</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['confirmaccountNumber'].errors?.['minlength']">
+										Account Number Min Length is 8.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{accountnumber.value.length}}/{{maxLength.accountNo}} </small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label class="required">Confirm Account Number:</label>
+						<input type="text" id="account_Number" placeholder="Confirm Account Number" pInputText
+							formControlName="accountNumber" #confirmaccountnumber numericOnly [maxlength]="18"
+							(keydown)="restrictSpaces($event)"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['accountNumber'].touched && FormControls['accountNumber'].errors }" />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span
+									*ngIf="FormControls['accountNumber'].touched && FormControls['accountNumber'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf=" FormControls['confirmaccountNumber'].touched && FormControls['accountNumber'].errors?.['required'] &&  FormControls['confirmaccountNumber'].valid">
+										Please Confirm Account Number.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['accountNumber'].errors?.['minlength']">
+										Account Number Min Length is 8.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['accountNumber'].errors?.['confirmedValidator'] && !FormControls['accountNumber'].errors?.['minlength']">
+										Confirm Account Number must match.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{confirmaccountnumber.value.length}}/{{maxLength.accountNo}} </small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 lg:col-4 md:col-6 sm:col-6">
+						<label>Is Active:</label>
+						<br>
+						<p-inputSwitch formControlName="isActive" id="BankDetails_IsActive" [readonly]="!isEditMode"
+							[ngClass]="{'readonly-switch': !isEditMode}"></p-inputSwitch>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class=" footer dialog-footer">
+	<p-button pRipple type="Submit" (click)="saveBankDetails()" [disabled]="!fbBankDetails.valid" id="save_bankDetails"
+		label="Save Bank Details" class="p-button-raised p-button-primary"></p-button>
+</div>

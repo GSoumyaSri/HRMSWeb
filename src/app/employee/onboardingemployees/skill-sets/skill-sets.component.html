@@ -1,0 +1,35 @@
+<div class="card flex justify-content-center">
+    <div class="flex flex-row flex-wrap col-12">
+      <div *ngFor="let category of skills" class="field-checkbox col-4">
+        <p-checkbox name="group" [value]="category.lookupDetailId" [(ngModel)]="SelectedSkillsSets"
+          (onChange)="onSelectSkill(SelectedSkillsSets)" [inputId]="category.name">
+        </p-checkbox>
+        <label [for]="category.name">{{ category.name }}</label>
+      </div>
+    </div>
+  </div>
+  
+  
+<div class="grid mt-2 ">
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3" *ngIf="selectedOption==false">
+        <button p-button
+            class="p-element p-ripple p-button-primary p-button p-component w-100 d-flex justify-content-center align-items-center "
+            (click)="navigateToExperience()" id="AddresstoExperience-Btn">Experience Details</button>
+    </div>
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3" *ngIf="selectedOption==true">
+        <button p-button id="AddresstoEducation-Btn"
+            class="p-element p-ripple p-button-primary p-button p-component w-100 d-flex justify-content-center align-items-center"
+            (click)="navigateToEducation()">Educational Details</button>
+    </div>
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3">
+        <button p-button id="AddressSave-Btn"
+            class="p-element p-ripple p-button-info p-button p-component w-100 d-flex justify-content-center align-items-center"
+            [disabled]="this.SelectedSkillsSets.length<2" (click)="onSubmit()">Save
+            as Draft</button>
+    </div>
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3">
+        <button p-button id="AddresstoUpload-Btn"
+            class="p-element p-ripple p-button-primary p-button p-component w-100 d-flex justify-content-center align-items-center"
+            (click)="navigateToNext()">Address Details</button>
+    </div>
+</div>

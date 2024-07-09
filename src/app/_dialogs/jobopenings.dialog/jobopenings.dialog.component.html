@@ -1,0 +1,322 @@
+<div class=" align-items-center justify-content-center">
+    <form [formGroup]="fbJobOpening">
+        <div class="grid  p-5 content_scroll" style="height:500px;">
+            <div class="col-12 roles-container">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Job Title:</label>
+                        <input pinput id="jobTitle" #jobtitle pInputText placeholder="Select Job Title"
+                            formControlName="title" (keydown)="restrictSpaces($event)" alphaOnly [maxLength]="50"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['title'].touched && FormControls['title'].errors}">
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['title'].touched && FormControls['title'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['title'].errors?.['required']">
+                                        Please Select Job Title.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{jobtitle.value.length}}/{{maxLength.name}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Project:</label>
+                        <p-dropdown id="projectName" appendTo="body" [options]="projects" optionLabel="name"
+                            optionValue="projectId" placeholder="Select Project" formControlName="projectId"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['projectId'].touched && FormControls['projectId'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['projectId'].touched && FormControls['projectId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['projectId'].errors?.['required']">
+                                        Please Select Project.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Designation:</label>
+                        <p-dropdown id="designationName" appendTo="body" [options]="designation" optionLabel="name"
+                            optionValue="lookupDetailId" placeholder="Select Designation"
+                            formControlName="designationId"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['designationId'].touched && FormControls['designationId'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['designationId'].touched && FormControls['designationId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['designationId'].errors?.['required']">
+                                        Please Select Designation.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Soft Skills:</label>
+                        <p-multiSelect appendTo="body" placeholder="Select Soft Skills" id="JobOpening_SoftSkills"
+                            [options]="softskills" optionLabel="name" [filter]="true" filterBy="name" #multiSelect
+                            formControlName="softSkills" optionValue="lookupDetailId" (keydown)="restrictSpaces($event)"
+                            (onChange)="onSelectSoftSkill($event)"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['softSkills'].touched && FormControls['softSkills'].errors}">
+                            <ng-template let-skill pTemplate="selectedItem">
+                                <div class="block align-items-center gap-3">
+                                    <div>{{skill.name}}</div>
+                                </div>
+                            </ng-template>
+                        </p-multiSelect>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['softSkills'].touched && FormControls['softSkills'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['softSkills'].errors?.['required']">
+                                        Please Select Soft Skills.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Technical Skills:</label>
+                        <p-multiSelect appendTo="body" class="w-100" [options]="technicalskills" optionLabel="name"
+                            placeholder="Select Skill" formControlName="technicalSkills" optionValue="lookupDetailId"
+                            [style]="{'width':'100%'}" (onChange)="onSelectTechnicalSkill($event)"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['technicalSkills'].touched && FormControls['technicalSkills'].errors}">
+                            <ng-template let-skill pTemplate="selectedItem">
+                                <div class="block align-items-center gap-3">
+                                    <div>{{skill.name}}</div>
+                                </div>
+                            </ng-template>
+                        </p-multiSelect>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['technicalSkills'].touched && FormControls['technicalSkills'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['technicalSkills'].errors?.['required']">
+                                        Please Select Technical Skills.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Nature of Job:</label>
+                        <p-dropdown id="NatureOfJob" appendTo="body" [options]="natureOfJobs" optionLabel="name"
+                            optionValue="lookupDetailId" placeholder="Select Nature of Job"
+                            formControlName="natureOfJobId"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['natureOfJobId'].touched && FormControls['natureOfJobId'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['natureOfJobId'].touched && FormControls['natureOfJobId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['natureOfJobId'].errors?.['required']">
+                                        Please Select Nature Of Job.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class=" required">Description:</label>
+                        <textarea class="form-control freeze_text-area" pInputTextarea formControlName="description"
+                            placeholder="Enter Description" #description [maxlength]="256" id="Description"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['description'].touched && FormControls['description'].errors}">
+                        </textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['description'].touched && FormControls['description'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['description'].errors?.['required']">
+                                        Please Enter Description.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{description.value.length}}/{{maxLength.description}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Compensation Package:</label>
+                        <textarea class="form-control freeze_text-area" pInputTextarea id="CompensationPackage"
+                            formControlName="compensationPackage" placeholder="Enter Compensation Package"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['compensationPackage'].touched && FormControls['compensationPackage'].errors}">
+                        </textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['compensationPackage'].touched && FormControls['compensationPackage'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['compensationPackage'].errors?.['required']">
+                                        Please Enter Compensation Package.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Required By:</label>
+                        <p-calendar appendTo="body" placeholder="Select Required By" [readonlyInput]="true"
+                            [showIcon]="true" formControlName="requiredBy" [minDate]="minDate" id="ToBeFilled"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['requiredBy'].touched && FormControls['requiredBy'].errors}">
+                        </p-calendar>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['requiredBy'].touched && FormControls['requiredBy'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['requiredBy'].errors?.['required']">
+                                        Please Select Required By.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Is Active: </label>
+                        <br> &nbsp; <p-inputSwitch formControlName="isActive">
+                        </p-inputSwitch>
+                    </div>
+                    <!-- <div class="col-6">
+                        <p-fieldset legend="Technical Skills" [toggleable]="true" class="col-12">
+                            <div class="text-right">
+                                <button pButton pRipple class="mb-3 pi pi-plus"
+                                    (click)="addTechnicalSkillsDetails()"></button>
+                            </div>
+                            <div class=" scrolling_content" formArrayName="jobOpeningTechnicalSkillsXrefs">
+                                <p-table #dt2 [value]="faTechnicalSkillsDetails().controls" dataKey="id" [rows]="10"
+                                    [rowHover]="true"
+                                    styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                                    [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                                    [rowsPerPageOptions]="[10,25,50]" [scrollable]="true" scrollDirection="vertical"
+                                    scrollHeight="300px">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th class="text-center">Skills</th>
+                                            <th class="text-center">Expertise(Give Your Assesment)</th>
+                                            <th
+                                                *ngIf="fbJobOpening.controls['jobOpeningTechnicalSkillsXrefs'].value.length > 1">
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-technicalSkillsDetailsIndex="rowIndex">
+                                        <tr [formGroupName]="technicalSkillsDetailsIndex">
+                                            <td class="vertical-align-top">
+                                                <p-dropdown id="projectName" appendTo="body" class="w-100"
+                                                    [options]="technicalskills" optionLabel="name"
+                                                    placeholder="Select Skill" formControlName="technicalSkillId"
+                                                    optionValue="lookupDetailId" [style]="{'width':'100%'}"
+                                                    [ngClass]="{'is-invalid ng-dirty': formArrayControl(technicalSkillsDetailsIndex, 'technicalSkillId')?.touched &&
+                                                    formArrayControl(technicalSkillsDetailsIndex, 'technicalSkillId')?.errors }">
+                                                </p-dropdown>
+                                                <div class="flex">
+                                                    <div class="align-left w-60" style="width:70%">
+                                                        <span
+                                                            *ngIf="formArrayControl(technicalSkillsDetailsIndex, 'technicalSkillId').touched && formArrayControl(technicalSkillsDetailsIndex, 'technicalSkillId').invalid">
+                                                            <div class="ng-invalid ng-touched p-error"
+                                                                *ngIf="formArrayControl(technicalSkillsDetailsIndex, 'technicalSkillId').errors?.['required']">
+                                                                Please Select Skill.</div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="vertical-align-top pt-3 text-center">
+                                                <p-rating number="3" [cancel]="false" formControlName="expertise">
+                                                </p-rating>
+                                            </td>
+                                            <td
+                                                *ngIf="fbJobOpening.controls['jobOpeningTechnicalSkillsXrefs'].value.length > 1">
+                                                <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                                    *ngIf="!this.faTechnicalSkillsDetails().controls[technicalSkillsDetailsIndex].get('technicalSkillId')?.value"
+                                                    (click)="  faTechnicalSkillsDetails().removeAt(technicalSkillsDetailsIndex)"></i>
+                                                <i class="pi pi-fw pi-verified text-3xl"
+                                                    *ngIf="this.faTechnicalSkillsDetails().controls[technicalSkillsDetailsIndex].get('technicalSkillId')?.value"></i>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-fieldset>
+                    </div> -->
+                    <div class="col-12">
+                        <p-fieldset legend="Attribute Type" [toggleable]="true" class="col-12">
+                            <div class="text-right">
+                                <button pButton pRipple class="mb-3 pi pi-plus" (click)="addAttributeTypes()"></button>
+                            </div>
+                            <div class=" scrolling_content" formArrayName="JobOpeningsAttributeXrefs">
+                                <p-table #dt2 [value]="faAttributeTypes().controls" dataKey="id" [rows]="10"
+                                    [rowHover]="true"
+                                    styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                                    [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                                    [rowsPerPageOptions]="[10,25,50]" [scrollable]="true" scrollDirection="vertical"
+                                    scrollHeight="300px">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th class="text-center">Attribute</th>
+                                            <th class="text-center">Expertise(Give Your Assesment)</th>
+                                            <th
+                                                *ngIf="fbJobOpening.controls['JobOpeningsAttributeXrefs'].value.length > 1">
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-attributeDetailsIndex="rowIndex">
+                                        <tr [formGroupName]="attributeDetailsIndex">
+                                            <td class="vertical-align-top">
+                                                <p-dropdown id="projectName" appendTo="body" class="w-100"
+                                                    [options]="attributeTypes" optionLabel="name"
+                                                    placeholder="Select Attribute" formControlName="attributeTypeId"
+                                                    optionValue="lookupDetailId" [style]="{'width':'100%'}"
+                                                    [ngClass]="{'is-invalid ng-dirty': formArrayControlAttribute(attributeDetailsIndex, 'attributeTypeId')?.touched &&
+                                                    formArrayControlAttribute(attributeDetailsIndex, 'attributeTypeId')?.errors }">
+                                                </p-dropdown>
+                                                <div class="flex">
+                                                    <div class="align-left w-60" style="width:70%">
+                                                        <span
+                                                            *ngIf="formArrayControlAttribute(attributeDetailsIndex, 'attributeTypeId').touched && formArrayControlAttribute(attributeDetailsIndex, 'attributeTypeId').invalid">
+                                                            <div class="ng-invalid ng-touched p-error"
+                                                                *ngIf="formArrayControlAttribute(attributeDetailsIndex, 'attributeTypeId').errors?.['required']">
+                                                                Please Select Attribute.</div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="vertical-align-top pt-3 text-center">
+                                                <app-star-rating
+                                                    [control]="getExpertiseControl(attributeDetailsIndex)"></app-star-rating>
+                                                <!-- <p-rating number="3" [cancel]="false" formControlName="expertise">
+                                                </p-rating> -->
+                                                <div class="flex">
+                                                    <div class="align-left w-60" style="width:70%">
+                                                        <span
+                                                            *ngIf="formArrayControlAttribute(attributeDetailsIndex, 'expertise').touched && formArrayControlAttribute(attributeDetailsIndex, 'expertise').invalid">
+                                                            <div class="ng-invalid ng-touched p-error"
+                                                                *ngIf="formArrayControlAttribute(attributeDetailsIndex, 'expertise').errors?.['required']">
+                                                                Please Select Expertise.</div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td
+                                                *ngIf="fbJobOpening.controls['JobOpeningsAttributeXrefs'].value.length > 1">
+                                                <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                                    *ngIf="!this.faAttributeTypes().controls[attributeDetailsIndex].get('attributeTypeId')?.value"
+                                                    (click)="  faAttributeTypes().removeAt(attributeDetailsIndex)"></i>
+                                                <i class="pi pi-fw pi-verified text-3xl"
+                                                    *ngIf="this.faAttributeTypes().controls[attributeDetailsIndex].get('attributeTypeId')?.value"></i>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class=" footer dialog-footer">
+    <button pButton pRipple type="submit" label="Add Job Opening" class="p-button-raised p-button-primary"
+        id="SubmitJobForm" [disabled]="fbJobOpening.invalid" (click)="onSubmit()"></button>
+</div>

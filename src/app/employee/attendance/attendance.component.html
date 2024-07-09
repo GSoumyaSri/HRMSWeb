@@ -1,0 +1,455 @@
+<!-- p-dialog -->
+<p-dialog header="Attendance" [(visible)]="dialog" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '70%', '640px': '80%'}">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <form [formGroup]="fbleave">
+            <div class="col-12 text-center">
+                <p-chip styleClass="pl-0 pr-3 mr-4">
+                    <span
+                        class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{this.selfEmployeeLeaveCount?.allottedCasualLeaves-this.selfEmployeeLeaveCount?.usedCasualLeavesInYear}}</span>
+                    <span class="ml-2 font-medium">Casual Leaves</span>
+                </p-chip>
+                <p-chip styleClass="pl-0 pr-3">
+                    <span
+                        class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{this.selfEmployeeLeaveCount?.allottedPrivilegeLeaves-this.selfEmployeeLeaveCount?.usedPrivilegeLeavesInYear}}</span>
+                    <span class="ml-2 font-medium">Privilege Leaves</span>
+                </p-chip>
+
+            </div>
+            <div class="p-fluid p-formgrid">
+                <div style="margin-bottom: 15px;">
+                    <label class="required">Employee:</label>&nbsp;
+                    &nbsp; <input pInputText id="Attendance_employeeId"
+                        [readonly]="FormControls['employeeId'].value!== null" type="text" #pocNo alphaOnly
+                        placeholder="Enter Employee" formControlName="employeeName" />
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label class="required">Leave Type:</label>&nbsp;
+                    <p-dropdown formControlName="leaveTypeId" [options]="filteredLeaveTypes" optionLabel="displayName"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['leaveTypeId'].touched && FormControls['leaveTypeId'].errors }"
+                        (onChange)="checkLeaveType($event.value)" id="Attendance_leaveType" optionValue="lookupDetailId"
+                        placeholder="Select Leave Type" appendTo="body"></p-dropdown>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span *ngIf="FormControls['leaveTypeId'].touched && FormControls['leaveTypeId'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormControls['leaveTypeId'].errors?.['required']">
+                                    Please Select Leave Type.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;" *ngIf="isLeaveTypeSelected(FormControls['leaveTypeId'].value)">
+                    <label class="required">Leave Reason:</label>
+                    <p-dropdown placeholder="Select Leave Reason" formControlName="leaveReasonId"
+                        [options]="filteredLeaveReasons" optionLabel="name" optionValue="lookupDetailId"
+                        id="leaveTypes_Dropdown" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['leaveReasonId'].touched && FormControls['leaveReasonId'].errors }">
+                    </p-dropdown>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="FormControls['leaveReasonId'].touched && FormControls['leaveReasonId'].invalid">
+                                <div class="ng-invalid ng-touched p-error" *ngIf=" FormControls['leaveTypeId'].untouched && FormControls['leaveReasonId'].touched ||
+                                    FormControls['leaveTypeId'].invalid && FormControls['leaveReasonId'].touched">
+                                    Please Select Leave Type First.</div>
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf=" FormControls['leaveTypeId'].touched && FormControls['leaveReasonId'].errors?.['required'] &&  FormControls['leaveTypeId'].valid">
+                                    Please Select Leave Reason.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label class="required">Date:</label>&nbsp;
+                    <p-calendar formControlName="fromDate" id="Attendance_fromDate" appendTo="body"
+                        placeholder="Enter From Date" [showIcon]="true">
+                    </p-calendar>
+                </div>
+                <div style="margin-bottom: 15px;" *ngIf="isLeaveTypeSelected(FormControls['leaveTypeId'].value)">
+                    <label>Half Day Leave:</label>&nbsp;
+                    <p-checkbox formControlName="isHalfDayLeave" id="Attendance_isHalfDayLeave" [binary]="true"
+                        inputId="binary"></p-checkbox>
+                </div>
+                <div style="margin-bottom: 15px;" *ngIf="isLeaveTypeSelected(FormControls['leaveTypeId'].value)">
+                    <label>Leave Reason Description:</label>&nbsp;
+                    <textarea rows="5" cols="30" pInputTextarea formControlName="note" #note class="freeze_text-area"
+                        [maxlength]="maxLength.description" placeholder="Enter Leave Reason Description"
+                        (keydown)="restrictSpaces($event)" id="Attendance_leaveNarration"></textarea>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span *ngIf="FormControls['note'].touched && FormControls['note'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormControls['note'].errors?.['maxlength']">
+                                    Leave Reason Description Max length is 256.</div>
+                            </span>
+                        </div>
+                        <div class="align-right w-40" style="width:30%; text-align:right;">
+                            <small>{{note.value.length}}/256</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center p-3" style="float:right">
+            <button pButton pRipple type="submit" class="p-button-raised p-button-primary" id="Attendance_saveLeave"
+                (click)="addAttendance()" [disabled]="!this.fbleave.valid" label="Update Work Status"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<div class="col-12  p-0">
+    <div class="card">
+
+        <!-- Toolbar -->
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>Attendance</h4>
+            </ng-template>
+
+            <ng-template pTemplate="center">
+                <div class="pr-2">
+                    <p-button icon="pi pi-angle-left mr-2" (click)="gotoPreviousMonth()" id="Attendance_previousMonth">
+                    </p-button>
+                </div>
+                <div>
+                    <p-calendar styleClass="only-icon" [(ngModel)]="selectedMonth" [showIcon]="true" view="month"
+                        id="Attendance_selectMonth" [yearNavigator]="true" yearRange="2000:2030" [readonlyInput]="true"
+                        inputId="monthpicker" (onSelect)="onMonthSelect($event)">
+                    </p-calendar>
+                </div>
+                <div class="pl-2">
+                    <p-button icon="pi pi-angle-right ml-2" (click)="gotoNextMonth()" id="Attendance_nextMonth">
+                    </p-button>
+                </div>
+                <div class="pl-2" style="margin-top: 10px;">
+                    <b>{{ getMonthYearDate() | date: 'MMM/yyyy' }}</b>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="right">
+                <div class="p-input-icon-left dropdown_icon pr-2" *ngIf="permissions?.CanDownloadAttendance">
+
+                    <p-splitButton [pTooltip]="'Download Attendance PDF'" tooltipPosition="left" class="pdf_group"
+                    id="Attendance_PDFReportDropdown"
+                        icon="pi pi-plus" [model]="items">
+                        <ng-template pTemplate="dropdownicon">
+                            <i class="pi icon-pdf-svgrepo-com-2"></i>
+                        </ng-template>
+                    </p-splitButton>
+
+                </div>
+                <div class="p-input-icon-left dropdown_icon pr-2">
+                    <div class="p-input-icon-left dropdown_icon  pr-2" *ngIf="permissions?.CanDownloadAttendance">
+                        <p-splitButton [pTooltip]="'Download Attendance CSV'" tooltipPosition="left" class="csv_group"
+                        id="Attendance_CSVReportDropdown"
+                            icon="pi pi-plus" [model]="excelItems">
+                            <ng-template pTemplate="dropdownicon">
+                                <i class="icon-csv-svgrepo-com-1 "></i>
+                            </ng-template>
+                        </p-splitButton>
+                    </div>
+                </div>
+                <div class="pr-2">
+                    <div>
+                        <div class="p-inputgroup">
+                            <input pInputText type="text" class="w-full" placeholder="Employee Name" #filter
+                                id="Attendance_globalSearch" (input)="onGlobalFilter(dt1, $event)" />
+                            <span class="p-inputgroup-addon" (click)="clear(dt1); filter.value = '';" id="Attendance_globalSearchClear"><i class="pi pi-undo"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="canUpdatePreviousDayAttendance && NotUpdatedAttendanceDatesList?.length">
+                    <p-dropdown #dropdown [options]="NotUpdatedAttendanceDatesList" optionValue="date"
+                   id="Attendance_previousDayAttendanceDatesList"
+                        optionLabel="date" placeholder="Select a Date" [showClear]="true" appendTo="body"
+                        (onChange)="onDropdownChange($event.value)" class="mr-2 ">
+                        <ng-template let-option pTemplate="selectedItem">
+                            {{ option.dayOfWeek }}, {{ option.date }}
+                        </ng-template>
+                        <ng-template let-option pTemplate="item">
+                            {{ option.dayOfWeek }}, {{ option.date }}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+
+                <div *ngIf="permissions?.CanManageAttendance">
+                    <button pButton pRipple label="Add Attendance" icon="pi pi-plus" id="Attendance_addAttendance"
+                        class="p-button-primary p-mr-2" (click)="showConfirmationDialog()"></button>
+                </div>
+                <div *ngIf="permissions?.CanManageAttendance">
+                    <button pButton pRipple label="" id="AddressDetails-AboutColors" icon="pi pi-info-circle"
+                        class="p-button-primary ml-2 p-mr-2" [style]="{'backgroundColor':'white','color':'#f17517'}"
+                        (click)="toggleTab()" tooltipPosition="top"
+                        pTooltip="Info Regarding Representation of Colors"></button>
+                </div>
+            </ng-template>
+        </p-toolbar>
+        <!-- p-table -->
+        <p-table [rowHover]="true" styleClass="p-datatable-striped p-datatable-gridlines top_note_bar"
+            responsiveLayout="scroll" [tableStyle]="{'min-width': '50rem'}" *ngIf="showingLeavesOfColors"
+            id="attendance">
+            <ng-template pTemplate="header">
+                <tr class="fadeinup" p-overlayPanel>
+                    <td class="woff"> WO </td>
+                    <td colspan="2">Weekoff </td>
+                    <td class="pt"> PT </td>
+                    <td colspan="2"> Present </td>
+                    <td class="nu"> NU</td>
+                    <td colspan="2">Not Updated</td>
+                    <td class="hd">HD</td>
+                    <td colspan="2">Holiday</td>
+                    <td class="at"> AT </td>
+                    <td colspan="2">Absent</td>
+                    <td class="cl">CL</td>
+                    <td colspan="2">Casual Leave</td>
+                    <td class="pl">PL</td>
+                    <td colspan="2">Privileged Leave</td>
+                    <td class="el">LWP</td>
+                    <td colspan="2">Leave Without Pay</td>
+                    <td class="pl_pt">PL/PT</td>
+                    <td colspan="2">Halfday Leave</td>
+                    <td class="cl_pt">CL/PT</td>
+                    <td colspan="2">Halfday Leave</td>
+                    <td class="wfh">WFH</td>
+                    <td colspan="2">Work From Home</td>
+                    <td class="ll">LL</td>
+                    <td colspan="2">Long Leave</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-table #dt1 [value]="employeeAttendanceList" [rowHover]="true" paginatorDropdownAppendTo="body" [rows]="10"
+            [rowHover]="true" [alwaysShowPaginator]="false" [paginator]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" paginatorDropdownAppendTo="body"
+            styleClass="p-datatable-striped p-datatable-gridlines attendance_table" responsiveLayout="scroll"
+            [globalFilterFields]="globalFilterFields" [tableStyle]="{'min-width': '50rem'}"
+            [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th id="Attendance_table_heading">Employees</th>
+                    <th *ngFor="let i of days" id="AttendanceDates{{i}}" [style]="{'text-align':'center'}">{{i}}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-employee>
+
+                <tr>
+                    <td>{{employee.EmployeeName}} ({{employee.Code}})</td>
+                    <td *ngFor="let i of days" [ngClass]="{'woff': getAttendance(employee, i) === 'WOff',
+                        'pt': employee[getFormattedDate(i)] === 'PT',
+                        'nu': employee[getFormattedDate(i)] === 'NU',
+                        'hd': employee[getFormattedDate(i)] === 'HD',
+                        'at': employee[getFormattedDate(i)] === 'AT',
+                        'cl': employee[getFormattedDate(i)] === 'CL',
+                        'pl': employee[getFormattedDate(i)] === 'PL',
+                        'el': employee[getFormattedDate(i)] === 'LWP',
+                        'cl_pt': employee[getFormattedDate(i)] === 'CL/PT',
+                        'pl_pt': employee[getFormattedDate(i)] === 'PL/PT',
+                        'wfh': employee[getFormattedDate(i)] === 'WFH',
+                        'll':employee[getFormattedDate(i)] === 'LL'
+                       }">
+                        <!-- To display updated attendance days -->
+                        <span (click)="openDialog(employee,getFormattedDate(i),employee[getFormattedDate(i)],i)"
+                        id="Attendance_Cell{{getFormattedDate(i)}}"
+                            *ngIf="canUpdateAttendance(employee,i);else CannotUpdateAttendance" class="att-pointer">
+                            {{ employee[getFormattedDate(i)]}}
+                        </span>
+                        <!-- To display holidays, Weekly Off and Non updated attendance days-->
+                        <ng-template #CannotUpdateAttendance>
+                            {{ getNonUpdateLabel(employee,i) }}
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="md:text-center m-5" colspan="50%">No Attendance Found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+
+    </div>
+</div>
+<p-dialog header="Statistics of {{this.notUpdatedDates| date:DatedFormat}} Attendance:" [(visible)]="confirmationDialog"
+    [modal]="true" showEffect="fade">
+    <div class="flex justify-content-center m-3">
+        <i class="pi pi-exclamation-triangle" style="font-size: 24px;"></i>&nbsp;&nbsp;
+        <p>
+            When you <b>'Confirm'</b> the action, the statistics shown below will update.<br/> In this update, 
+            we are <b>excluding the pending leaves.</b>
+        </p>
+        <!-- <p *ngIf="!isTodayDate(notUpdatedDates)">
+            When you perform the 'Confirm' action, the below
+            NotUpdated ({{this.NotUpdatedEmployees.length}})
+            Statistics will update:
+        </p> -->
+        <br />
+
+    </div>
+    <div class="justify-content-center m-3">
+        <p><span [pTooltip]="getPendingLeavesTooltip()" tooltipPosition="top" style="color: red">
+            No. of Pending Leaves: {{ this.pendingEmployeesList?.length }}
+        </span>
+    </p>
+        <p style="color:orange">No. of Not Updated Employees:
+            {{this.totalNotUpdatesEmployeesCount}}</p>
+        <p>Total No. of Employees: {{this.employeeAttendanceList?.length-getLeavescount('NE')}}</p>
+        <p>No. of Present,Office(WFH):
+            {{getLeavescount('PT')+getLeavescount('WFH')+(getLeavescount('NU')-this.pendingEmployeesList?.length)}} =>
+            {{getLeavescount('PT')+(getLeavescount('NU')-this.pendingEmployeesList?.length)}} ({{getLeavescount('WFH')}})</p>
+        <p>No. of Absent: {{ getLeavescount('AT') }}</p>
+        <p>No. of PL's: {{ getLeavescount('PL') }}</p>
+        <p>No. of CL's: {{ getLeavescount('CL') }}</p>
+        <p>No. of LWP's: {{ getLeavescount('LWP') }}</p>
+        <p>No. of LL's: {{ getLeavescount('LL') }}</p>
+        <P>No. of Half Days: {{ getLeavescount('CL/PT') + getLeavescount('PL/PT') }}</P>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" label="Confirm" (click)="addEmployeesAttendance()"
+                id="Attendance_addPresentForAll"></button>
+            <button pButton type="button" class="btn btn-danger" label="Cancel" (click)="onReject()"
+                id="Attendance_onReject"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Datewise Attendance Report" [(visible)]="DatewiseAttendanceReportDialog" [modal]="true"
+    showEffect="fade">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <form [formGroup]="fbDatewiseAttendanceReport">
+            <div class="p-fluid p-formgrid">
+                <div style="margin-bottom: 15px;">
+                    <label class="required">From Date:</label>&nbsp;
+                    <p-calendar formControlName="fromDate" id="Attendance_datewise_Report_fromDate" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormReportControls['fromDate'].touched && FormReportControls['fromDate'].errors }"
+                        placeholder="Select From Date" [showIcon]="true" [maxDate]="maxDate">
+                    </p-calendar>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="FormReportControls['fromDate'].touched && FormReportControls['fromDate'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormReportControls['fromDate'].errors?.['required']">
+                                    Please Select From Date.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label class="required">To Date:</label>&nbsp;
+                    <p-calendar formControlName="toDate" id="Attendance_datewise_Report_toDate" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormReportControls['toDate'].touched && FormReportControls['toDate'].errors }"
+                        placeholder="Select To Date" [showIcon]="true" [maxDate]="maxDate"
+                        [minDate]="FormReportControls['fromDate'].value">
+                    </p-calendar>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+
+                            <span *ngIf="FormReportControls['toDate'].touched && FormReportControls['toDate'].invalid">
+                                <div class="ng-invalid ng-touched p-error" *ngIf="FormReportControls['fromDate'].untouched && FormReportControls['toDate'].touched ||
+                                FormReportControls['fromDate'].invalid&& FormReportControls['toDate'].touched">
+                                    Please Select From Date First.</div>
+                                <div class="ng-invalid ng-touched p-error" *ngIf="FormReportControls['fromDate'].touched 
+                                &&FormReportControls['toDate'].errors?.['required']
+                                &&FormReportControls['fromDate'].valid">
+                                    Please Select To Date.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" [disabled]="!this.fbDatewiseAttendanceReport.valid"
+                label="Submit" (click)="downloadDatewiseAttendanceReport()"
+                id="Attendance_DatewiseReport_submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog header="Projectwise Attendance Report" [(visible)]="ProjectwiseAttendanceReportDialog" [modal]="true"
+    showEffect="fade">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <form [formGroup]="fbProjectwiseAttendanceReport">
+            <div class="p-fluid p-formgrid">
+                <div style="margin-bottom: 15px;">
+                    <label class="required">Project:</label>&nbsp;
+                    <p-dropdown formControlName="projectId" [options]="this.projects" optionLabel="name"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormProjectReportControls['projectId'].touched && FormProjectReportControls['projectId'].errors }"
+                        id="Attendance_projectWise_Report_ProjectName" optionValue="projectId" placeholder="Select Project"
+                        appendTo="body">
+                    </p-dropdown>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="FormProjectReportControls['projectId'].touched && FormProjectReportControls['projectId'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormProjectReportControls['projectId'].errors?.['required']">
+                                    Please Select Project.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label class="required">From Date:</label>&nbsp;
+                    <p-calendar formControlName="fromDate" id="Attendance_projectWise_Report_fromDate" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormProjectReportControls['fromDate'].touched && FormProjectReportControls['fromDate'].errors }"
+                        placeholder="Select From Date" [showIcon]="true" [maxDate]="maxDate">
+                    </p-calendar>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="FormProjectReportControls['fromDate'].touched && FormProjectReportControls['fromDate'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormProjectReportControls['fromDate'].errors?.['required']">
+                                    Please Select From Date.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label class="required">To Date:</label>&nbsp;
+                    <p-calendar formControlName="toDate" id="Attendance_projectWise_Report_toDate" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormProjectReportControls['toDate'].touched && FormProjectReportControls['toDate'].errors }"
+                        placeholder="Select To Date" [showIcon]="true" [maxDate]="maxDate"
+                        [minDate]="FormProjectReportControls['fromDate'].value">
+                    </p-calendar>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="FormProjectReportControls['toDate'].touched && FormProjectReportControls['toDate'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="FormProjectReportControls['fromDate'].untouched && FormProjectReportControls['toDate'].touched ||
+                                FormProjectReportControls['fromDate'].invalid&& FormProjectReportControls['toDate'].touched">
+                                    Please Select From Date First.</div>
+                                <div class="ng-invalid ng-touched p-error" *ngIf="FormProjectReportControls['fromDate'].touched 
+                                    &&FormProjectReportControls['toDate'].errors?.['required']
+                                    &&FormProjectReportControls['fromDate'].valid">
+                                    Please Select To Date.</div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" [disabled]="!this.fbProjectwiseAttendanceReport.valid"
+                label="Submit" (click)="downloadProjectwiseAttendanceReport()"
+                id="Attendance_ProjectwiseReport_submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>

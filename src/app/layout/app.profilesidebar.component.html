@@ -1,0 +1,57 @@
+<p-sidebar [(visible)]="visible" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-profile-sidebar w-full sm:w-25rem">
+    <div class="p-0 py-3weather-section">
+        <div class="flex align-items-center justify-content-between mb-3">
+            <h6 class="m-0">Today</h6>
+        </div>
+        <div class="weather flex align-items-center py-3 px-4 bg-center bg-no-repeat bg-cover border-round-lg" style="box-shadow: 0px 10px 40 rgba(#293241, 6%); background-image: url('assets/demo/images/rightpanel/asset-weather.png')">
+            <img src="#" alt="freya-layout" style="height: 60px" />
+            <div class="ml-3">
+                <h6 class="m-0 mb-1" style="color: rgb(83 88 99)">Ankara, 22 May</h6>
+                <h1 class="m-0" style="color: rgb(83 88 99)">24º</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="rightpanel-section mt-4">
+        <div class="flex align-items-center justify-content-between mb-3">
+            <h6 class="m-0">My list</h6>
+            <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-secondary p-button-text p-button-rounded"></button>
+        </div>
+        <ul class="list-none p-0 m-0 overflow-auto" style="max-height: 330px">
+            <li class="p-3 border-round-lg surface-0 mb-3 flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="m-0 mb-2 text-color">Perform usability testing for P15 MVP</h6>
+                    <span class="text-400 line-height-3 block font-medium">-Public pages</span>
+                    <span class="text-400 line-height-3 block font-medium">-Product pages</span>
+                </div>
+            </li>
+            <li class="p-3 border-round-lg surface-0 mb-3 flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="m-0 mb-2 text-color">Buy puzzle set from Amazon</h6>
+                    <span class="text-400 line-height-3 block font-medium">Ravensburger Seurat, 2000</span>
+                </div>
+            </li>
+            <li class="opacity-50 p-3 border-round-lg surface-0 mb-3 flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="m-0 mb-2 text-color line-through">Morning Run</h6>
+                </div>
+                <i class="pi pi-check"></i>
+            </li>
+            <li class="opacity-50 p-3 border-round-lg surface-0 mb-3 flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="m-0 mb-2 text-color line-through">Morning Run</h6>
+                </div>
+                <i class="pi pi-check"></i>
+            </li>
+        </ul>
+    </div>
+
+    <div class="p-0 favorites-section mt-4">
+        <div class="flex align-items-center justify-content-between mb-3">
+            <h6 class="m-0">Favorites</h6>
+        </div>
+       
+    </div>
+
+    <div class="p-0 py-3chat-section chat"></div>
+</p-sidebar>

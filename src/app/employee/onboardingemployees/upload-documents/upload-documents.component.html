@@ -1,0 +1,111 @@
+<div class="content_scroll" id="hrms">
+    <div class="grid p-0 m-0">
+        <p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+        <div class="col-12 md:col-4">
+            <form [formGroup]="fbUpload ">
+                <div class="roles-container">
+                    <div class="p-fluid p-formgrid ">
+                        <div class="field col-12 p-0 ">
+                            <label class="required">Title:</label>
+                            <input type="text" id="Upload_title" pInputText formControlName="title" class="w-100"
+                                alphaOnly
+                                [ngClass]="{ 'is-invalid ng-dirty': this.fbUpload.get('title').touched && this.fbUpload.get('title').errors }"
+                                (keydown)="restrictSpaces($event)" placeholder="Enter Title" #title
+                                [maxlength]="maxLength.code">
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['title'].touched && FormControls['title'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['required']">
+                                            Please Enter Title.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['minlength']">
+                                            Title Min length is 2.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['maxlength']">
+                                            Title Max length is 20.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{title.value.length}}/20</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 md:col-4  pt-3  mt-5">
+            <div class="upload-btn-wrapper" id="UploadDocumentsDialog_CheckTitle" (click)="checkTitle()">
+                <label for="singleFile"
+                    class="p-element p-ripple p-button-raised p-button-primary p-button p-component">
+                    <i class="pi pi-paperclip p-1"></i> Attach File
+                </label>
+                <input id="singleFile" #fileUpload name="UploadFile" [accept]="fileTypes" type="file"
+                    [disabled]="!this.fbUpload.valid" hidden="true" (click)="onClick()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="grid p-0 m-0">
+        <div class="col-12 ">
+            <p-table #dt2 [value]="empUploadDetails" dataKey="id" [rows]="10" [rowHover]="true"
+                [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true" [autoLayout]="true" responsiveLayout="scroll"
+                [rowsPerPageOptions]="[10,25,50]">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:5px;" *ngIf="permissions?.CanManageEmployee">Actions</th>
+                        <th>Title</th>
+                        <th>File Name</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-file let-i="rowIndex">
+                    <tr>
+                        <td td *ngIf="permissions?.CanManageEmployee ">
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-trash" id="uploadDocumentRemove-Btn"
+                                    class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                    (click)="removeItem(file.uploadedDocumentId,i)">
+                                </button>
+                                <button pButton pRipple icon="pi pi-download" id="uploadDocumentdownload-Btn"
+                                    *ngIf="file.uploadedDocumentId"
+                                    class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                    (click)="downloadItem(file)">
+                                </button>
+
+                                <button pButton pRipple icon="fa fa-eye" id="uploadDocumentdownload-Btn"
+                                    *ngIf="file.uploadedDocumentId"
+                                    class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                    (click)="getFileType(file);">
+                                </button>
+                            </div>
+                        </td>
+                        <td>{{file.title }}</td>
+                        <td>{{file.fileName}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+    </div>
+</div>
+
+<div class="grid mt-2">
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3">
+        <button p-button
+            class="p-element p-ripple p-button-primary p-button p-component w-100 d-flex justify-content-center align-items-center"
+            id="Upload_navigatePrevious" (click)="navigateToPrev()">Address Details</button>
+    </div>
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3">
+        <button p-button
+            class="p-element p-ripple p-button-info p-button p-component w-100 d-flex justify-content-center align-items-center"
+            id="Upload_save" (click)="uploadFiles()">Save as Draft</button>
+    </div>
+    <div class="field col-12 lg:col-4 md:col-6m-0 p-1 px-3">
+        <button p-button
+            class="p-element p-ripple p-button-primary p-button p-component w-100 d-flex justify-content-center align-items-center"
+            id="Upload_navigateNext" (click)="navigateToNext()">Family Details</button>
+    </div>
+</div>

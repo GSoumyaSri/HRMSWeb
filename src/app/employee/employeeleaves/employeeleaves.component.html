@@ -1,0 +1,175 @@
+<div class="col-12  p-0">
+    <div class="card" id="main-card">
+        <p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+        <!-- Toolbar -->
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>Employee Leaves</h4>
+            </ng-template>
+            <ng-template pTemplate="center">
+                <div class="grid ">
+                    <div *ngFor="let status of statuses" class="field-checkbox">
+                        <p-radioButton [inputId]="status.key" class="ml-3" name="status" [value]="status"
+                            [(ngModel)]="selectedStatus" (click)="getLeaves()" id="Leaves_Status"></p-radioButton>
+                        <label [for]="status.key" class="ml-1">{{ status.name }}</label>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="right">
+                <button pButton pRipple label="Apply Leave" id="Leaves_addLeaveButton" icon="pi pi-plus"
+                    class="p-button-primary p-mr-2"
+                    (click)="openComponentDialog(employeeleaveDialogComponent, null, ActionTypes.save)"
+                    *ngIf="permissions?.CanManageSuperActiveAdmin"></button>
+            </ng-template>
+        </p-toolbar>
+        <!-- p-table -->
+        <p-table id="table" #dtleave [value]="leaves" dataKey="id" [rows]="10" [rowHover]="true"
+            styleClass="p-datatable-gridlines  p-datatable-sm" [style]="{width: 'auto'}" rowExpandMode="single"
+            [alwaysShowPaginator]="false" [paginator]="true" [columns]="selectedColumns"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [globalFilterFields]="globalFilterFields" paginatorDropdownAppendTo="body"
+            scrollDirection="horizontal" [rowsPerPageOptions]="[10,25,50]" [autoLayout]="true" responsiveLayout="scroll"
+            [resizableColumns]="true">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                        (click)="clear(dtleave)" id="Leaves_ClearBtn"></button>
+                    <div class="flex">
+                        <div class="pr-2">
+                            <p-button icon="pi pi-angle-left mr-2" (click)="gotoPreviousMonth()"
+                                id="Leaves_previousMonth">
+                            </p-button>
+                        </div>
+                        <div>
+                            <p-calendar styleClass="only-icon" [(ngModel)]="selectedMonth" [showIcon]="true"
+                                id="Leaves_MonthPicker" view="month" [yearNavigator]="true" yearRange="2000:2030"
+                                [readonlyInput]="true" inputId="monthpicker" (onSelect)="onMonthSelect($event)">
+                            </p-calendar>
+                        </div>
+                        <div class="pl-2">
+                            <p-button icon="pi pi-angle-right ml-2" (click)="gotoNextMonth()" id="Leaves_nextMonth">
+                            </p-button>
+                        </div>
+                        <div class="pl-2" style="margin-top: 10px;">
+                            <b>{{ getMonthYearDate() | date: 'MMM/yyyy' }}</b>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <div *ngIf="permissions?.CanDownloadEmployeeLeaves">
+                            <button pButton class="p-button doc_button mx-2" icon="pi pi-file-pdf"
+                                pTooltip="Download Employee Leaves PDF" tooltipPosition="left" id="Leaves_downloadPDF"
+                                (click)="generatePdf()"></button>
+                        </div>
+                        <div *ngIf="permissions?.CanDownloadEmployeeLeaves">
+                            <button pButton class="p-button doc_button" icon="icon-csv-svgrepo-com-1"
+                                pTooltip="Download Employee Leaves CSV" tooltipPosition="left" id="Leaves_downloadCSV"
+                                (click)="downloadEmployeeLeavesReport()"></button>
+                        </div>
+                        <p-multiSelect [options]="selectedColumnHeader" [(ngModel)]="selectedColumns" appendTo="body"
+                            optionLabel="label" id="Leaves_ColumnSelection" selectedItemsLabel="{0} columns selected"
+                            [style]="{'min-width': '200px'}" placeholder="Choose Columns"></p-multiSelect>
+                        <div>
+                            <span class="p-input-icon-left mb-2 w-100 ">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" id="Leaves_inputSearch" #filter
+                                    (input)="onGlobalFilter(dtleave, $event)" placeholder="Search Keyword"
+                                    class="w-full" />
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="text-center" pFrozenColumn alignFrozen="right" [frozen]="true" pFrozenColumn
+                        *ngIf="permissions?.CanManageLeave"> Actions
+                    </th>
+                    <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+                        {{col?.label}}
+                        <p-columnFilter *ngIf="col.field === 'isHalfDayLeave'" id="Leaves_HalfDayColumnFilter"
+                            type="custom" [field]="col.header" display="menu">
+                            <ng-template pTemplate="filter">
+                                <input type="text" pInputText (input)="applyBooleanFilter($event, col.header)"
+                                    placeholder="Search">
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-columnFilter *ngIf="col.field !== 'isHalfDayLeave'" type="text" [field]="col.field"
+                            id="Leaves_ColumnFilter" display="menu">
+                        </p-columnFilter>
+                        <p-sortIcon [field]="col.header" id="Leaves_Sorting"></p-sortIcon>
+                    </th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.header">
+                        {{col?.label}}
+                        <p-columnFilter id="Leaves_chooseColumnFilter" type="text" [field]="col.header" display="menu">
+                        </p-columnFilter>
+                        <p-sortIcon [field]="col.header" id="Leaves_chooseColumnSorting"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-leave let-columns="columns">
+                <tr>
+                    <td pFrozenColumn alignFrozen="right" [frozen]="true" class="text-center"
+                        *ngIf="permissions?.CanManageLeave">
+                        <div class="flex"
+                            *ngIf="(leave.status === 'Accepted' || leave.status === 'Pending') && leave.isDeleted !== true ">
+                            <span
+                                *ngIf="leave.acceptedAt === null && permissions?.CanAcceptLeave  && (leave.eRoleName === 'Team Member'|| leave.eRoleName === 'Team Lead'|| leave.eRoleName === 'Trainee'|| leave.eRoleName === 'Scrum')">
+                                <button pButton pRipple icon="pi icon-accept" id="Leaves_Accepted_Button"
+                                    class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-2 p-0"
+                                    (click)="openSweetAlert('Reason For Accept',leave,'employee/employeeleaves')"></button>
+                            </span>
+                            <span
+                                *ngIf="leave.acceptedAt === null && permissions?.CanApproveLeave && (leave.eRoleName === 'CEO'|| leave.eRoleName === 'Project Manager'|| leave.eRoleName === 'HR Admin'|| leave.eRoleName === 'HR')  ">
+                                <button pButton pRipple icon="pi icon-approve" id="Leaves_Approved_Button"
+                                    class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-3 p-0"
+                                    (click)="openSweetAlert('Reason For Approve',leave,'employee/employeeleaves')"></button>
+                            </span>
+                            <span
+                                *ngIf="leave.acceptedAt !==null && permissions?.CanApproveLeave && (leave.eRoleName === 'Team Member'|| leave.eRoleName === 'Team Lead'|| leave.eRoleName === 'Trainee'|| leave.eRoleName === 'Scrum')">
+                                <button pButton pRipple icon="pi icon-approve" id="Leaves_Approved_Button"
+                                    class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-3 p-0"
+                                    (click)="openSweetAlert('Reason For Approve',leave,'employee/employeeleaves')"></button>
+                            </span>
+                            <span
+                                *ngIf="(this.employeeRole !== 'Project Manager'|| leave.acceptedAt === null) && (permissions?.CanApproveLeave || permissions?.CanAcceptLeave)">
+                                <button pButton pRipple icon="pi pi-times" id="Leaves_Rejected_Button"
+                                    class="p-element p-ripple p-button-outlined p-button-danger p-button  p-0"
+                                    (click)="openSweetAlert('Reason For Reject',leave,'employee/employeeleaves')"></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td>{{leave.employeeName}}</td>
+                    <td class="text-center">{{leave.leaveType}}</td>
+                    <td class="text-center">{{leave.fromDate |date: mediumDate}}</td>
+                    <td class="text-center">{{leave.toDate |date: mediumDate}}</td>
+                    <td class="text-wrap">{{leave.note}}</td>
+                    <td class="text-center">
+                        <span *ngIf="leave.isHalfDayLeave || !leave.isHalfDayLeave">
+                            <span [style.color]="leave.isHalfDayLeave ? '#119e2f' : '#e24c4c'">
+                                {{ leave.isHalfDayLeave ? 'Yes' : 'No' }}
+                            </span>
+                        </span>
+                    </td>
+                    <td class="text-center">{{leave.acceptedAt |date: mediumDate}}</td>
+                    <td class="text-center">{{leave.approvedAt |date: mediumDate}}</td>
+                    <td *ngFor="let col of columns"
+                        [ngClass]="{'text-center': col.field === 'rejectedAt'|| col.field === 'createdAt'}">
+                        <span
+                            *ngIf="col?.field == 'acceptedBy' || col?.field == 'rejectedBy' || col?.field == 'approvedBy'|| col?.field == 'createdBy'">
+                            {{leave[col.field] }}
+                        </span>
+                        <span *ngIf=" col?.field == 'rejectedAt'||  col?.field == 'createdAt'">
+                            {{leave[col.field] | date: mediumDate }}
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="md:text-center m-5" colspan="50%">No Leaves Found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

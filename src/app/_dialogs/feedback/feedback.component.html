@@ -1,0 +1,44 @@
+<div class="flex flex-column align-items-center justify-content-center">
+    <form [formGroup]="fbFeedBackForm" id="FeedbackForm">
+
+        <div class="p-fluid p-formgrid">
+            <div style="margin-bottom: 15px;">
+                <label class="required mb-5">Rating:</label>&nbsp;
+                &nbsp;
+                <app-star-rating [control]="getRating()" [ngClass]="{ 'is-invalid ng-dirty': FormControls['rating'].touched &&
+                    FormControls['rating'].errors }">
+                </app-star-rating>
+                <div class="flex">
+                    <div class="align-left w-60" style="width:70%">
+                        <span *ngIf="FormControls['rating'].touched && FormControls['rating'].invalid">
+                            <div class="ng-invalid ng-touched p-error"
+                                *ngIf="FormControls['rating'].errors?.['required']">
+                                Please Select Rating.</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label class="required">Comment:</label>&nbsp;
+                <textarea rows="5" cols="30" pInputTextarea formControlName="comments" #note
+                    (keydown)="restrictSpaces($event)"
+                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['comments'].touched && FormControls['comments'].errors }"
+                    placeholder="Enter Comment" id="comment"></textarea>
+                <div class="flex">
+                    <div class="align-left w-60" style="width:70%">
+                        <span *ngIf="FormControls['comments'].touched && FormControls['comments'].invalid">
+                            <div class="ng-invalid ng-touched p-error"
+                                *ngIf="FormControls['comments'].errors?.['required']">
+                                Please Enter Comment.</div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div class=" footer dialog-footer">
+    <button pButton pRipple type="submit" class="p-button-raised p-button-primary" id="save_feedBack"
+        (click)="onSubmit()" [disabled]="!this.fbFeedBackForm.valid" label="Update Feedback"></button>
+</div>

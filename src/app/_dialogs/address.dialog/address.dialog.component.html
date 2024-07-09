@@ -1,0 +1,178 @@
+<div class="flex flex-column align-items-center justify-content-center">
+	<form [formGroup]="fbAddressDetails" autocomplete="off">
+		<div class="grid mt-3 p-5">
+			<div class="col-12 roles-container">
+				<div class="p-fluid p-formgrid grid content_scroll">
+					<div class="field col-12 md:col-4">
+						<label class="required">Address Line1:</label>
+						<input type="text" id="Address_address1" pInputText formControlName="addressLine1" #address1
+							placeholder="Please Enter Address Line1" (keydown)="restrictSpaces($event)"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['addressLine1'].touched && FormControls['addressLine1'].errors }"
+							[maxlength]="50">
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span
+									*ngIf="FormControls['addressLine1'].touched && FormControls['addressLine1'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['addressLine1'].errors?.['required']">
+										Please Enter Address Line1.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['addressLine1'].errors?.['minlength']">
+										Address Line1 Min Length Is 2.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['addressLine1'].errors?.['maxlength']">
+										Address Line1 Max Length Is 50.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{address1.value.length}}/50</small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-4">
+						<label for="inputtext">Address Line2:</label>
+						<input type="text" id="Address_address2" pInputText formControlName="addressLine2" #address2
+							(keydown)="restrictSpaces($event)" placeholder="Please Enter Address Line2"
+							[maxlength]="50">
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{address2.value.length}}/50</small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-4">
+						<label for="inputtext">Landmark:</label>
+						<input type="text" id="Address_landmark" pInputText formControlName="landmark" #Landmark
+							(keydown)="restrictSpaces($event)" [maxlength]="50" placeholder="Please Enter Landmark">
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{Landmark.value.length}}/50</small>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="field col-12 md:col-4">
+						<label class="required">Country:</label>
+						<p-dropdown inputId="dropdown" id="Address_country" [autoDisplayFirst]="false"
+							placeholder="Please Select Country"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['countryId'].touched && FormControls['countryId'].errors }"
+							formControlName="countryId" [options]="countries" optionValue="lookupDetailId"
+							optionLabel="name" (onChange)="getStatesByCountryId($event.value)">
+						</p-dropdown>
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['countryId'].touched && FormControls['countryId'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['countryId'].errors?.['required']">
+										Please Select Country.</div>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-4">
+						<label class="required">State:</label>
+						<p-dropdown inputId="dropdown" id="Address_state" [autoDisplayFirst]="false"
+							placeholder="Please Select state"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['stateId'].touched && FormControls['stateId'].errors }"
+							formControlName="stateId" [options]="states" optionValue="lookupDetailId"
+							optionLabel="name"></p-dropdown>
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['stateId'].touched && FormControls['stateId'].invalid">
+									<div class="ng-invalid ng-touched p-error" *ngIf="FormControls['countryId'].untouched && FormControls['stateId'].touched ||
+									  FormControls['countryId'].invalid && FormControls['stateId'].touched">
+										Please Select Country First.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf=" FormControls['countryId'].touched &&  FormControls['stateId'].errors?.['required'] && FormControls['countryId'].valid">
+										Please Select State.</div>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-4">
+						<label class="required">City:</label>
+						<input type="text" id="Address_city" pInputText formControlName="city" alphaOnly
+							placeholder="Please Enter City" (keydown)="restrictSpaces($event)"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['city'].touched && FormControls['city'].errors }"
+							[maxlength]="50" #city />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span *ngIf="FormControls['city'].touched && FormControls['city'].invalid">
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['city'].errors?.['required']">
+										Please Enter City.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['city'].errors?.['minlength']">
+										City Min Length Is 2.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{city.value.length}}/50</small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-4">
+						<label class="required">ZIP Code:</label>
+						<input type="text" id="Address_ZIPCode" pInputText formControlName="zipcode" numericOnly
+							[maxlength]="6" [minlength]="6" placeholder="Please Enter ZIP Code"
+							(keydown)="restrictSpaces($event)"
+							[ngClass]="{ 'is-invalid ng-dirty': FormControls['zipcode'].touched && FormControls['zipcode'].errors }"
+							[maxlength]="6" #zip />
+						<div class="flex">
+							<div class="align-left w-60" style="width:70%">
+								<span>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['zipcode'].touched && FormControls['zipcode'].errors && FormControls['zipcode'].errors?.['required']">
+										Please Enter ZIP Code.</div>
+									<div class="ng-invalid ng-touched p-error"
+										*ngIf="FormControls['zipcode'].errors?.['pattern']">
+										Invalid ZIP Code Ex:524005.</div>
+								</span>
+							</div>
+							<div class="align-right w-40" style="width:30%; text-align:right;">
+								<small>{{zip.value.length}}/6</small>
+							</div>
+						</div>
+					</div>
+					<div class="field col-12 md:col-8">
+						<label class="required">Address Type:</label>
+						<div class="flex flex-wrap gap-3">
+							<div class="flex align-items-center">
+								<p-radioButton [disabled]="hasPermanentAddress" value="Permanent Address"
+									id="Address_addressType1" formControlName="addressType"
+									[pTooltip]="hasPermanentAddress ? 'Employee Can Have Only One Permanent Address, Please Select another address Type' : null"
+									tooltipPosition="left"></p-radioButton>
+								<label class="ml-2">Permanent Address</label>
+							</div>
+							<div class="flex align-items-center">
+								<p-radioButton value="Temporary Address" id="Address_addressType2"
+									[disabled]="hasTemporaryAddres"
+									[pTooltip]="hasTemporaryAddres ? 'Employee Can Have Only One Temporary Address, Please Select another address Type' : null"
+									formControlName="addressType"></p-radioButton>
+								<label class="ml-2">Temporary Address</label>
+							</div>
+							<div class="flex align-items-center">
+								<p-radioButton [disabled]="hasCurrentAddress"
+									[pTooltip]="hasCurrentAddress ? 'Employee Can Have Only One Current Address, Please Select another address Type' : null"
+									tooltipPosition="right" value="Current Address" id="Address_addressType3"
+									formControlName="addressType"></p-radioButton>
+								<label class="ml-2">Current Address</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class=" footer dialog-footer">
+	<p-button type="button" (click)="saveAddress()" [disabled]="fbAddressDetails.invalid" label="Save Address Details" id="save_address"
+		class="p-element p-ripple p-button-primary  p-component"></p-button>
+
+</div>

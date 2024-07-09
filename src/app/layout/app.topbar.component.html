@@ -1,0 +1,141 @@
+<div class="layout-topbar">
+    <div class="topbar-start">
+        <button #menubutton type="button" class="topbar-menubutton p-link p-trigger transition-duration-300"
+            (click)="onMenuButtonClick()" id="topbar_menu">
+            <i class="pi pi-bars"></i>
+        </button>
+    </div>
+    <div class="layout-topbar-menu-section">
+        <app-sidebar></app-sidebar>
+        <h3 class="topbar_title ShowOnDesktop">Human Resource Management Services</h3>
+        <h3 class="topbar_title ShowOnMobile">HRMS</h3>
+    </div>
+    <div class="topbar-end">
+
+        <ul class="topbar-menu">
+
+            <!-- <button pButton pRipple (click)="openfeedBackDialog(feedbackComponent, null, ActionTypes.save)"
+                class="p-element p-ripple p-button-info p-button-text p-button p-component" style="line-height: 1;
+                display: inline-block;"> <i
+                    class="pi pi-fw pi-star" style="font-size:12px;"></i>  Feedback</button> -->
+            <button pButton pRipple (click)="showHelp()" id="topBar_Help"
+                class="p-element p-ripple p-button-help p-button-text p-button p-component" style="line-height: 1;
+                display: inline-block;"> <i
+                    class="pi pi-fw pi-info-circle" style="font-size:12px;"></i> Help</button>
+            <h6 class="m-2" *ngIf="!this.EmployeeId">{{loggedInUser}}</h6>
+            <h6 class="m-2">{{employeeDtls?.employeeName}}</h6>
+            <li class="topbar-item">
+                <a pStyleClass="@next" enterClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden"
+                    leaveActiveClass="px-fadeout" [hideOnOutsideClick]="true" pRipple class="cursor-pointer">
+                    <!-- <img [src]="employeeDtls?.employeePhoto ? employeeDtls?.employeePhoto : employeeDtls?.employeeGender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                        [alt]="employeeDtls?.employeeName" class=" border-round-2xl  avatar_topbar" /> -->
+
+                        <div class="avatar_topbar border-round-xl">
+                            <img [src]="employeeDtls?.employeePhoto ? employeeDtls?.employeePhoto : employeeDtls?.employeeGender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'" [alt]="employeeDtls?.employeeName"
+                                class="shadow-2  border-round-2xl avatar_topbar" />
+                        </div>
+                </a>
+                <ul [class]="'topbar-menu active-topbar-menu p-4 w-15rem   z-5 ng-hidden'">
+                    <!-- <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-lock mr-2"></i>
+                            <span>Privacy</span>
+                        </a>
+                    </li> -->
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a [routerLink]="['settings']"
+                            class="flex align-items-center hover:text-primary-500 transition-duration-200"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-cog mr-2"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout" id="topbar_OpenhrNotifications"
+                            (click)="openHRComponentDialog(hrNotificationsComponent, null, ActionTypes.save)"
+                            *ngIf="permissions?.CanManageNotification">
+                            <i class="pi pi-fw pi-circle mr-2"></i>
+                            <span>HR Notifications</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout"  id="topbar_OpenAdminSettings"
+                            (click)="openAdminSettingsComponentDialog(adminSettingsDialogComponent, null, ActionTypes.save)"
+                            *ngIf="permissions?.CanManageAdminSetting">
+                            <i class="pi pi-fw pi-circle mr-2"></i>
+                            <span>Admin Settings</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout" id="topbar_Openlookup"
+                            (click)="openComponentDialog(lookupDialogComponent, null, ActionTypes.save)"
+                            *ngIf="permissions?.CanManageLookups">
+                            <i class="pi pi-fw pi-circle mr-2"></i>
+                            <span>Lookup</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout" id="topbar_OpenrecruitmentAttribute"
+                            (click)="openComponentDialogforRecruitmentAttributes(recruitmentattributeDialogComponent, null, ActionTypes.save)"
+                            *ngIf="permissions?.CanManageRecruitmentAttribute">
+                            <i class="pi font-semibold icon-hr mr-2"></i>
+                            <span>Recruitment Attributes</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0 mb-3">
+                        <a class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout" id="topbar_OpenleaveConfiguration"
+                            (click)="openComponentDialogforLeaveConfiguration(leaveConfigurationDialogComponent, null, ActionTypes.save)"
+                            *ngIf="permissions?.CanViewLeaveConfigurations">
+                            <i class="pi pi-calendar-plus mr-2"></i>
+                            <span>Leave Configuration</span>
+                        </a>
+                    </li>
+                    <li role="menuitem" class="m-0">
+                        <a (click)="logOut()"
+                            class="flex align-items-center hover:text-primary-500 transition-duration-200 topbar-menu-item"
+                            pStyleClass="@grandparent" enterClass="ng-hidden" enterActiveClass="px-scalein" id="topbar_logout"
+                            leaveToClass="ng-hidden" leaveActiveClass="px-fadeout">
+                            <i class="pi pi-fw pi-sign-out mr-2"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</div>
+<p-dialog header="How to use HRMS - Video & Document" [(visible)]="Help" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '50%', '640px': '80%'}" [style]="{ width: '60%' }">
+    <p-tabView>
+        <p-tabPanel header="Document">
+
+            <iframe src="assets/layout/HTU_HRMS_DOC.pdf" style="width:100%; height:500px;" frameborder="0"></iframe>
+
+        </p-tabPanel>
+        <p-tabPanel header="Video">
+            <video width="100%" height="400px" controls>
+                <source src="assets/layout/HRMS_how_to_use.mp4" type="video/mp4">
+                <source src="assets/layout/HRMS_how_to_use.mp4" type="video/ogg">
+                Your browser does not support the video tag.
+            </video>
+        </p-tabPanel>
+
+    </p-tabView>
+
+    <!-- <iframe src="assets/layout/HTA_HRMS_DOC_V!.pptx" width="800" height="600"></iframe> -->
+
+</p-dialog>

@@ -1,0 +1,36 @@
+<div class=" align-items-center justify-content-center">
+    <form [formGroup]="fbrecurimentAttribute">
+        <div class="grid  p-5 pb-0 content_scroll" style="height:auto;">
+            <div class="col-12 roles-container">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Assesment Title:</label>
+                        <input type="text" id="RA_Title" alphaOnly pInputText formControlName="assessmentTitle"
+                            (keydown)="restrictSpaces($event)" placeholder="Enter Assesment Title" />
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['assessmentTitle'].touched && FormControls['assessmentTitle'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['assessmentTitle'].errors?.['required']">
+                                        Please Enter Assesment Title.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label class="required">Is Active: </label>
+                        <br> &nbsp; <p-inputSwitch formControlName="isActive" id="RA_isActive">
+                        </p-inputSwitch>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class=" footer dialog-footer">
+    <button pButton pRipple type="submit" [label]="this.submitlabel" (click)="onSubmit()"
+        [disabled]="fbrecurimentAttribute.invalid" id="RA_SubmitForm" class="p-button-raised p-button-primary"></button>
+</div>

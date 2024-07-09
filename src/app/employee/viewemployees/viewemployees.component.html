@@ -1,0 +1,550 @@
+<div class="card">
+  <div class="grid mb-3">
+    <div class="col-12 lg:col-12">
+      <button pbutton="" type="button" label="Primary"
+        class="p-element p-ripple p-button-text p-button p-component view_profile_button" ng-reflect-label="Primary"
+        (click)="previous()" id="previous">
+        <span class="p-button-label pi pi-arrow-left"></span>
+      </button>
+    </div>
+    <div class="col-12 lg:col-2">
+      <p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog" id="confirm_dialog"></p-confirmDialog>
+      <div class="fex">
+        <!-- Basic details card view -->
+        <div class="col text-center">
+          <img [src]="employeePrsDtls?.photo ? employeePrsDtls?.photo : defaultPhoto" id="img"
+            [alt]="employeePrsDtls?.employeeName" class="shadow-2 my-1 mx-0 employee_profile_pic avatar_view"
+            width="100px" />
+        </div>
+        <div class=" align-items-center text-xl text-center font-medium text-900 mb-1">{{employeePrsDtls?.employeeName}}
+        </div>
+        <span class="text-900 font-medium text-primary text-center text-3xl block">{{employeePrsDtls?.code}}</span>
+        <div class="flex justify-content-between text-center p-3"
+          *ngIf="enRollEmployee=== false && employeePrsDtls?.isActive === true">
+          <div class="color_hover" id="addingcls" *ngIf="this.computedCLs">
+            <p-knob [(ngModel)]="this.computedCLs" [strokeWidth]="5" [size]="70" [readonly]="true" [min]="0"
+              [max]="this.computedCLs"
+              (click)="openLeaveStatisticsComponentDialog(leavestatisticsDialogComponent,leavesStatistics, ActionTypes.save)">
+            </p-knob>
+            <b
+              (click)="openLeaveStatisticsComponentDialog(leavestatisticsDialogComponent,leavesStatistics, ActionTypes.save)">CL's</b>
+          </div>
+          <div class="color_hover" id="addingpls" *ngIf="this.computedPLs">
+            <p-knob [(ngModel)]="this.computedPLs" [strokeWidth]="5" [size]="70" [readonly]="true" [min]="0"
+              [max]="this.computedPLs"
+              (click)="openLeaveStatisticsComponentDialog(leavestatisticsDialogComponent,leavesStatistics, ActionTypes.save)">
+            </p-knob>
+            <b
+              (click)="openLeaveStatisticsComponentDialog(leavestatisticsDialogComponent,leavesStatistics, ActionTypes.save)">PL's</b>
+          </div>
+        </div>
+        <div class="text-center" *ngIf="enRollEmployee">
+          <button pButton pRipple class="p-element p-ripple p-button-outline p-button p-component "
+            (click)="openFinalSubmitComponentDialog()" id="enRollEmployee">
+            Enroll Employee </button>
+        </div>
+      </div>
+    </div>
+    <!-- Confirmation Dialog -->
+    <!-- <p-dialog [(visible)]="dialog"
+      [header]="this.displayDialog === false ? 'Pending Information' : 'Enrolling ' + employeePrsDtls?.employeeName"
+      [draggable]="false" [modal]="true" showEffect="fade" [breakpoints]="{'960px': '70%', '640px': '80%'}"
+      [style]="{width:'40%'}">
+      <app-finalsubmit-dialog></app-finalsubmit-dialog>
+    </p-dialog> -->
+    <div class="col-12 lg:col-6 py-3 lg:pl-2">
+      <div class="grid p-3 position-relative">
+        <h5 class="col-12">Personal Details </h5>
+        <hr />
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Gender:</span> {{employeePrsDtls?.gender}}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Blood Group:</span> {{employeePrsDtls?.bloodGroup}}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Mobile Number:</span> {{employeePrsDtls?.mobileNumber}}
+        </div>
+        <div class="col-12 lg:col-6">
+          <span class="text-primary font-bold text-900">Alternative Number:
+          </span>{{employeePrsDtls?.alternateMobileNumber}}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Original DOB:</span> {{employeePrsDtls?.originalDOB |
+          date:mediumDate }}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Certificate DOB:</span> {{employeePrsDtls?.certificateDOB |
+          date:mediumDate }}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Marital Status:</span> {{employeePrsDtls?.maritalStatus}}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Nationality:</span> {{employeePrsDtls?.nationality}}
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Is Active:</span>&nbsp;
+          <!-- <i class="fa fa-close" style="font-size:24px; color:#e24c4c; vertical-align: sub;"
+            *ngIf="!employeePrsDtls?.isActive"></i><i class="fa fa-check"
+            style="font-size:24px; color:#119e2f; vertical-align: sub;" *ngIf="employeePrsDtls?.isActive"></i> -->
+          <span [style.color]="employeePrsDtls?.isActive ? '#119e2f' : '#e24c4c'">
+            {{employeePrsDtls?.isActive ? 'Yes' : 'No' }}
+          </span>
+        </div>
+        <div class="col-12 lg:col-6 " *ngIf="enRollEmployee">
+          <span class="text-primary font-bold text-900">Is A Fresher:</span>&nbsp;
+          <!-- <i class="fa fa-close" style="font-size:24px; color:#e24c4c; vertical-align: sub;"
+            *ngIf="!employeePrsDtls?.isAFresher"></i><i class="fa fa-check"
+            style="font-size:24px; color:#119e2f; vertical-align: sub;" *ngIf="employeePrsDtls?.isAFresher"></i> -->
+          <span [style.color]="employeePrsDtls?.isAFresher ? '#119e2f' : '#e24c4c'">
+            {{employeePrsDtls?.isAFresher ? 'Yes' : 'No' }}
+          </span>
+        </div>
+        <div class="col-12 lg:col-6 ">
+          <span class="text-primary font-bold text-900">Email Id:</span> {{employeePrsDtls?.emailId}}
+        </div>
+        <button pButton pRipple icon="pi pi-pencil" id="basic_details"
+          class="p-element p-ripple p-button-text p-button p-component mr-2 float-button"
+          *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+          (click)="openComponentDialog(basicdetailsDialogComponent, employeePrsDtls, ActionTypes.save)"></button>
+      </div>
+    </div>
+    <!-- office details card view -->
+    <div class="col-12 lg:col-4 py-3 lg:pl-6" *ngIf="showOfcAndAssetDetails">
+      <div class="">
+        <div class="grid p-3  position-relative">
+          <h5 class="col-12"> Office Details </h5>
+          <button pButton pRipple icon="pi pi-pencil" type="button" id="office_details"
+            class="p-element p-ripple p-button-text p-button p-component mr-2 float-button"
+            *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+            (click)="openComponentDialog(officedetailsDialogComponent,employeeofficeDtls,ActionTypes.save)"></button>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Work Duration:</span>
+            <span *ngIf="employeeofficeDtls?.timeIn && employeeofficeDtls?.timeOut">
+              {{employeeofficeDtls?.timeIn}} - {{employeeofficeDtls?.timeOut}}
+            </span>
+          </div>
+          <!-- <div class="col-12">
+            <span class="text-primary font-bold text-900">Time In:</span> {{employeeofficeDtls?.timeIn}}
+          </div>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Time Out:</span> {{employeeofficeDtls?.timeOut}}
+          </div> -->
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Office Email Id:</span> {{employeeofficeDtls?.officeEmailId}}
+          </div>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Joining Date:</span> {{employeeofficeDtls?.dateofJoin |
+            date:mediumDate}}
+          </div>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Designation:</span> {{employeeofficeDtls?.designation}}
+          </div>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Reported To:</span> {{employeeofficeDtls?.reportingTo}}
+          </div>
+          <div class="col-12">
+            <span class="text-primary font-bold text-900">Experience In Company:</span> {{employeeofficeDtls?.
+            experienceInCompany}}
+          </div>
+          <div class="col-12" *ngIf="employeeofficeDtls?.relievingDate">
+            <span class="text-primary font-bold text-900">Relieving Date:</span> {{employeeofficeDtls?.relievingDate |
+            date:mediumDate}}
+          </div>
+          <div class="col-6">
+            <span class="text-primary font-bold text-900">PF :</span> &nbsp;
+            <!-- <i class="fa fa-close"
+              style="font-size:24px; color:#e24c4c; vertical-align: sub;"
+              *ngIf="!employeeofficeDtls?.isPFEligible"></i><i class="fa fa-check"
+              style="font-size:24px; color:#119e2f; vertical-align: sub;" *ngIf="employeeofficeDtls?.isPFEligible"></i> -->
+            <span *ngIf="employeeofficeDtls?.isPFEligible !== undefined">
+              <span [style.color]="employeeofficeDtls?.isPFEligible ? '#119e2f' : '#e24c4c'">
+                {{ employeeofficeDtls?.isPFEligible === true ? 'Yes' :(employeeofficeDtls?.isPFEligible === false ?
+                'No': '') }}
+              </span>
+            </span>
+          </div>
+          <div class="col-6">
+            <span class="text-primary font-bold text-900">ESI:</span> &nbsp;
+            <!-- <i class="fa fa-close"
+              style="font-size:24px; color:#e24c4c; vertical-align: sub;"
+              *ngIf="!employeeofficeDtls?.isESIEligible"></i><i class="fa fa-check"
+              style="font-size:24px; color:#119e2f; vertical-align: sub;" *ngIf="employeeofficeDtls?.isESIEligible"></i> -->
+            <span *ngIf="employeeofficeDtls?.isESIEligible !== undefined">
+              <span [style.color]="employeeofficeDtls?.isESIEligible ? '#119e2f' : '#e24c4c'">
+                {{ employeeofficeDtls?.isESIEligible === true ? 'Yes' : (employeeofficeDtls?.isESIEligible === false ?
+                'No' : '') }}
+              </span>
+            </span>
+          </div>
+          <br />
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-tabView (onChange)="onTabChange($event)">
+    <!-- Education Details card view -->
+    <p-tabPanel header="Education Details " key="education" id="Education-Details">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component "
+              id="addeducationDetails"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(educationdetailsDialogComponent,educationDetails,ActionTypes.save)">
+              &nbsp; Add / Edit </button>
+          </div>
+        </div>
+        <div class="col-12 lg:col-4" *ngFor="let education of educationDetails">
+          <div class="card">
+            <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2">{{education?.stream}}</div>
+            <ul class="list-none p-0 m-0 text-600 mb-4 text-600">
+              <li class="mb-3">
+                <span class="font-semibold ">Board/University Name:</span> {{education?.authorityName}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">School/College Name:</span> {{education?.institutionName}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Year Of Completion:</span> {{education?.yearOfCompletion | date:
+                mediumDate}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold ">Grading System:</span> {{education?.gradingMethod}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold ">Grading Value:</span> {{education?.gradingValue}}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </p-tabPanel>
+    <!-- Work Experience card view -->
+    <p-tabPanel header="Work Experience " *ngIf="this.selectedOption === false" key="workExperience"
+      id="Work-Experience">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component "
+              id="addexperiencedetails"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(experiencedetailsDialogComponent, workExperience, ActionTypes.save)">
+              &nbsp; Add / Edit </button>
+          </div>
+        </div>
+        <div class="col-12 lg:col-4" *ngFor="let experience of workExperience">
+          <div class="card" *ngIf="!experience.isAFresher">
+            <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2">{{experience?.companyName}}</div>
+            <ul class="list-none p-0 m-0 text-600 mb-4 text-600">
+              <li class="mb-2">
+                <span class="font-semibold ">Company Location:</span>{{experience?.companyLocation}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold ">Date Of Joining:</span> {{experience?.dateOfJoining | date: mediumDate}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold ">Date Of Relieving:</span> {{experience?.dateOfReliving | date:
+                mediumDate}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold mb-1">Designation:</span> {{experience?.designation}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <!-- Upload Documents card view -->
+    <p-tabPanel header="Upload Documents" key="uploadedDocuments" id="Upload-Documents">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+              id="adduploaddocuments"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(uploadDocumentsDialogComponent, UploadedDocuments ,ActionTypes.add)">&nbsp;
+              Upload Documents
+            </button>
+          </div>
+        </div>
+        <div class="col-12 ">
+          <p-table [value]="UploadedDocuments" [tableStyle]="{ 'min-width': '50rem' }">
+            <ng-template pTemplate="header">
+              <tr *ngIf="UploadedDocuments.length > 0">
+                <th>S.No.</th>
+                <th>Actions</th>
+                <th>Title</th>
+                <th>File Name</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-UploadedDocument let-rowIndex="rowIndex">
+              <tr>
+                <td class="pl-5">{{ rowIndex + 1 }}</td>
+                <td>
+                  <div
+                    *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))">
+                    <button pButton pRipple icon="pi pi-trash" id="Remove-Btn"
+                      *ngIf="UploadedDocument.uploadedDocumentId"
+                      class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                      (click)="removeItem(UploadedDocument.uploadedDocumentId)">
+                    </button>
+                    <button pButton pRipple icon="pi pi-download" id="download-Btn"
+                      *ngIf="UploadedDocument.uploadedDocumentId"
+                      class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                      (click)="downloadItem(UploadedDocument)">
+                    </button>
+
+                    <button pButton pRipple icon="fa fa-eye" id="view-Btn" *ngIf="UploadedDocument.uploadedDocumentId"
+                      class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                      (click)="getFileType(UploadedDocument);">
+                    </button>
+                  </div>
+                </td>
+                <td>{{ UploadedDocument?.title }}</td>
+                <td class="pl-5">{{ UploadedDocument?.fileName }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <!-- Address Details card view -->
+    <p-tabPanel header="Address Details" key="addressDetails" id="Address-Details">
+      <div class="grid">
+        <div class="card  m-0 p-3 w-100">
+          <div class="grid p-0 ">
+            <div class="col-12 lg:col-6 text-left m-0 p-3 pb-1">
+              <label>{{ isAddressChecked ? 'Show All Addresses' : 'Show All Addresses' }}</label>
+              <br />&nbsp;
+              <p-inputSwitch [(ngModel)]="isAddressChecked" (onChange)="onChangeAddressChecked()" id="isAddressChecked"
+                id="Employee_addressUnActive"></p-inputSwitch>
+            </div>
+            <div class="col-12 lg:col-6 text-right m-0 p-3 pb-1">
+              <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+                id="addressDetails"
+                *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+                (click)="openComponentDialog(AddressDialogComponent, null, ActionTypes.add)">
+                &nbsp; Add Address Details </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 lg:col-4  p-0" *ngFor="let newadredss of address; let i = index">
+          <div class="col-12 lg-4 p-2 pl-0 pr-3" *ngIf="isAddressChecked || newadredss.isActive">
+            <div class="card tile_name">
+              <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2 position-relative tile_name">
+                <div
+                  *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))">
+                  <button pButton pRipple icon="pi pi-pencil" id="editaddress"
+                    class="p-element p-ripple p-button-text p-button p-component right-float-button"
+                    (click)="openComponentDialog(AddressDialogComponent, newadredss, ActionTypes.edit)"
+                    *ngIf="newadredss.isActive"></button>
+                </div>
+                {{ newadredss.addressType }}
+              </div>
+              {{ newadredss.employeeName }}, <br />{{ newadredss.addressLine1 }}, <br />{{ newadredss.landmark }},{{
+              newadredss.city
+              }},<br />
+              {{ newadredss.state }} - {{ newadredss.zipCode }},<br />{{ newadredss.country }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <!-- Family Details card view -->
+    <p-tabPanel header="Family Details " key="familyDetails" id="Family-Details">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+              id="familyDetails"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(FamilydetailsDialogComponent, null, ActionTypes.add)">
+              &nbsp; Add Family Details</button>
+          </div>
+        </div>
+        <div class="col-12 lg:col-4" *ngFor="let familyDetails of familyDetails; let i = index">
+          <div class="card">
+            <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2 position-relative tile_name">
+              <button pButton pRipple icon="pi pi-pencil" id="editfamilydetails"
+                *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+                class="p-element p-ripple p-button-text p-button p-component right-float-button"
+                (click)="openComponentDialog(FamilydetailsDialogComponent, familyDetails, ActionTypes.edit)"></button>
+              {{familyDetails.name}}
+            </div>
+            <ul class="list-none p-0 m-0 text-600 mb-4 text-600">
+              <li class="mb-3">
+                <span class="font-semibold">Date Of Birth:</span> {{familyDetails.dob | date: mediumDate}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Adhaar No:</span> {{familyDetails.adhaarNo}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Relationship Status:</span> {{familyDetails.relationship}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Mobile No:</span> {{familyDetails.mobileNumber}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Address:</span>
+                {{familyDetails.addressLine1}},{{familyDetails.city}},{{familyDetails.state}},{{familyDetails.zipCode}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">State:</span> {{familyDetails.state}}
+              </li>
+              <li class="mb-3">
+                <span class="font-semibold">Is Nominee:</span>
+                <span [style.color]="familyDetails.isNominee ? '#119e2f' : '#e24c4c'">
+                  {{familyDetails.isNominee ? 'Yes' : 'No'}}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <!-- Bank Details card view -->
+    <p-tabPanel header="Bank Details" key="bankDetails" id="Bank-Details">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+              id="bankDetails"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(BankdetailsDialogComponent, null, ActionTypes.add)">
+              &nbsp; Add Bank Details </button>
+          </div>
+        </div>
+        <div class="col-12 lg:col-4" *ngFor="let bank of bankDetails; let i = index">
+          <div class="card" [ngClass]="{'read-only-row': bank?.isActive !== true}">
+            <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2 position-relative">
+              <button pButton pRipple icon="pi pi-pencil" id="editbankdetails"
+                *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+                class="p-element p-ripple p-button-text p-button p-component right-float-button"
+                (click)="openComponentDialog(BankdetailsDialogComponent, bank, ActionTypes.edit)"></button>{{bank.bankName}}
+            </div>
+            <ul class="list-none p-0 m-0 text-600 mb-4 text-600">
+              <li class="mb-2">
+                <span class="font-semibold "> Name :</span> {{bank.employeeName}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold ">Account No. :</span> {{bank.accountNumber}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold ">IFSC Code :</span> {{bank.ifsc}}
+              </li>
+              <li class="mb-2">
+                <span class="font-semibold mb-1">Branch Name :</span> {{bank.branchName}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <!-- Assets card view -->
+    <p-tabPanel header="Assets" *ngIf="showOfcAndAssetDetails" key="assets" id="Assets">
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+              id="add-assetAllotments"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(addassetallotmentDialogComponent, null, ActionTypes.add)">
+              &nbsp; Assign Asset </button>
+          </div>
+        </div>
+        <div class="col-12 lg:col-2 md:col-3 sm:col-4" *ngFor="let asset of assetAllotments">
+          <div class="card text-0 p-3  justify-content-between h-full card_hover">
+            <div class="overview-info text-center alloted_assets">
+              <div class="project_img_dash">
+                <img [src]="asset?.thumbnail? asset?.thumbnail:'./assets/layout/images/projectsDefault.jpg'"
+                  [alt]="asset?.thumbnail" class="shadow-2 my-0 mx-0 employee_profile_pic avatar_projects_dash" />
+              </div>
+              <div class="text-center">
+                <span class=" text-gray-500" *ngIf="asset.assetCode">
+                  <b><span class="icon-settings_display text-primary" pTooltip="Asset Type"></span>
+                  </b>
+                  {{asset.assetType}}
+                </span>
+              </div>
+              <div class="text-left">
+                <span class=" text-gray-500" *ngIf="asset.assetCode">
+                  <b><span class="icon-barcode text-primary " pTooltip="Asset Code"></span>
+                  </b>
+                  {{asset.assetCode}}
+                </span><br />
+                <span class=" text-gray-500" *ngIf="asset.assetCode">
+                  <b><span class="icon-address-card-o text-primary " pTooltip="Asset Name">
+                    </span>
+                  </b>
+                  {{asset.assetName}}
+                </span>
+              </div>
+              <div class="text-left" style=" color:gray; border-top:1px solid #ccc; font-size:12px; font-weight: 700;"
+                *ngIf="asset.assignedOn"><b>Assigned On:</b> {{asset.assignedOn |
+                date:mediumDate }} </div>
+              <div>
+                <button id="unassign-asset-btn" pButton pRipple type="submit" label="Unassign"
+                  class="p-element p-ripple p-button-text p-button p-component p-button-primary w-100"
+                  (click)="openComponentDialog(unassignassetDialogComponent, asset, ActionTypes.unassign)"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Skill sets" >
+      <div class="grid">
+        <div class="col-12 lg:col-12 m-0 p-3 pb-1">
+          <div class="card text-right m-0 p-3">
+            <button pButton pRipple icon="pi pi-plus" class="p-element p-ripple p-button-outline p-button p-component"
+              id="skill-sets"
+              *ngIf="((componentName === 'Onboard Employee' && permissions?.CanManageEmployee) || ( componentName === 'Enroll Employee' && permissions?.CanManageEnrollEmployee))"
+              (click)="openComponentDialog(skillsetsDialogComponent, null, ActionTypes.add)">
+              &nbsp; Skill Sets </button>
+          </div>
+        </div>
+        <div class="col-12 ">
+          <div class="card text-0 p-3  justify-content-between h-full card_hover">
+              <ul>
+                <li *ngFor="let skill of skillsList;let i=index" [style]="{'color':'orange'}">
+                  {{ skillsList[i] }}
+                </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <!-- Assigned Projects -->
+    <p-tabPanel header="Assigned Projects" *ngIf="!enRollEmployee && projects && projects?.length > 0"
+      key="projectDetails" id="Assigned-Projects">
+      <div class="grid">
+        <div class="card p-5 orange-200  applicant-n-block-home scroll_div " style="min-height:350px;">
+          <div class="grid" *ngIf="projects && projects?.length > 0">
+            <div class="col-12 md:col-3 lg:col-2" *ngFor="let project of projects">
+              <div class="card p-2 text-center card_hover"
+                [ngStyle]="project?.periods?.length > 0 ? {'color': 'gray'} : {}">
+                <div class="project_img_dash p-3">
+                  <img [src]="project?.logo" [alt]="project?.projectName"
+                    class="shadow-2 my-0 mx-0 employee_profile_pic avatar_projects_dash" />
+                </div>
+                <h5 class="text-primary m-2">{{project?.projectName}}</h5>
+                <div *ngFor="let period of project?.periods" class="text-left"
+                  style=" color:gray; border-top:1px solid #ccc; font-size:12px; font-weight: 700;">
+                  <span class="icon-start_time">
+                    {{period.sinceFrom | date: 'yyyy-MM-dd'}} - {{ period.endAt ? (period.endAt |
+                    date: 'yyyy-MM-dd') : "Progress"}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+
+  </p-tabView>

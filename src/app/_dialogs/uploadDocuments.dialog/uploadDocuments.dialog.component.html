@@ -1,0 +1,82 @@
+<div class="content_scroll" id="hrms">
+    <div class="grid p-0 m-0">
+        <div class="col-12 md:col-6">
+            <form [formGroup]="fbUpload ">
+                <div class="roles-container">
+                    <div class="p-fluid p-formgrid ">
+                        <div class="field col-12  ">
+                            <label class="required">Title:</label>
+                            <input type="text" id="Upload_title" pInputText formControlName="title" alphaOnly #title
+                                class="w-100" placeholder="Enter Title" (keydown)="restrictSpaces($event)"
+                                maxlength="20"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['title'].touched && FormControls['title'].errors }">
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['title'].touched && FormControls['title'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['required']">
+                                            Please Enter Title.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['minlength']">
+                                            Title Min Length Is 2.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['title'].errors?.['maxlength']">
+                                            Title Max Length Is 20.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{title.value.length}}/20</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 md:col-4 pt-5 mt-5">
+            <div class="upload-btn-wrapper" (click)="checkTitle()">
+                <label for="singleFile" 
+                    class="p-element p-ripple p-button-raised p-button-primary p-button p-component">
+                    <i class="pi pi-paperclip p-1"></i> Attach File</label>
+                <input id="singleFile" #fileUpload name="myFile" [accept]="fileTypes" type="file"
+                    [disabled]="!this.fbUpload.valid" hidden="true" />
+            </div>
+        </div>
+    </div>
+    <div class="grid p-0 m-0 mb-5">
+        <div class="col-12 pt-0">
+            <p-table #dt2 [value]="files" dataKey="id" [rows]="10" [rowHover]="true" [alwaysShowPaginator]="false"
+                styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm" [paginator]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true" [autoLayout]="true" 
+                [rowsPerPageOptions]="[10,25,50]">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:5px">Actions</th>
+                        <th>Title</th>
+                        <th>File Name</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-file let-i="rowIndex">
+                    <tr class="highlight-new-row">
+                        <td>
+                            <!-- <button pButton pRipple icon="pi pi-pencil" (click)="editForm(file)"
+                                class="p-element p-ripple p-button-text p-button p-component col-2 p-0 "></button> -->
+                            <button pButton pRipple icon="pi pi-trash" id="AddressDetailsRemove-Btn"
+                                class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                (click)="removeItem(file)">
+                            </button>
+                        </td>
+                        <td>{{file.title }}</td>
+                        <td>{{file.fileName}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<div class=" footer dialog-footer">
+    <button pButton pRipple class="p-button-raised p-button-primary" id="Upload_save" label="Save Documents"
+        [disabled]="files.length === 0" (click)="uploadFiles()"></button>
+</div>

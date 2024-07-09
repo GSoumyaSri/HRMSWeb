@@ -1,0 +1,210 @@
+<div class="flex flex-column align-items-center justify-content-center">
+    <form [formGroup]="fbLeave" id="LeavesForm">
+        <div class="grid mt-3 p-5 pt-2 content_scroll">
+            <div class="col-12 text-center">
+                <p-chip styleClass="pl-0 pr-3 mr-4 mt-2">
+                    <span
+                        class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{empDetails?.allottedCasualLeaves-empDetails?.usedCasualLeavesInYear}}</span>
+                    <span class="ml-2 font-medium">Available Casual Leaves</span>
+                </p-chip>
+
+                <p-chip styleClass="pl-0 pr-3 mt-2">
+                    <span
+                        class="bg-primary border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{empDetails?.allottedPrivilegeLeaves-empDetails?.usedPrivilegeLeavesInYear}}</span>
+                    <span class="ml-2 font-medium">Available Privilege Leaves</span>
+                </p-chip>
+            </div>
+            <div class="col-12 roles-container">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field  col-12 lg:col-4 md:col-6 mb-0">
+                        <label class="required">Employee Name:</label>
+                        <p-dropdown id="Leaves_employeeNameDropdown" class="dropdown_cus" appendTo="body"
+                            [filter]="true" [options]="employees" optionLabel="employeeName" optionValue="employeeId"
+                            placeholder="Select Employee Name" formControlName="employeeId"
+                            (onChange)="handleEmployeeLeaves()"
+                            [disabled]="this.currentRoute === '/dashboard/employee' || this.currentRoute === '/employee/myleaves'"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['employeeId'].touched && FormControls['employeeId'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['employeeId'].touched && FormControls['employeeId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['employeeId'].errors?.['required']">
+                                        Please Select Employee Name.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field  col-12 lg:col-4 md:col-6 mb-0">
+                        <label class="required">Leave Type:</label>
+                        <p-dropdown placeholder="Select Leave Type" formControlName="leaveTypeId" appendTo="body"
+                            [options]="filteredLeaveTypes" optionLabel="name" optionValue="lookupDetailId"
+                            id="Leaves_leaveTypesDropdown" (onChange)="getLeaveReasonsByLeaveTypeId($event.value)"
+                            [disabled]="this.currentRoute === '/dashboard/employee'"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['leaveTypeId'].touched && FormControls['leaveTypeId'].errors }">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['leaveTypeId'].touched && FormControls['leaveTypeId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error" *ngIf=" FormControls['employeeId'].untouched && FormControls['leaveTypeId'].touched ||
+                                FormControls['employeeId'].invalid && FormControls['leaveTypeId'].touched">
+                                        Please Select Employee Name First.</div>
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf=" FormControls['employeeId'].touched && FormControls['leaveTypeId'].errors?.['required'] &&  FormControls['employeeId'].valid">
+                                        Please Select Leave Type.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field  col-12 lg:col-4 md:col-6 mb-0" *ngIf="hideLeavereason()">
+                        <label class="required">Leave Reason:</label>
+                        <p-dropdown placeholder="Select Leave Reason" class="dropdown_cus" appendTo="body"
+                            formControlName="leaveReasonId" [options]="leaveReasons" optionLabel="name"
+                            optionValue="lookupDetailId" id="Leaves_leaveReasonsDropdown"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['leaveReasonId'].touched && FormControls['leaveReasonId'].errors }">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['leaveReasonId'].touched && FormControls['leaveReasonId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error" *ngIf=" FormControls['leaveTypeId'].untouched && FormControls['leaveReasonId'].touched ||
+                                    FormControls['leaveTypeId'].invalid && FormControls['leaveReasonId'].touched">
+                                        Please Select Leave Type First.</div>
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf=" FormControls['leaveTypeId'].touched && FormControls['leaveReasonId'].errors?.['required'] && FormControls['leaveTypeId'].valid">
+                                        Please Select Leave Reason.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field  col-12 lg:col-4 md:col-6 mb-0" *ngIf="hideLeavereason()">
+                        <label>Half Day Leave:</label>
+                        <br>
+                        <p-checkbox formControlName="isHalfDayLeave" [binary]="true" inputId="binary"
+                            id="Leaves_HalfDayCheckbox"></p-checkbox>
+                    </div>
+                    <ng-container *ngIf="fbLeave.get('leaveTypeId').value">
+                        <div class="field  col-12 lg:col-4 md:col-6 mb-0">
+                            <label class="required">From Date:</label>
+                            <p-calendar appendTo="body" placeholder="Select From Date" [readonlyInput]="true"
+                                [minDate]="minDate" [showIcon]="true" formControlName="fromDate"
+                                [disabledDates]="disabledDates" [disabledDays]="[0, 6]" id="Leaves_fromDateCalendar" (onSelect)="enableToDate()"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['fromDate'].touched && FormControls['fromDate'].errors }">
+                            </p-calendar>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['fromDate'].touched && FormControls['fromDate'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['fromDate'].errors?.['required']">
+                                            Please Select From Date.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field  col-12 lg:col-4 md:col-6 mb-0" *ngIf="hideToDate() || toDateMandatoryforLL()">
+                            <label class="required" *ngIf="leaveTypeIsLL || toDateMandatoryforLL()">To Date:</label>
+                            <label *ngIf="!leaveTypeIsLL && !toDateMandatoryforLL()">To Date:</label>
+                            <p-calendar appendTo="body" placeholder="Select To Date" [readonlyInput]="true"
+                                [showIcon]="true" formControlName="toDate" id="Leaves_toDateCalendar"
+                                [minDate]="fbLeave.value.fromDate" [disabledDates]="disabledDates" [disabledDays]="[0, 6]"
+                                (onSelect)="checkLeaveTypeError()" [ngClass]="{'ng-invalid ng-untouched p-error':FormControls['toDate'].touched && isLeaveTypeErrorMessageVisible(),
+                                'error-border':  FormControls['fromDate'].untouched && FormControls['toDate'].touched ||
+                                FormControls['fromDate'].invalid && FormControls['toDate'].touched}">
+                            </p-calendar>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['toDate'].touched">
+                                        <div class="ng-invalid ng-touched p-error" *ngIf=" FormControls['fromDate'].untouched && FormControls['toDate'].touched ||
+                                        FormControls['fromDate'].invalid && FormControls['toDate'].touched">
+                                            Please Select From Date First.</div>
+                                    </span>
+                                    <span *ngIf="isLeaveTypeErrorMessageVisible()"
+                                        class="ng-invalid ng-touched p-error">{{this.leaveTypeError}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="field col-12 lg:col-6 md:col-12 mb-0">
+                        <label class="required">Leave Reason Description:</label>
+                        <textarea class="form-control freeze_text-area" pInputTextarea formControlName="note"
+                            (keydown)="restrictSpaces($event)" placeholder="Enter Leave Reason Description" #description
+                            [maxlength]="256" id="Leaves_ReasonDescription"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['note'].touched && FormControls['note'].errors }"></textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['note'].touched && FormControls['note'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['note'].errors?.['required']">
+                                        Please Enter Leave Reason Description.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{description.value.length}}/{{maxLength.description}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="footer dialog-footer">
+    <button pButton pRipple type="submit" label="Apply Leave" class="p-button-raised p-button-primary"
+        id="Leaves_SubmitLeaveForm"
+        [disabled]="fbLeave.invalid || toDateMandatoryforLL() ||isLeaveTypeErrorMessageVisible()"
+        (click)="confirmation()"></button>
+</div>
+
+
+<p-dialog header="Confirmation" [(visible)]="dialog" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '40%', '640px': '50%'}" class="confirmation_dialog" [draggable]="false" [closable]="false">
+    <div *ngIf="hasPendingLeaveInMonth && isHalfDayLeave.length === 2">
+        <p class="p-5">
+
+            Kindly confirm whether you wish to retract the previously submitted leaves for the month of
+            {{ this.dates | date:'MMMM' }} on this
+            <span *ngFor="let leave of isHalfDayLeave; let i = index">
+                <ng-container *ngIf="i !== 0">
+                    <span> and </span>
+                </ng-container>
+                {{ leave.fromDate | date:'mediumDate' }}
+            </span> you have Half Day CLs which has
+            not yet been approved. Please click 'Confirm' to proceed with the reversion or 'Cancel' to maintain the
+            current application status.
+        </p>
+    </div>
+    <div *ngIf="!(this.hasPendingLeaveInMonth && this.isHalfDayLeave.length === 2)">
+        <p class="p-5">
+            Kindly confirm whether you wish to retract the previously submitted leave for the month of
+            {{ this.dates | date:'MMMM' }} on this
+            '{{this.dates |date:fromDate}}', which has
+            not yet been approved. Please click 'Confirm' to proceed with the reversion or 'Cancel' to maintain the
+            current application status.
+        </p>
+    </div>
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" label="Confirm" id="Leaves_ConfirmBtn"
+                (click)="deleteleaveDetails()"></button>
+            <button pButton type="button" class="btn btn-primary" label="Cancel" id="Leaves_CloseBtn"
+                (click)="onClose()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Confirmation" [(visible)]="dialogforWFH" [modal]="true" showEffect="fade" [draggable]="false"
+    [closable]="false" [breakpoints]="{'960px': '40%', '640px': '50%'}" class="confirmation_dialog">
+    <p class="p-5">
+        Your leave request is within the WFH span. will you want to split this,Please confirm this by Clicking 'Confirm'
+        else 'Cancel'.
+    </p>
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" label="Confirm" id="Leaves_wfhConfirmBtn"
+                (click)="onSubmit()"></button>
+            <button pButton type="button" class="btn btn-primary" label="Cancel" id="Leaves_wfhCloseBtn"
+                (click)="onClose()"></button>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,141 @@
+<div class="flex flex-column align-items-center justify-content-center">
+  <form [formGroup]="fbOfficDtls">
+    <div class="grid mt-3 p-5">
+      <div class="col-12 roles-container">
+        <div class="p-fluid p-formgrid grid content_scroll">
+          <div class="field col-12 md:col-4">
+            <label class="required">Time In:</label>
+            <p-calendar class="cursor-pointer" [timeOnly]="true" [showIcon]="true" icon="pi pi-clock"
+              placeholder="Select Time In" [showSeconds]="false" dataType="string" [readonlyInput]="true"
+              formControlName="strTimeIn" id="time_in" appendTo="body"
+              [ngClass]="{ 'is-invalid ng-dirty': EmpOfficeFormControls['strTimeIn'].touched && EmpOfficeFormControls['strTimeIn'].errors }">
+            </p-calendar>
+            <div class="flex">
+              <div class="align-left w-60" style="width:70%">
+                <span *ngIf="EmpOfficeFormControls['strTimeIn'].touched && EmpOfficeFormControls['strTimeIn'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['strTimeIn'].errors?.['required']">
+                    Please Select Time In.
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="field col-12 md:col-4">
+            <label class="required">Time Out:</label>
+            <p-calendar class="cursor-pointer" [timeOnly]="true" [showIcon]="true" icon="pi pi-clock"
+              placeholder="Select Time Out" [showSeconds]="false" dataType="string" [readonlyInput]="true"
+              formControlName="strTimeOut" id="time_out" appendTo="body"
+              [ngClass]="{ 'is-invalid ng-dirty': EmpOfficeFormControls['strTimeOut'].touched && EmpOfficeFormControls['strTimeOut'].errors }">
+            </p-calendar>
+            <div class="flex">
+              <div class="align-left w-60" style="width:70%">
+                <span
+                  *ngIf="EmpOfficeFormControls['strTimeOut'].touched && EmpOfficeFormControls['strTimeOut'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['strTimeOut'].errors?.['required']">
+                    Please Select Time Out.
+                  </div>
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['strTimeOut'].errors?.['invalidTime']">
+                    Time Out must be greater than Time In.
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="field col-12 md:col-4">
+            <label class="required">Office Email Id:</label>
+            <input pInputText id="office_Email_Id" #officeEmailId placeholder="Enter Office Email Id" type="text"
+              formControlName="officeEmailId" (keydown)="restrictSpaces($event)"
+              [ngClass]="{ 'is-invalid ng-dirty': EmpOfficeFormControls['officeEmailId'].touched && EmpOfficeFormControls['officeEmailId'].errors }" />
+            <div class="flex">
+              <div class="align-left w-60" style="width:70%">
+                <span
+                  *ngIf="EmpOfficeFormControls['officeEmailId'].touched && EmpOfficeFormControls['officeEmailId'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['officeEmailId'].errors?.['required']">
+                    Please Enter Office Email Id.</div>
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['officeEmailId'].errors?.['pattern']">
+                    Must in Email Id Format.</div>
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['officeEmailId'].errors?.['minlength']">
+                    Email Id Min Length Is 2.</div>
+                </span>
+              </div>
+              <!-- <div class="align-right w-40" style="width:30%; text-align:right;">
+                    <small>{{email.value.length}}/{{maxLength.name}} </small>
+                  </div> -->
+            </div>
+          </div>
+          <div class="field col-12 md:col-4">
+            <label class="required">Joining Date:</label>
+            <p-calendar [showIcon]="true" placeholder="Select Joining Date" formControlName="dateofJoin"
+              id="date_of_joining" appendTo="body" [readonlyInput]="true"
+              [ngClass]="{ 'is-invalid ng-dirty': EmpOfficeFormControls['dateofJoin'].touched && EmpOfficeFormControls['dateofJoin'].errors }">
+            </p-calendar>
+            <div class="flex">
+              <div class="align-left w-60" style="width:70%">
+                <span
+                  *ngIf="EmpOfficeFormControls['dateofJoin'].touched && EmpOfficeFormControls['dateofJoin'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['dateofJoin'].errors?.['required']">
+                    Please Select Joining Date.
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="field col-12 md:col-4">
+            <label class="required">Designation:</label>
+            <p-dropdown id="designation" placeholder="Select Designation" optionLabel="name" [filter]="true"
+              filterBy="name" placeholder="Select Designation" [options]="designation" optionValue="lookupDetailId"
+              formControlName="designationId" [autoDisplayFirst]="false" appendTo="body"
+              [ngClass]="{ 'is-invalid ng-dirty': EmpOfficeFormControls['designationId'].touched && EmpOfficeFormControls['designationId'].errors }">
+            </p-dropdown>
+            <div class="flex">
+              <div class="align-left w-60" style="width:70%">
+                <span
+                  *ngIf="EmpOfficeFormControls['designationId'].touched && EmpOfficeFormControls['designationId'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="EmpOfficeFormControls['designationId'].errors?.['required']">
+                    Please Select Designation.
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="field col-12 md:col-4">
+            <label>Reported To:</label>
+            <p-dropdown id="reported_dropdown" [autoDisplayFirst]="false" optionLabel="employeeName" [filter]="true"
+              filterBy="employeeName" [options]="employees" optionValue="employeeId" appendTo="body"
+              formControlName="reportingToId" placeholder="Select Reported To" [showClear]="true">
+            </p-dropdown>
+          </div>
+          <div class="field col-12 md:col-4" *ngIf="officedetails !==null && officedetails.relievingDate !==null">
+            <label>Date of Relieving:</label>
+            <p-calendar [readonlyInput]="true" [showIcon]="true" id="Relieving-date" mask="99/99/9999"
+              formControlName="relievingDate" placeholder="Select Date of Relieving" [maxDate]="maxDate"
+              [minDate]="minDate" appendTo="body">
+            </p-calendar>
+          </div>
+          <div class="field col-6 md:col-4">
+            <label>PF Eligible:</label>
+            <br>
+            <p-inputSwitch formControlName="isPfeligible" id="isPfeligible"></p-inputSwitch>
+          </div>
+          <div class="field col-6 md:col-4">
+            <label>ESI Eligible:</label>
+            <br>
+            <p-inputSwitch formControlName="isEsieligible" id="isEsieligible"></p-inputSwitch>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class=" footer dialog-footer">
+  <button id="Save_Office_Details" pButton pRipple type="submit" label="Save Office Details"
+    class="p-button-raised p-button-primary" [disabled]="fbOfficDtls.invalid" (click)="saveEmpOfficDtls()"></button>
+</div>

@@ -1,0 +1,42 @@
+<div class="col-12 p-0">
+    <div class="card" id="resignation-card">
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>Employee Exit Interviews</h4>
+            </ng-template>
+        </p-toolbar>
+        <!-- p-table -->
+        <p-table [value]="exitInterviewList" id="table" #exitInterview sortField="employeeName" sortMode="single"
+            dataKey="employeeId" rowGroupMode="subheader" groupRowsBy="employeeName" rowExpandMode="single"
+            styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-left">Question</th>
+                    <th class="text-left">Rating</th>
+                    <th class="text-left">Description</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="groupheader" let-rowData let-expanded="expanded">
+                <tr>
+                    <td colspan="3">
+                        <button type="button" pButton pRipple [pRowToggler]="rowData"
+                            class="p-button-text p-button-rounded p-button-plain mr-2"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                            <span class="font-bold ml-2 text-center">{{rowData.employeeName}}</span>
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="rowexpansion" let-rowData>
+                <tr *ngFor="let item of rowData.expandExitInterview">
+                    <td class="text-left">{{item.Question}}</td>
+                    <td class="text-left">{{item.Rating}}</td>
+                    <td class="text-left">{{item.Description}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

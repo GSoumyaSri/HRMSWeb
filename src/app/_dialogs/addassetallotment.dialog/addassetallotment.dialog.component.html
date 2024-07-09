@@ -1,0 +1,115 @@
+<!-- P-Dialog for Assigned Assets -->
+
+<div class="flex flex-column align-items-center justify-content-center">
+    <form [formGroup]="fbAssetAllotment">
+        <div class="col-12 roles-container">
+            <div class="p-fluid p-formgrid grid content_scroll">
+                <div class="field col-12 md:col-4">
+                    <label class="required">Employee:</label>
+                    <p-dropdown id="select-employee" [options]="employeesDropdown" formControlName="employeeId"
+                        optionLabel="employeeName" optionValue="employeeId" [filter]="true"
+                        filterBy="employeeCode,employeeName" placeholder="Select Employee" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['employeeId'].touched && FormControls['employeeId'].errors }">
+                        <ng-template let-employee pTemplate="item">
+                            <div class="country-item">
+                                <div>{{ employee.employeeCode }}</div>
+                                <div>{{ employee.employeeName }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                    <span *ngIf="FormControls['employeeId'].touched && FormControls['employeeId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['employeeId'].errors?.['required']">
+                            Please Select Employee.
+                        </div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="required">Asset Category:</label>
+                    <p-dropdown [options]="assetCategories" optionLabel="name" id="assetCategories"
+                        placeholder="Select Asset Category" appendTo="body" [autoDisplayFirst]="false"
+                        formControlName="assetCategoryId" optionValue="lookupDetailId"
+                        (onChange)="initAssetTypesbyCategories($event.value)"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['assetCategoryId'].touched && FormControls['assetCategoryId'].errors}">
+                    </p-dropdown>
+                    <span *ngIf="FormControls['assetCategoryId'].touched && FormControls['assetCategoryId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['assetCategoryId'].errors?.['required']"> Please Select Asset Category.
+                        </div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="required">Asset Type: </label>
+                    <p-dropdown [options]="assetTypes" optionLabel="name" id="assetTypes" [filter]="true"
+                        filterBy="name" placeholder="Select Asset Type" formControlName="assetTypeId"
+                        [autoDisplayFirst]="false" optionValue="lookupDetailId" appendTo="body"
+                        (onChange)="getAssetsNamesByAssetType($event.value)"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['assetTypeId'].touched && FormControls['assetTypeId'].errors}">
+                    </p-dropdown>
+                    <span *ngIf="FormControls['assetTypeId'].touched && FormControls['assetTypeId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['assetCategoryId'].value && FormControls['assetTypeId'].errors?.['required']">
+                            Please Select Asset Type.
+                        </div>
+                    </span>
+                    <span
+                        *ngIf="FormControls['assetTypeId'].touched && !FormControls['assetCategoryId'].value && FormControls['assetTypeId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['assetTypeId'].errors?.['required']">
+                            Please Select Asset Category First.
+                        </div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="required">Asset Name:</label>
+                    <p-dropdown id="asset-name" [options]="assets" optionLabel="name" [filter]="true" filterBy="name"
+                        placeholder="Select Asset Name" formControlName="assetId" optionValue="assetId" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['assetId'].touched && FormControls['assetId'].errors }">
+                        <ng-template let-option pTemplate="option">
+                            <div>{{ option.name }} </div>
+                            <span style="font-size: smaller;color: #f17517;">{{ option.code }}</span>
+                        </ng-template>
+                    </p-dropdown>
+                    <span *ngIf="FormControls['assetId'].touched && FormControls['assetId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['assetTypeId'].value && FormControls['assetId'].errors?.['required']">
+                            Please Select Asset Name.</div>
+                    </span>
+                    <span
+                        *ngIf="FormControls['assetId'].touched && !FormControls['assetTypeId'].value && FormControls['assetId'].invalid">
+                        <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['assetId'].errors?.['required']">
+                            Please Select Asset Type First.
+                        </div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label class="required">Assigned On:</label>
+                    <p-calendar id="assigned-on" [showIcon]="true" placeholder="Select Assigned On"
+                        formControlName="assignedOn" appendTo="body" [maxDate]="maxDate" [readonlyInput]="true"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['assignedOn'].touched && FormControls['assignedOn'].errors }">
+                    </p-calendar>
+                    <span *ngIf="FormControls['assignedOn'].touched && FormControls['assignedOn'].invalid ">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="FormControls['assignedOn'].errors?.['required']">
+                            Please Select Assigned On.</div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label>Comment:</label>
+                    <textarea id="comment" #comment rows="5" cols="30" placeholder="Enter Comment"
+                        (keydown)="restrictSpaces($event)" formControlName="comment" pInputTextarea
+                        class="freeze_text-area" [maxLength]="256">
+                </textarea>
+                    <div class="align-right w-40" style="text-align:right;">
+                        <small>{{comment.value.length}}/256</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class=" footer dialog-footer">
+    <button pButton pRipple type="submit" label="Allocate Asset" class="p-button-raised p-button-primary" id="assets_SaveBtn"
+        [disabled]="fbAssetAllotment.invalid" (click)="onSubmitAsset()"></button>
+</div>

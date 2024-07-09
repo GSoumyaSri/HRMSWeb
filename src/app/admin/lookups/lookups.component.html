@@ -1,0 +1,141 @@
+<div class="col-12  p-0">
+    <div class="card">
+        <!-- Toolbar -->
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>Lookups</h4>
+            </ng-template>
+            <ng-template pTemplate="right">
+                <button pButton pRipple label="New Lookup" icon="pi pi-plus" class="p-button-primary p-mr-2"
+                    id="Lookup_addLookup" (click)="openComponentDialog(lookupDialogComponent, null, ActionTypes.save)"
+                    *ngIf="permissions?.CanManageLookups"></button>
+            </ng-template>
+        </p-toolbar>
+
+        <!-- table -->
+        <p-table #lookUp [value]="lookups" paginatorDropdownAppendTo="body" dataKey="lookupId" [rows]="10"
+            [rowHover]="true" [alwaysShowPaginator]="false" [paginator]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [columns]="selectedColumns"
+            styleClass="p-datatable-gridlines  p-datatable-sm" [style]="{width: 'auto'}" [showCurrentPageReport]="true"
+            [globalFilterFields]="globalFilterFields" [autoLayout]="true" responsiveLayout="scroll"
+            rowExpandMode="single" [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                        (click)="clear()" id="Lookup_clearFilter"></button>
+                    <p-multiSelect [options]="selectedColumnHeader" [(ngModel)]="selectedColumns" optionLabel="label"
+                        id="lookup_ColumnSelection" selectedItemsLabel="{0} columns selected"
+                        [style]="{'min-width': '200px'}" placeholder="Choose Columns"></p-multiSelect>
+                    <div class="field text-center m-0 mx-2">
+                        <label>Inactive Records </label>
+                        <br /> &nbsp; <p-inputSwitch [(ngModel)]="isLookupChecked"
+                            (onChange)="onChangeisLookupChecked()" id="Lookup_lookupUnActive"></p-inputSwitch>
+                    </div>
+                    <span class="p-input-icon-left mb-2">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" #filter (input)="onGlobalFilter(lookUp,$event)"
+                            id="Lookup_lookupSearch" placeholder="Search Keyword" class="w-full" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width: 5rem"></th>
+                    <th *ngFor="let col of lookupHeader" [pSortableColumn]="col.header">
+                        {{col?.label}}
+                        <p-columnFilter id="Lookup_lookupColumnFilter" type="text" [field]="col.header" display="menu">
+                        </p-columnFilter>
+                        <p-sortIcon [field]="col.header" id="Lookup_lookupSorting"></p-sortIcon>
+                    </th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.header">
+                        {{col?.label}}
+                        <p-columnFilter id="Lookup_lookupColumnFilterforChooseColumns" type="text" [field]="col.header"
+                            display="menu">
+                        </p-columnFilter>
+                        <p-sortIcon [field]="col.header" id="Lookup_lookupSortingforChooseColumns"></p-sortIcon>
+                    </th>
+                    <th *ngIf="permissions?.CanManageLookups" style="width:5px;">Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-lookup let-expanded="expanded" let-columns="columns">
+                <tr>
+                    <td>
+                        <button type="button" pButton pRipple [pRowToggler]="lookup" id="Lookup_lookupToggleButton"
+                            class="p-button-text  p-1"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    </td>
+                    <td>{{lookup.code}}</td>
+                    <td>{{lookup.name}}</td>
+                    <td [ngClass]="'isActive' ? 'text-center' : ''">
+                        <i class="fa" [ngClass]="{'fa-check': lookup['isActive'], 'fa-close': !lookup['isActive']}"
+                            [style.color]="lookup['isActive'] ? '#119e2f' : '#e24c4c'"
+                            style="font-size:18px; vertical-align: sub;"></i>
+                    </td>
+                    <td *ngFor="let col of columns"
+                        [ngClass]="{'text-center': col.field === 'isActive'|| col.field === 'createdAt'|| col.field === 'updatedAt'}">
+                        <span
+                            *ngIf="col?.field != 'createdAt' && col?.field != 'updatedAt' && col?.field != 'isActive'">{{lookup[col.field]}}</span>
+                        <span *ngIf="col?.field == 'createdAt' || col?.field == 'updatedAt'">
+                            {{lookup[col.field] | date: mediumDate }}
+                        </span>
+                    </td>
+                    <td *ngIf="permissions?.CanManageLookups">
+                        <button pButton pRipple icon="pi pi-pencil" style="padding: 0px;" id="Lookup_lookupEdit"
+                            class="p-element p-ripple p-button-text p-button p-component"
+                            (click)="openComponentDialog(lookupDialogComponent, lookup, ActionTypes.save)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="md:text-center m-5" colspan="9">No Lookups Found.</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-lookup>
+                <tr>
+                    <td colspan="9" class="p-0">
+                        <div class="p-0">
+                            <p-table #lookUpDetails [value]="lookup.expandLookupDetails"
+                                [columns]="lookupDetailsHeader">
+                                <ng-template pTemplate="header">
+                <tr>
+                    <th style *ngFor="let col of lookupDetailsHeader" [pSortableColumn]="col.header">
+                        {{col?.label}}
+                        <p-columnFilter id="Lookup_lookupDetailsColumnFilter" type="text" [field]="col.header"
+                            display="menu">
+                        </p-columnFilter>
+                        <p-sortIcon [field]="col.header" id="Lookup_lookupDetailsSorting"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-lookupDetails>
+                <tr>
+                    <td *ngFor="let col of lookupDetailsHeader"
+                        [ngClass]="{'text-center': col.field === 'isActive'|| col.field === 'createdAt'|| col.field === 'updatedAt', 'text-wrap': col.field === 'description'}">
+                        <span
+                            *ngIf="col?.field != 'createdAt' && col?.field != 'isActive'">{{lookupDetails[col.field]}}</span>
+                        <span *ngIf="col?.field == 'createdAt' ">
+                            {{lookupDetails[col.field] | date: mediumDate }}
+                        </span>
+                        <span *ngIf="col?.field == 'isActive'">
+                            <i class="fa"
+                                [ngClass]="{'fa-check': lookupDetails[col.field], 'fa-close': !lookupDetails[col.field]}"
+                                [style.color]="lookupDetails[col.field] ? '#119e2f' : '#e24c4c'"
+                                style="font-size:18px; vertical-align: sub;"></i>
+                        </span>
+                    </td>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="md:text-center m-5" colspan="9">No Lookups Found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    </td>
+    </tr>
+    </ng-template>
+    </p-table>
+
+</div>
+</div>

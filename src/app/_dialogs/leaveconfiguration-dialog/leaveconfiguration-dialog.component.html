@@ -1,0 +1,137 @@
+<div class=" align-items-center justify-content-center">
+    <form [formGroup]="fbLeaveConfiguration" id="LeaveConfigurationForm">
+        <div class="grid p-5 content_scroll">
+            <div class="col-12 md:col-6 mt-4" *ngIf="permissions?.CanManageLeaveConfiguration">
+                <div class="p-fluid p-formgrid grid ">
+                    <div class="field col-6 md:col-6">
+                        <label class="required">Max Exp Eligibility (Months):</label>
+                        <p-dropdown appendTo="body" id="gender_dropdown" placeholder="Select Max Exp Eligibility"
+                            [autoDisplayFirst]="false" [options]="getExperience" optionLabel="name"
+                            formControlName="maxExpInMonths" optionValue="name"
+                            (ngModelChange)="onChangeAccumulationPeriod()"
+                            [readonly]="FormControls['leaveConfigurationId'].value!== null"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['maxExpInMonths'].touched && FormControls['maxExpInMonths'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="maxExperience.length !== 0 && FormControls['maxExpInMonths'].touched && FormControls['maxExpInMonths'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['maxExpInMonths'].errors?.['required']">
+                                        Please Select Max Exp Eligibility.</div>
+                                </span>
+                                <span
+                                    *ngIf="maxExperience.length === 0 && FormControls['maxExpInMonths'].touched && FormControls['maxExpInMonths'].invalid">
+                                    <div class="ng-invalid ng-touched p-error">
+                                        Please note that there are no available options for Max Exp
+                                        Eligibility.
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-6 md:col-6">
+                        <label class="required">Casual Leave:</label>
+                        <input pinput pInputText placeholder="Enter Casual Leave" [maxLength]="2" formControlName="cl"
+                            numericOnly (keydown)="restrictSpaces($event)" #casualleave
+                            id="LeaveConfiguration_CasualLeave"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['cl'].touched && FormControls['cl'].errors}">
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['cl'].touched && FormControls['cl'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['cl'].errors?.['required']">
+                                        Please Enter Casual Leave.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{casualleave.value.length}}/{{maxLength.listingorder}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-6 md:col-6">
+                        <label class="required">Privileged Leave:</label>
+                        <input pinput pInputText placeholder="Enter Privileged Leave" [maxLength]="2"
+                            id="LeaveConfiguration_PrivilegedLeave" formControlName="pl" numericOnly
+                            (keydown)="restrictSpaces($event)" #privilegedleave
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['pl'].touched && FormControls['pl'].errors}">
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['pl'].touched && FormControls['pl'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['pl'].errors?.['required']">
+                                        Please Enter Privileged Leave.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{privilegedleave.value.length}}/{{maxLength.listingorder}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-6 md:col-6">
+                        <label>Accumulation Period(Months):</label>
+                        <input pinput pInputText placeholder="Enter Accumulation Period" #accumulationperiod
+                            [maxLength]="2" formControlName="accumulationPeriod" numericOnly
+                            id="LeaveConfiguration_AccumulationPeriod" (keydown)="restrictSpaces($event)"
+                            [readonly]="FormControls['leaveConfigurationId'].value!== null"
+                            placeholder="Enter Accumulation Period">
+                        <div class="align-right w-60" style="width:100%; text-align:right;">
+                            <small>{{accumulationperiod.value.length}}/{{maxLength.listingorder}}</small>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-12" *ngIf="!isEditClicked">
+                        <div class=" button-container mt-1">
+                            <p-button type="button" [label]="this.addLeaveLabel"
+                                [disabled]="fbLeaveConfiguration.invalid" id="LeaveConfiguration_AddLeaveBtn"
+                                (click)="addLeaveDetails(fbLeaveConfiguration.invalid)"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6  roles-container" *ngIf="permissions?.CanViewLeaveConfigurations"
+                [ngClass]="{'md:col-6': permissions?.CanManageLeaveConfiguration, 'md:col-12': !permissions?.CanManageLeaveConfiguration}">
+                <!-- FormArray -->
+                <p-table #dt2 [value]="leaveConfiguration" dataKey="id" [rows]="10" [rowHover]="true"
+                    styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm mt-5" [paginator]="false"
+                    [autoLayout]="true" responsiveLayout="scroll" [rowsPerPageOptions]="[10,25,50]" [scrollable]="true"
+                    scrollDirection="vertical" scrollHeight="300px" [style]="{width: 'max'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="text-center">Maximum Experience Eligibility(Months):</th>
+                            <th class="text-center">Casual Leave</th>
+                            <th class="text-center">Privileged Leave</th>
+                            <th class="text-center">Leave Accumulation Period(Months)</th>
+                            <th *ngIf="permissions?.CanManageLeaveConfiguration">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-leaveConfigurationDetails let-leaveDetailsIndex="rowIndex">
+                        <tr>
+                            <td class="text-center">{{ leaveConfigurationDetails.maxExpInMonths}}</td>
+                            <td class="text-center">{{ leaveConfigurationDetails.cl}}</td>
+                            <td class="text-center">{{ leaveConfigurationDetails.pl}}</td>
+                            <td class="text-center">{{ leaveConfigurationDetails.accumulationPeriod}}</td>
+                            <td *ngIf="permissions?.CanManageLeaveConfiguration">
+                                <div class="flex">
+                                    <button pButton pRipple icon="pi pi-pencil" id="LeaveConfiguration_Add-Btn"
+                                        (click)="editLeaveDetails(leaveConfigurationDetails)"
+                                        *ngIf="leaveConfigurationDetails.leaveConfigurationId"
+                                        class="p-element p-ripple p-button-text p-button p-component mr-3 p-0 ">
+                                    </button>
+                                    <button pButton pRipple icon="pi pi-trash" id="LeaveConfiguration_Remove-Btn"
+                                        class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                        *ngIf="!leaveConfigurationDetails.leaveConfigurationId"
+                                        (click)="removeRow(leaveDetailsIndex)"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class=" footer dialog-footer" *ngIf="permissions?.CanManageLeaveConfiguration">
+    <button pButton pRipple type="submit" [label]="this.submitlabel" class="p-button-raised p-button-primary"
+        id="SubmitLeaveConfigurationForm" [disabled]="!leaveConfiguration.length" (click)="onSubmit()"></button>
+</div>

@@ -1,0 +1,153 @@
+<form [formGroup]="fbEnroll" *ngIf="displayDialog === true" id="FinalSubmitDialogForm">
+  <div id="hrms">
+    <div class="grid content_scroll roles-container">
+      <div class=" col-12 md:col-12 lg:col-12">
+        <div role="alert" class="p-message p-message-info ng-trigger ng-trigger-messageAnimation w-100"
+          *ngIf="employeeObj">
+          <div class="p-message-wrapper" data-pc-section="wrapper">
+            <i class="pi pi-info-circle"></i> To put the '{{ employeeObj.employeeName }}' on roles,
+            {{ employeeObj.gender === 'Male' ? 'he' : 'she' }} needs the role in which {{ employeeObj.gender === 'Male'
+            ? 'he' : 'she' }} was selected.
+          </div>
+        </div>
+        <label class="required">Employee Code:</label><br />
+        <input type="text" id="employeeCode" pInputText placeholder="Enter Employee Code" formControlName="employeeCode"
+          #employeeCode alphaNumeric [maxlength]="8" [minlength]="8" (keyup)="checkCodeExists()"
+          [ngClass]="{ 'is-invalid ng-dirty': FormControls['employeeCode'].touched && FormControls['employeeCode'].errors }"
+          (keydown)="restrictSpaces($event)" class="w-100" />
+        <div class="flex">
+          <div class="align-left w-60" style="width:70%">
+            <span *ngIf="FormControls['employeeCode'].touched && FormControls['employeeCode'].invalid">
+              <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['employeeCode'].errors?.['minlength']">
+                Employee Code Min & Max length is 8.</div>
+              <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['employeeCode'].errors?.['required']">
+                Please Enter Employee Code.</div>
+              <div *ngIf="FormControls['employeeCode'].errors?.['exists']" class="ng-invalid ng-touched p-error">
+                Employee code already exists.
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class=" col-12 md:col-12 lg:col-12">
+        <label class="required">Role:</label><br />
+        <p-dropdown id="roles_dropdown" [autoDisplayFirst]="false" optionLabel="name" [options]="roles"
+          optionValue="roleId" formControlName="roleId" appendTo="body" placeholder="Select Role"
+          [ngClass]="{ 'is-invalid ng-dirty': FormControls['roleId'].touched && FormControls['roleId'].errors }"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+        <div class="flex">
+          <div class="align-left w-60" style="width:70%">
+            <span *ngIf="FormControls['roleId'].touched && FormControls['roleId'].invalid">
+              <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['roleId'].errors?.['required']">
+                Please Select Role.</div>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class=" col-12 md:col-12 lg:col-12">
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="footer dialog-footer" *ngIf="displayDialog === true">
+  <p-button [disabled]="fbEnroll.invalid" id="FinalSubmitDialog_EnrollEmployeeBtn" (click)="confirmationDialog()">Enroll
+    Employee</p-button>
+</div>
+
+<div class=" text-center vertical-align-middle" *ngIf="displayDialog === false">
+  <div class="text-800 text-xl text-primary mb-3 mt-2">
+    Need to Fill all the Mandatory Sections for Enrolling an Employee.
+    <br />
+    <ul class="color_orientation m-0">
+      <li class="mandatory">Mandatory </li>
+      <li class="nomandatory">Non Mandatory </li>
+      <li class="filled">Completed</li>
+    </ul>
+  </div>
+  <div class="card border-1 surface-border mb-0 pb-2">
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <div class="grid" *ngIf="employeeObj?.pendingDetails">
+          <div class="col-12 lg:col-6 sm:col-6" *ngFor="let detail of employeeObj.pendingDetails.split(', ')">
+            <div [ngClass]="{'text-yellow-500': shouldHighlight(detail), 'text-red-500': !shouldHighlight(detail)}"
+              (click)="openAppropriateDialog(detail)">
+              <ng-container [ngSwitch]="detail">
+                <span *ngSwitchCase="'BankDetails'" class="icon-bank_details" style="font-size:60px;"
+                  id="FinalSubmitDialog_BankDetails"></span>
+                <span *ngSwitchCase="'FamilyInformation'" class="icon-family_restroom" style="font-size:60px;"
+                  id="FinalSubmitDialog_FamilyDetails"></span>
+                <span *ngSwitchCase="'UploadedDocuments'" class="icon-upload_file" style="font-size:60px;"
+                  id="FinalSubmitDialog_UploadDocuments"></span>
+                <span *ngSwitchCase="'EducationDetails'" class="icon-graduation-cap" style="font-size:60px;"
+                  id="FinalSubmitDialog_EducationDetails"></span>
+                <span *ngSwitchCase="'Addresses'" class="icon-adderss" style="font-size:60px;"
+                  id="FinalSubmitDialog_AddressesDetails"></span>
+                <span *ngSwitchCase="'WorkExperience'" class="icon-office_details" style="font-size:60px;"
+                  id="FinalSubmitDialog_WorkExperienceDetails"></span>
+              </ng-container><br />
+              {{ formatDetailLabel(detail) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="grid" *ngIf="employeeObj?.completedDetails">
+          <div class="col-12 lg:col-6 sm:col-6" *ngFor="let detail of employeeObj.completedDetails.split(', ')">
+            <div class=" text-green-500" (click)="openAppropriateDialog(detail)">
+              <ng-container [ngSwitch]="detail">
+                <span *ngSwitchCase="'BankDetails'" class="icon-bank_details" style="font-size:60px;"
+                  id="FinalSubmitDialog_BankDetails"></span>
+                <span *ngSwitchCase="'FamilyInformation'" class="icon-family_restroom" style="font-size:60px;"
+                  id="FinalSubmitDialog_FamilyDetails"></span>
+                <span *ngSwitchCase="'UploadedDocuments'" class="icon-upload_file" style="font-size:60px;"
+                  id="FinalSubmitDialog_UploadDocuments"></span>
+                <span *ngSwitchCase="'EducationDetails'" class="icon-graduation-cap" style="font-size:60px;"
+                  id="FinalSubmitDialog_EducationDetails"></span>
+                <span *ngSwitchCase="'WorkExperience'" class="icon-office_details" style="font-size:60px;"
+                  id="FinalSubmitDialog_WorkExperienceDetails"></span>
+                <span *ngSwitchCase="'Addresses'" class="icon-adderss" style="font-size:60px;"
+                  id="FinalSubmitDialog_AddressesDetails"></span>
+              </ng-container><br />
+              {{ formatDetailLabel(detail) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+</div>
+<!-- Confirmation Dialog -->
+<p-dialog [(visible)]="dialog" [header]="errorMessage ? 'Alert!!...' : 'Enroll Employee Credentials'" [modal]="true"
+  showEffect="fade" [breakpoints]="{'960px': '70%', '640px': '80%'}" [closable]="false">
+  <div class="flex flex-column justify-content-center">
+    <div class="grid">
+      <div class="card" *ngIf="displayDialog == true">
+        <div *ngIf="errorMessage">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div *ngIf="!errorMessage">
+          <div class="text-900 font-bold text-2xl text-primary mb-3 mt-2">Use This Credentials For Employee To
+            Login The HRMS Website...!</div>
+          <ul class="list-none p-0 m-0 text-600 mb-4">
+            <li class="mb-2">
+              <span class="font-semibold">UserName:</span> {{message?.username}}
+            </li>
+            <li class="mb-2">
+              <span class="font-semibold">Password:</span> {{message?.password}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer" *ngIf="displayDialog !== true;">
+    <div class="col-4" style="float:right">
+      <button pButton pRipple label="Okay" id="onBoardNavigateBtn" class="p-button-primary p-mr-2"
+        (click)="onClose()"></button>
+    </div>
+  </ng-template>
+</p-dialog>

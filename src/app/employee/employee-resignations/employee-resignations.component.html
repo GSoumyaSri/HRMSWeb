@@ -1,0 +1,436 @@
+<div class="col-12 p-0">
+    <div class="card" id="resignation-card">
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>Employee Resignations</h4>
+            </ng-template>
+            <ng-template pTemplate="center">
+               
+            </ng-template>
+            <ng-template pTemplate="right">
+            </ng-template>
+        </p-toolbar>
+        <!-- p-table -->
+        <p-table id="table" #dtresignation [value]="employeeResignations" dataKey="id" [rows]="10" [rowHover]="true"
+            [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+            [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [globalFilterFields]="globalFilterFields" paginatorDropdownAppendTo="body"
+            [autoLayout]="true" [rowsPerPageOptions]="[10,25,50]" [autoLayout]="true" responsiveLayout="scroll"
+            [resizableColumns]="true">
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                        (click)="clear(dtresignation)" id="Resignations-clear-btn"></button>
+                    <div>
+                        <div class="grid mt-3">
+                            <div *ngFor="let status of statuses" class="field-checkbox">
+                                <p-radioButton [inputId]="status.key" class="ml-3" name="status" [value]="status"
+                                    (click)="initResignations()" [(ngModel)]="selectedStatus" id="Resignation_Status">
+                                </p-radioButton>
+                                <label [for]="status.key" class="ml-1">{{ status.name }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="flex justify-content-between flex-column sm:flex-row">
+                            <div>
+                                <span class="p-input-icon-left mb-2 w-100 ">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" id="Resignations_inputSearch" #filter
+                                        (input)="onGlobalFilter(dtresignation, $event)" placeholder="Search Keyword"
+                                        class="w-full" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:5px" pFrozenColumn alignFrozen="right" [frozen]="true" pFrozenColumn
+                        *ngIf="this.selectedStatus.name!=='Withdrawn'">Actions
+                    </th>
+                    <th *ngFor="let col of headers" [pSortableColumn]="col.header" class="d-flex justify-content-between">
+                       
+                            {{col?.label}}
+                        
+                        
+                        
+                            <p-columnFilter type="text" [field]="col.header" display="menu" id="resignations_columnFilter">
+                            </p-columnFilter>
+                            <p-sortIcon [field]="col.header" id="resignations_columnSort"></p-sortIcon>
+                                            
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-resignation>
+                <tr>
+                    <td pFrozenColumn alignFrozen="right" [frozen]="true" class="text-center"
+                        *ngIf="this.selectedStatus.name==='Pending'">
+                        <div class="flex" *ngIf="this.permissions.CanManageResignationRequest">
+                            <span *ngIf="resignation?.acceptedById==null ">
+                                <button pButton pRipple icon="pi icon-accept" id="resignation_Accept_Button"
+                                    class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-2 p-0"
+                                    (click)="acceptResignation(resignation)"></button>
+                            </span>
+                            <span *ngIf="resignation?.rejectedById==null">
+                                <button pButton pRipple icon="pi pi-times" id="resignation_Reject_Button"
+                                    class="p-element p-ripple p-button-outlined p-button-danger p-button  p-0"
+                                    (click)="rejectResignation(resignation)"></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td pFrozenColumn alignFrozen="right" [frozen]="true" class="text-center"
+                        *ngIf="this.selectedStatus.name==='Accepted'">
+                        <div class="flex" *ngIf="this.permissions.CanManageResignationRequest">
+                            <ng-container *ngIf="(getAssets(resignation?.employeeId) | async) as assetAllotments">
+                                <span *ngIf="assetAllotments.length>0 || resignation?.hasHandedOverAssets!==true">
+                                    <button pButton pRipple icon="pi icon-accept" id="resignation_Assets_Revoke_Button"
+                                        class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-2 p-0"
+                                        (click)="collectAssets(resignation)"></button>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </td>
+                    <td pFrozenColumn alignFrozen="right" [frozen]="true" class="text-center"
+                        *ngIf="this.selectedStatus.name==='No Dues'">
+                        <div class="flex"
+                            *ngIf="this.permissions.CanManageResignationRequest && !resignation.personalEmailId">
+                            <ng-container>
+                                <span>
+                                    <button pButton pRipple icon="pi icon-accept"
+                                        id="resignation_Document_Submission_Button"
+                                        class="p-element p-ripple  p-button  p-button-outlined p-button-success mr-2 p-0"
+                                        (click)="DocumentsSubmission(resignation)"></button>
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="flex"
+                            *ngIf="this.permissions.CanManageResignationRequest && resignation.personalEmailId">
+                            <ng-container>
+                                <span>
+                                    <button (click)="exportPdf(resignation)" pButton class="p-button doc_button mx-2"
+                                        id="Resignations_PDFBtn" pTooltip="Download Resignation Documents PDF"
+                                        icon="pi pi-file-pdf"></button>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </td>
+                    <td>{{resignation?.employeeCode}}</td>
+                    <td>{{resignation?.employeeName}}</td>
+                    <td>{{resignation?.reason}}</td>
+                    <td class="text-wrap">{{this.selectedStatus.name==='Pending'?
+                        resignation?.description:resignation?.reviewDescription}}</td>
+                    <td>{{resignation?.createdBy}}</td>
+                    <td>{{resignation?.createdAt |date: mediumDate}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="md:text-center m-5" colspan="50%">No Resignations Found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-dialog [header]="this.dialogHeader" [(visible)]="acceptForm" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '70%', '600px': '80%'}" [style]="{width: '40%'}">
+    <div class="grid p-5">
+        <div class="card p-2 pb-0 orange-200 text-left applicant-p-block-home md:col-12 sm:col-12 mb-0" style="height:auto !important;">
+           <div class="grid">
+            <div class="col-4 text-center">
+                <div class="avatar_emp_dboard">
+                    <img [src]="empDetails?.photo ? empDetails?.photo : defaultPhoto" [alt]="empDetails?.photo"
+                        class="shadow-2 my-1 mx-0 employee_profile_pic avatar_emp_dboard" />
+                </div>
+                <br />
+                <h6 class="m-5 mb-2 mt-0 text-primary">{{ empDetails?.code}}</h6>
+                <h6 class="m-5 mb-2 mt-0 text-primary">{{ empDetails?.employeeName}}</h6>
+                <h6 class="m-5 mb-2 mt-0 text-green-500" pTooltip="Designation" tooltipPosition="bottom">{{
+                    empDetails?.designation}}</h6>
+            </div>
+            <div class="col-8">
+                <!-- <span class="inline-flex align-items-left mb-2">
+                    <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Employee Id"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.code}}</span>
+                </span><br/> -->
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi icon-intersex text-primary text-700 mr-2  dicon" pTooltip="Gender"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.gender}}</span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi pi-envelope text-primary text-700 mr-2 dicon" pTooltip="Email Id"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.officeEmailId}}</span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi icon-dateofjoining text-primary text-700 mr-2 dicon" pTooltip="Date of Joining"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.dateofJoin | date:dateOfJoining}}</span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi pi-mobile text-primary text-700 mr-2 dicon" pTooltip="Mobile Number"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.mobileNumber}}</span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi icon-birthday-cake text-primary text-700 mr-2 dicon" pTooltip="Date of Birth"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.originalDOB | date:dateOfJoining}}</span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-2">
+                    <i class="pi icon-POC text-700 font-bold text-primary mr-2 dicon" pTooltip="Reporting To"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">
+                        <span>{{ empDetails?.reportingTo}}</span>
+                    </span>
+                </span><br/>
+                <span class="inline-flex align-items-left mb-0">
+                    <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Experience In Company"
+                        tooltipPosition="top"></i>
+                    <span class="text-700 mr-2 dtext">{{ empDetails?.experienceInCompany}}</span>
+                </span>
+            </div>
+           </div>
+            
+           
+        </div>
+        <div class="flex flex-column align-items-center justify-content-center md:col-12 sm:col-12 ">
+            <form [formGroup]="fbResignation" class="w-100">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-6  mb-0" *ngIf="CanShowRelievingDate">
+                        <label class="required">Relieving Date:</label>&nbsp;
+                        <p-calendar formControlName="relievingDate" id="resignation_Last_Working_Date"
+                            appendTo="body" [readonlyInput]="true" [disabledDays]="[0, 6]"
+                            [disabledDates]="disabledDates" [minDate]="minDate"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['relievingDate'].touched && FormControls['relievingDate'].errors }"
+                            placeholder="Select Relieving Date" [showIcon]="true">
+                        </p-calendar>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:90%">
+                                <span
+                                    *ngIf="FormControls['relievingDate'].touched && FormControls['relievingDate'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['relievingDate'].errors?.['required']">
+                                        Please Select Relieving Date.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-6  mb-0" *ngIf="CanShowRelievingDate">
+                        <label class="required">Assets Handover Date:</label>&nbsp;
+                        <p-calendar formControlName="assetsReturnByDate" id="resignation_AssetsHandoverDate"
+                            [readonlyInput]="true" [disabledDays]="[0, 6]" [disabledDates]="disabledDates"
+                            [minDate]="minDate"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['assetsReturnByDate'].touched && FormControls['assetsReturnByDate'].errors }"
+                            appendTo="body" placeholder="Select Assets Handover Date" [showIcon]="true">
+                        </p-calendar>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:90%">
+                                <span
+                                    *ngIf="FormControls['assetsReturnByDate'].touched && FormControls['assetsReturnByDate'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['assetsReturnByDate'].errors?.['required']">
+                                        Please Select Assets Handover Date.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-12 mb-0" *ngIf="CanShowRelievingDate">
+                        <label class="required">Names to Send Email:</label>&nbsp;
+                        <span class="p-fluid">
+                            <p-autoComplete formControlName="email" [suggestions]="filteredemployees"
+                                    [forceSelection]="true"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['email'].touched && FormControls['email'].errors }"
+                                placeholder="Select Names to Send Email" (completeMethod)="filterEmployees($event)"
+                                field="employeeName" [multiple]="true">
+                            </p-autoComplete>
+                        </span>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:90%">
+                                <span *ngIf="FormControls['email'].touched && FormControls['email'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['email'].errors?.['required']">
+                                        Please Select Names to Send Email.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-12 mb-0">
+                        <label class="required">Description:</label>&nbsp;
+                        <textarea rows="2" cols="30" pInputTextarea formControlName="reviewDescription" #note
+                            class="freeze_text-area" [maxlength]="256" placeholder="Enter Description"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['reviewDescription'].touched &&FormControls['reviewDescription'].errors }"
+                            (keydown)="restrictSpaces($event)" id="resignation_Accept_or_Reject_Description"></textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['reviewDescription'].touched && FormControls['reviewDescription'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['reviewDescription'].errors?.['required']">
+                                        Please Enter Description.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{note.value.length}}/256</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div *ngIf="CanShowRelievingDate">
+                        <div style="margin-bottom: 15px;">
+                            
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                           
+
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                       
+                    </div> -->
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center p-3" style="float:right">
+            <button pButton pRipple type="submit" class="p-button-raised p-button-primary" id="resignation_Accept"
+                *ngIf="CanShowRelievingDate" (click)="submitAcceptResignation()" [disabled]="!this.fbResignation.valid"
+                label="Submit"></button>
+        </div>
+        <div class="flex justify-content-center p-3" style="float:right">
+            <button pButton pRipple type="submit" class="p-button-raised p-button-primary" id="resignation_reject"
+                *ngIf="!CanShowRelievingDate" (click)="submitRejectResignation()" [disabled]="!this.fbResignation.valid"
+                label="Submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [header]="this.DocumentDialogHeader" [(visible)]="documentForm" [modal]="true" showEffect="fade"
+    [breakpoints]="{'1060px': '90%', '800px': '100%'}">
+    <div class="flex col-12">
+        <div class="card p-4 pb-0 orange-200 text-left applicant-p-block-home md:col-5 sm:col-12 mb-0">
+            <div class="text-center">
+                <div class="avatar_emp_dboard">
+                    <img [src]="empDetails?.photo ? empDetails?.photo : defaultPhoto" [alt]="empDetails?.photo"
+                        class="shadow-2 my-1 mx-0 employee_profile_pic avatar_emp_dboard" />
+                </div>
+                <br />
+                <h5 class="m-5 mb-2 mt-0 text-primary">{{ empDetails?.employeeName}}</h5>
+                <h6 class="m-5 mb-2 mt-0 text-green-500" pTooltip="Designation" tooltipPosition="bottom">{{
+                    empDetails?.designation}}</h6>
+            </div>
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Employee Id"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.code}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi icon-intersex text-primary text-700 mr-2  dicon" pTooltip="Gender"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.gender}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi pi-envelope text-primary text-700 mr-2 dicon" pTooltip="Email Id"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.officeEmailId}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi icon-dateofjoining text-primary text-700 mr-2 dicon" pTooltip="Date of Joining"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.dateofJoin | date:dateOfJoining}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi pi-mobile text-primary text-700 mr-2 dicon" pTooltip="Mobile Number"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.mobileNumber}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi icon-birthday-cake text-primary text-700 mr-2 dicon" pTooltip="Date of Birth"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.originalDOB | date:dateOfJoining}}</span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-2">
+                <i class="pi icon-POC text-700 font-bold text-primary mr-2 dicon" pTooltip="Reporting To"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">
+                    <span>{{ empDetails?.reportingTo}}</span>
+                </span>
+            </span><br />
+            <span class="inline-flex align-items-left mb-0">
+                <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Experience In Company"
+                    tooltipPosition="top"></i>
+                <span class="text-700 mr-2 dtext">{{ empDetails?.experienceInCompany}}</span>
+            </span>
+        </div>
+        <div class="flex flex-column align-items-center justify-content-center md:col-7 sm:col-12">
+            <form [formGroup]="fbRelievingDocuments">
+                <div class="p-fluid p-formgrid">
+                    <div style="margin-bottom:5px;">
+                        <label class="required">Personal Email Id:</label>&nbsp;
+                        <input type="text" id="email_Id" placeholder="Enter Personal Email Id" pInputText
+                            formControlName="employeePersonalMail" #email [maxlength]="maxLength.name"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControl['employeePersonalMail'].touched && FormControl['employeePersonalMail'].errors }" />
+
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControl['employeePersonalMail'].touched && FormControl['employeePersonalMail'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControl['employeePersonalMail'].errors?.['required']">
+                                        Please Enter Personal Email Id.</div>
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControl['employeePersonalMail'].errors?.['pattern']">
+                                        Please Enter a valid Email Id.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{email.value.length}}/50 </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div formArrayName="relievingDocs" class="col-12">
+                        <table class="table">
+                            <tr *ngFor="let formGroup of relievingDocsFormArray.controls; let i = index"
+                                [formGroupName]="i">
+                                <td>{{ i + 1 }}.</td>
+                                <td>{{ relievingDocumentsList[i]?.name }}:</td>
+                                <td>
+                                    <p-checkbox [binary]="true" id="resignation_document_checkbox_Id"
+                                        formControlName="isChecked" class="m-1"> </p-checkbox>
+                                </td>
+                                <td>
+                                    <p-calendar id="applicant_DateOfBirth" [readonlyInput]="true"
+                                        [minDate]="minDateForDocumentsSubmission" placeholder="Select Date"
+                                        appendTo="body" [showIcon]="true" id="resignation_document_submit_date"
+                                        [ngClass]="{ 'is-invalid ng-dirty': formGroup.get('isChecked').value && (formGroup.get('isChecked').touched 
+                                        && formGroup.get('willBeGivenAt').untouched)||(formGroup.get('willBeGivenAt').touched && formGroup.get('willBeGivenAt').invalid)}"
+                                        formControlName="willBeGivenAt"></p-calendar>
+                                    <div
+                                        *ngIf="formGroup.get('isChecked').value && (formGroup.get('isChecked').touched && formGroup.get('willBeGivenAt').untouched)||
+                                        (formGroup.get('willBeGivenAt').touched && formGroup.get('willBeGivenAt').invalid)">
+                                        <small class="ng-invalid ng-touched p-error">Date is required</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center p-3" style="float:right">
+            <button pButton pRipple type="submit" class="p-button-raised p-button-primary"
+                id="resignation_document_submit" (click)="documentSubmitForm()"
+                [disabled]="!this.fbRelievingDocuments.valid" label="Submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>

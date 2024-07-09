@@ -1,0 +1,1030 @@
+<div class=" align-items-center justify-content-center">
+    <form [formGroup]="fbApplicant">
+        <div class="grid  p-5 content_scroll" style="height:500px;">
+            <div class="field col-12 md:col-8">
+                <label for="singleFile"
+                    class="p-element p-ripple p-button-raised p-button-primary p-button p-component upload-doc">
+                    <i class="pi pi-paperclip"></i> Upload Resume &nbsp; <span *ngIf="selectedFileName"> - {{
+                        selectedFileName }}</span> <br />
+                    *Doc, Docx, PDF (Max file size- 6MB)
+
+
+                </label>
+                <input id="singleFile" #fileUpload name="uploadResume" [accept]="fileTypes" type="file"
+                    [disabled]="!this.fbApplicant.valid" hidden="true" (change)="onFileChange($event)"
+                    formControlName="resumeUrl" />
+            </div>
+            <div class="field col-12 md:col-4">
+                <button pButton pRipple type="submit" label="Pre-Fill Application "
+                    class=" p-button-outlined p-button-primary mt-3 w-100" id="prefillapplicant_btn"></button>
+            </div>
+            <div class="col-12 roles-container ">
+                <p-fieldset legend="Basic Info" [toggleable]="true">
+                    <div class="p-fluid p-formgrid grid ">
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Name:</label>
+                            <input type="text" id="applicant_Name" pInputText formControlName="name" #name
+                                [maxlength]="50" alphaOnly placeholder="Enter Name" (keydown)="restrictSpaces($event)"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['name'].touched && FormControls['name'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['name'].touched && FormControls['name'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['name'].errors?.['required']">
+                                            Please Enter Name.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['name'].errors?.['minlength']">
+                                            Name Min Length Is 2.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{name.value.length}}/{{maxLength.name}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Gender:</label>
+                            <p-dropdown appendTo="body" id="applicant_Gender" placeholder="Select Gender"
+                                [autoDisplayFirst]="false" [options]="genders" optionLabel="name"
+                                formControlName="gender" optionValue="name" (ngModelChange)="onGenderChange()"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['gender'].touched && FormControls['gender'].errors }">
+                            </p-dropdown>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['gender'].touched && FormControls['gender'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['gender'].errors?.['required']">
+                                            Please Select Gender.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">DOB:</label>
+                            <p-calendar id="applicant_DateOfBirth" [readonlyInput]="true" placeholder="Select DOB"
+                                appendTo="body" [showIcon]="true" mask="99/99/9999" formControlName="dob"
+                                [maxDate]="currentDate"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['dob'].touched && FormControls['dob'].errors }">
+                            </p-calendar>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['dob'].touched && FormControls['dob'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['dob'].errors?.['required']">
+                                            Please Select DOB.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Email ID:</label>
+                            <input type="text" id="applicant_Email" pInputText formControlName="emailId"
+                                [maxlength]="50" placeholder="Enter Email ID" alphanumeric #email
+                                (keydown)="restrictSpaces($event)"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['emailId'].touched && FormControls['emailId'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['emailId'].touched && FormControls['emailId'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['emailId'].errors?.['required']">
+                                            Please Enter Email ID.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['emailId'].errors?.['pattern']">
+                                            Must in Email ID Format.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{email.value.length}}/{{maxLength.name}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Mobile Number:</label>
+                            <input type="text" id="applicant_MobileNumber" pInputText formControlName="mobileNo"
+                                numericOnly placeholder="Enter Mobile Number" #mobileNo
+                                (keydown)="restrictSpaces($event)" [maxlength]="10"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['mobileNo'].touched && FormControls['mobileNo'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['mobileNo'].touched && FormControls['mobileNo'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['mobileNo'].errors?.['required']">
+                                            Please Enter Mobile Number.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['mobileNo'].errors?.['pattern']">
+                                            First Digit Should Be Greater Than 4 And Must Contains 10 Digits.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{mobileNo.value.length}}/{{maxLength.phoneNo}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Nationality:</label>
+                            <p-dropdown appendTo="body" id="applicant_Nationality" [autoDisplayFirst]="false"
+                                placeholder="Select Nationality" formControlName="nationalityId" [options]="nationality"
+                                optionLabel="name" optionValue="lookupDetailId"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['nationalityId'].touched && FormControls['nationalityId'].errors }">
+                            </p-dropdown>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span
+                                        *ngIf="FormControls['nationalityId'].touched && FormControls['nationalityId'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['nationalityId'].errors?.['required']">
+                                            Please Select Nationality.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Address Line1:</label>
+                            <input type="text" id="applicant_AddressLine1" pInputText placeholder="Enter Address Line1"
+                                #addressLine1 formControlName="addressLine1" (keydown)="restrictSpaces($event)"
+                                [maxlength]="50"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['addressLine1'].touched && FormControls['addressLine1'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span
+                                        *ngIf="FormControls['addressLine1'].touched && FormControls['addressLine1'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['addressLine1'].errors?.['required']">
+                                            Please Enter Address Line1.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['addressLine1'].errors?.['minlength']">
+                                            Address Line1 Min Length Is 2.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{addressLine1.value.length}}/{{maxLength.name}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label>Address Line2:</label>
+                            <input type="text" id="applicant_AddressLine2" pInputText placeholder="Enter Address Line2"
+                                [maxlength]="50" formControlName="addressLine2" (keydown)="restrictSpaces($event)" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span
+                                        *ngIf="FormControls['addressLine2'].touched && FormControls['addressLine2'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['addressLine2'].errors?.['minlength']">
+                                            Address Line2 Min Length Is 2.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label>Landmark:</label>
+                            <input type="text" id="applicant_Landmark" pInputText placeholder="Enter Landmark"
+                                [maxlength]="50" formControlName="landmark" (keydown)="restrictSpaces($event)" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['landmark'].touched && FormControls['landmark'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['landmark'].errors?.['minlength']">
+                                            Landmark Min Length Is 2.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Zip Code:</label>
+                            <input type="text" id="applicant_ZipCode" pInputText placeholder="Enter Zip Code"
+                                [maxlength]="6" formControlName="zipCode" numericOnly #zipCode
+                                (keydown)="restrictSpaces($event)"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['zipCode'].touched && FormControls['zipCode'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['zipCode'].touched && FormControls['zipCode'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['zipCode'].errors?.['required']">
+                                            Please Enter Zip Code.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['zipCode'].errors?.['pattern']">
+                                            First Digit Should Be Greater Than 0 And Must Contains 6 Digits.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{zipCode.value.length}}/{{maxLength.pinCode}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">City:</label>
+                            <input type="text" id="applicant_City" pInputText placeholder="Enter City"
+                                formControlName="city" #city (keydown)="restrictSpaces($event)" alphaOnly
+                                [maxlength]="50"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['city'].touched && FormControls['city'].errors }" />
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['city'].touched && FormControls['city'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['city'].errors?.['required']">
+                                            Please Enter City.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['city'].errors?.['minlength']">
+                                            City Min Length Is 2.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{city.value.length}}/{{maxLength.name}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Country:</label>
+                            <p-dropdown id="applicant_Country" appendTo="body" placeholder="Select Country"
+                                formControlName="countryId" [options]="countries" optionLabel="name"
+                                optionValue="lookupDetailId" (onChange)="getStatesByCountryId($event.value)"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['countryId'].touched && FormControls['countryId'].errors }">
+                            </p-dropdown>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span
+                                        *ngIf="FormControls['countryId'].touched && FormControls['countryId'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['countryId'].errors?.['required']">
+                                            Please Select Country.</div>
+                                    </span>
+                                </div>
+                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                    <small>{{city.value.length}}/{{maxLength.name}} </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">State:</label>
+                            <p-dropdown id="applicant_State" appendTo="body" placeholder="Select State"
+                                formControlName="stateId" [options]="states" optionLabel="name"
+                                optionValue="lookupDetailId"
+                                [ngClass]="{ 'is-invalid ng-dirty': FormControls['stateId'].touched && FormControls['stateId'].errors }">
+                            </p-dropdown>
+                            <div class="flex">
+                                <div class="align-left w-60" style="width:70%">
+                                    <span *ngIf="FormControls['stateId'].touched && FormControls['stateId'].invalid">
+                                        <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['countryId'].untouched && FormControls['stateId'].touched ||
+                                          FormControls['countryId'].invalid && FormControls['stateId'].touched">
+                                            Please Select Country First.</div>
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['countryId'].touched &&  FormControls['stateId'].errors?.['required'] &&  FormControls['countryId'].valid">
+                                            Please Select State.</div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-4">
+                            <label class="required">Is Fresher:</label><br />
+                            <p-inputSwitch formControlName="isFresher" id="isFresher_tglbtn"></p-inputSwitch>
+                        </div>
+                        <div class="field col-12 md:col-4" style="display: grid;">
+                            <div class="div1">
+                                <img [src]="this.fbApplicant.get('photo').value  ? this.fbApplicant.get('photo').value : this.defaultPhoto"
+                                    onerror="this.onerror=null;" alt="photo" width="100px" class="up_logo">
+                                <button *ngIf="this.fbApplicant.get('photo').value" class="cancel-button" (click)="cancelSelection($event)"><i
+                                        class="pi pi-times"></i></button>
+                            </div>
+
+                            <label for="singleFile"
+                                class="p-element p-ripple p-button-raised p-button-primary p-button p-component mt-1"
+                                style="width:auto !important; white-space: nowrap;">
+                                <i class="pi pi-paperclip"></i> Choose Photo
+                            </label>
+                            <input (change)="fileChangeEvent($event)" id="singleFile" #fileUpload name="ApplicantPic"
+                                type="file" [accept]="fileTypes" hidden />
+                            <!-- <app-image-cropper [imageChangedEvent]="imageToCrop" (done)="onCrop($event)">
+                            </app-image-cropper> -->
+                        </div>
+                    </div>
+                </p-fieldset>
+                <br>
+                <!-- Applicant Education Details -->
+                <p-fieldset legend="Education" [toggleable]="true">
+                    <div class="text-right">
+                        <button pButton pRipple id="education_Btn" class="mb-3 pi pi-plus"
+                            (click)="addApplicantEducationDetails()"></button>
+                    </div>
+
+                    <div class="scrolling_content" formArrayName="applicantEducationDetails">
+                        <p-table #dt2 [value]="faApplicantEducationDetails().controls" dataKey="id" [rows]="10"
+                            [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                            [paginator]="false" [autoLayout]="false" [autoLayout]="true" responsiveLayout="scroll"
+                            [tableStyle]="{ width: 'max-content'}" [rowsPerPageOptions]="[10,25,50]" [scrollable]="true"
+                            scrollDirection="vertical" scrollHeight="300px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">Curriculum<label class="required"></label> </th>
+                                    <th class="text-center">Stream<label class="required"></label> </th>
+                                    <th class="text-center">Country<label class="required"></label></th>
+                                    <th class="text-center">State<label class="required"></label></th>
+                                    <th class="text-center">Institution Name </th>
+                                    <th class="text-center">Authority Name <label class="required"></label></th>
+                                    <th class="text-center">Year Of Completion<label class="required"></label></th>
+                                    <th class="text-center">Grading Method<label class="required"></label></th>
+                                    <th class="text-center">Grading Value <label class="required"></label></th>
+                                    <th *ngIf="fbApplicant.controls['applicantEducationDetails'].value.length > 0"></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-educationDetailsIndex="rowIndex">
+                                <tr [formGroupName]="educationDetailsIndex">
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="circulum_dropdown" [autoDisplayFirst]="false"
+                                            placeholder="Select Curriculum" [options]="curriculum" optionLabel="name"
+                                            optionValue="lookupDetailId" formControlName="curriculumId" appendTo="body"
+                                            (onChange)="getStreamByCurriculumId($event.value,educationDetailsIndex)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'curriculumId')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'curriculumId')?.errors?.['required'] }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlEducation(educationDetailsIndex, 'curriculumId').touched && formArrayControlEducation(educationDetailsIndex, 'curriculumId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'curriculumId').errors?.['required']">
+                                                        Please Select Curriculum.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="stream_dropdown" appendTo="body" placeholder="Select Stream"
+                                            formControlName="streamId" [options]="stream[educationDetailsIndex]"
+                                            optionLabel="name" optionValue="lookupDetailId" [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'streamId')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'streamId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlEducation(educationDetailsIndex,'streamId').touched && formArrayControlEducation(educationDetailsIndex,'streamId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlEducation(educationDetailsIndex,'curriculumId').untouched && formArrayControlEducation(educationDetailsIndex,'streamId').touched ||
+                                                      formArrayControlEducation(educationDetailsIndex,'curriculumId').invalid && formArrayControlEducation(educationDetailsIndex,'streamId').touched">
+                                                        Please Select Curriculum First.</div>
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex,'curriculumId').touched &&  formArrayControlEducation(educationDetailsIndex,'streamId').errors?.['required'] && formArrayControlEducation(educationDetailsIndex,'curriculumId').valid">
+                                                        Please Select Stream.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="edu_Country" appendTo="body" placeholder="Select Country"
+                                            formControlName="countryId" [options]="countries" optionLabel="name"
+                                            optionValue="lookupDetailId"
+                                            (onChange)="onchangeStateBasedOnCountry($event.value,educationDetailsIndex)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'countryId')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'countryId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlEducation(educationDetailsIndex, 'countryId').touched &&formArrayControlEducation(educationDetailsIndex, 'countryId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlEducation(educationDetailsIndex, 'countryId').errors?.['required']">
+                                                        Please Select Country.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="edu_State" appendTo="body" formControlName="stateId"
+                                            placeholder="Select State"
+                                            [options]="statesbasedOnCountryId[educationDetailsIndex]" optionLabel="name"
+                                            optionValue="lookupDetailId" [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'stateId')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'stateId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlEducation(educationDetailsIndex,'stateId').touched && formArrayControlEducation(educationDetailsIndex,'stateId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlEducation(educationDetailsIndex,'countryId').untouched && formArrayControlEducation(educationDetailsIndex,'stateId').touched ||
+                                                      formArrayControlEducation(educationDetailsIndex,'countryId').invalid && formArrayControlEducation(educationDetailsIndex,'stateId').touched">
+                                                        Please Select Country First.</div>
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex,'countryId').touched &&  formArrayControlEducation(educationDetailsIndex,'stateId').errors?.['required'] && formArrayControlEducation(educationDetailsIndex,'countryId').valid">
+                                                        Please Select State.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <input type="text" id="institution_Name" pInputText alphaOnly
+                                            formControlName="institutionName" placeholder="Enter Institute Name"
+                                            #institutename [maxLength]="50" (keydown)="restrictSpaces($event)" />
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlEducation(educationDetailsIndex, 'institutionName').touched && formArrayControlEducation(educationDetailsIndex, 'institutionName').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'institutionName').errors?.['minlength']">
+                                                        Institute Name Min Length Is 2.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <input type="text" id="authority_Name" pInputText alphaOnly
+                                            placeholder="Enter Authority Name" formControlName="authorityName"
+                                            [maxLength]="50" #authorityname (keydown)="restrictSpaces($event)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'authorityName')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'authorityName')?.errors }" />
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlEducation(educationDetailsIndex, 'authorityName').touched && formArrayControlEducation(educationDetailsIndex, 'authorityName').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'authorityName').errors?.['required']">
+                                                        Please Enter Authority Name.</div>
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'authorityName').errors?.['minlength']">
+                                                        Authority Name Min Length Is 2.</div>
+                                                </span>
+                                            </div>
+                                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                                <small>{{authorityname.value.length}}/{{maxLength.name}} </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-calendar id="edu_YearOfCompletion" [readonlyInput]="true" appendTo="body"
+                                            [showIcon]="true" mask="99/99/9999" placeholder="Select Year Of Completion"
+                                            formControlName="yearOfCompletion" [style]="{'width':'100%'}"
+                                            [inputStyle]="{'width':'100%'}" [maxDate]="currentDate"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'yearOfCompletion')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'yearOfCompletion')?.errors }">
+                                        </p-calendar>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlEducation(educationDetailsIndex, 'yearOfCompletion').touched &&formArrayControlEducation(educationDetailsIndex, 'yearOfCompletion').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlEducation(educationDetailsIndex, 'yearOfCompletion').errors?.['required']">
+                                                        Please Select Year Of Completion.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="grading_Method" appendTo="body"
+                                            placeholder="Select Grading Method" formControlName="gradingMethodId"
+                                            [options]="gradingMethod" optionLabel="name" optionValue="lookupDetailId"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'gradingMethodId')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'gradingMethodId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlEducation(educationDetailsIndex, 'gradingMethodId').touched &&formArrayControlEducation(educationDetailsIndex, 'gradingMethodId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlEducation(educationDetailsIndex, 'gradingMethodId').errors?.['required']">
+                                                        Please Select Grading Method.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <input type="text" id="grading_Value" pInputText
+                                            placeholder="Enter Grading Value" formControlName="gradingValue"
+                                            [maxLength]="5" #gradingValue (keydown)="restrictSpaces($event)"
+                                            appNumericInput
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlEducation(educationDetailsIndex, 'gradingValue')?.touched &&
+                                            formArrayControlEducation(educationDetailsIndex, 'gradingValue')?.errors }">
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlEducation(educationDetailsIndex, 'gradingValue').touched && formArrayControlEducation(educationDetailsIndex, 'gradingValue').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'gradingValue').errors?.['required']">
+                                                        Please Select Grading Value.</div>
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlEducation(educationDetailsIndex, 'gradingValue').errors?.['minlength']">
+                                                        Grading Value Min Length Is 2.</div>
+                                                </span>
+                                            </div>
+                                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                                <small>{{gradingValue.value.length}}/{{maxLength.gradingvalues}}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"
+                                        *ngIf="fbApplicant.controls['applicantEducationDetails'].value.length > 0">
+                                        <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                            *ngIf="!this.faApplicantEducationDetails().controls[educationDetailsIndex].get('educationId')?.value"
+                                            (click)="faApplicantEducationDetails().removeAt(educationDetailsIndex)"></i>
+                                        <i class="pi pi-fw pi-verified text-3xl"
+                                            *ngIf="this.faApplicantEducationDetails().controls[educationDetailsIndex].get('educationId')?.value"></i>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-fieldset>
+                <br>
+                <!-- Applicant Certification Details -->
+                <p-fieldset legend="Certification Details" [toggleable]="true">
+                    <div class="text-right">
+                        <button pButton pRipple id="Certification_Btn" class="mb-3 pi pi-plus"
+                            (click)="addApplicantCertificationDetails()"></button>
+                    </div>
+                    <div class="scrolling_content" formArrayName="applicantCertifications">
+                        <p-table #dt2 [value]="faApplicantCertificationDetails().controls" dataKey="id" [rows]="10"
+                            [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                            [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                            [rowsPerPageOptions]="[10,25,50]" [scrollable]="true" scrollDirection="vertical"
+                            scrollHeight="300px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">Certification Name<label class="required"></label> </th>
+                                    <th class="text-center">Franchise Name </th>
+                                    <th class="text-center">Year Of Completion<label class="required"></label></th>
+                                    <th class="text-center">Results<label class="required"></label></th>
+                                    <th *ngIf="fbApplicant.controls['applicantCertifications'].value.length > 0">
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-certificationDetailsIndex="rowIndex">
+                                <tr [formGroupName]="certificationDetailsIndex">
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="certificat_Name" formControlName="certificateId"
+                                            placeholder="Select Certificate Name" [options]="certificates"
+                                            optionLabel="name" optionValue="lookupDetailId" appendTo="body"
+                                            [style]="{'width':'100%'}"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlCertificaiton(certificationDetailsIndex, 'certificateId')?.touched &&
+                                            formArrayControlCertificaiton(certificationDetailsIndex, 'certificateId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlCertificaiton(certificationDetailsIndex, 'certificateId').touched && formArrayControlCertificaiton(certificationDetailsIndex, 'certificateId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlCertificaiton(certificationDetailsIndex, 'certificateId').errors?.['required']">
+                                                        Please Select Certificate Name.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <input type="text" id="franchise_Name" pInputText
+                                            placeholder="Enter Franchise Name" [maxLength]="50" alphaOnly
+                                            formControlName="franchiseName" [style]="{'width':'100%'}" #franchisename
+                                            (keydown)="restrictSpaces($event)" />
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlCertificaiton(certificationDetailsIndex, 'franchiseName').touched && formArrayControlCertificaiton(certificationDetailsIndex, 'franchiseName').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlCertificaiton(certificationDetailsIndex, 'franchiseName').errors?.['minlength']">
+                                                        Franchise Name Min Length Is 2.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p-calendar id="cer_YearOfCompletion" [readonlyInput]="true"
+                                            placeholder="Select Year Of Completion" appendTo="body" [showIcon]="true"
+                                            mask="99/99/9999" formControlName="yearOfCompletion"
+                                            [style]="{'width':'100%'}" [maxDate]="currentDate"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlCertificaiton(certificationDetailsIndex, 'yearOfCompletion')?.touched &&
+                                            formArrayControlCertificaiton(certificationDetailsIndex, 'yearOfCompletion')?.errors }">
+                                        </p-calendar>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf=" formArrayControlCertificaiton(certificationDetailsIndex, 'yearOfCompletion').touched && formArrayControlCertificaiton(certificationDetailsIndex, 'yearOfCompletion').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlCertificaiton(certificationDetailsIndex, 'yearOfCompletion').errors?.['required']">
+                                                        Please Select Year Of Completion.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <input type="text" id="cer_Results" pInputText placeholder="Enter Results"
+                                            [maxLength]="50" alphaOnly #results formControlName="results"
+                                            [style]="{'width':'100%'}" (keydown)="restrictSpaces($event)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlCertificaiton(certificationDetailsIndex, 'results')?.touched &&
+                                            formArrayControlCertificaiton(certificationDetailsIndex, 'results')?.errors }">
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlCertificaiton(certificationDetailsIndex, 'results').touched && formArrayControlCertificaiton(certificationDetailsIndex, 'results').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlCertificaiton(certificationDetailsIndex, 'results').errors?.['required']">
+                                                        Please Enter Results.</div>
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf=" formArrayControlCertificaiton(certificationDetailsIndex, 'results').errors?.['minlength']">
+                                                        Results Min Length Is 2.</div>
+                                                </span>
+                                            </div>
+                                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                                <small>{{results.value.length}}/{{maxLength.name}} </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"
+                                        *ngIf="fbApplicant.controls['applicantCertifications'].value.length > 0">
+                                        <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                            *ngIf="!this.faApplicantCertificationDetails().controls[certificationDetailsIndex].get('certificationId')?.value"
+                                            (click)="  faApplicantCertificationDetails().removeAt(certificationDetailsIndex)"></i>
+                                        <i class="pi pi-fw pi-verified text-3xl"
+                                            *ngIf="this.faApplicantCertificationDetails().controls[certificationDetailsIndex].get('certificationId')?.value"></i>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-fieldset>
+                <br>
+                <!-- Applicant Experience Details -->
+                <div *ngIf="!fbApplicant.get('isFresher').value">
+                    <p-fieldset legend="Experience Details" [toggleable]="true">
+                        <div class="text-right">
+                            <button pButton pRipple id="Experience_Btn" class="mb-3 pi pi-plus"
+                                (click)="addApplicantExperienceDetails()"></button>
+                        </div>
+                        <div class=" scrolling_content" formArrayName="applicantWorkExperiences">
+                            <p-table #dt2 [value]="faApplicantExperienceDetails().controls" dataKey="id" [rows]="10"
+                                [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                                [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                                [tableStyle]="{ width: 'max-content'}" [rowsPerPageOptions]="[10,25,50]"
+                                [scrollable]="true" scrollDirection="vertical" scrollHeight="300px">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th class="text-center">Company Name<label class="required"></label></th>
+                                        <th class="text-center">Company Location</th>
+                                        <th class="text-center">Company Employee Id</th>
+                                        <th class="tex0t-center">Designation<label class="required"></label></th>
+                                        <th class="text-center">Nature Of Work<label class="required"></label></th>
+                                        <th class="text-center">Worked On Projects</th>
+                                        <th class="text-center">Date Of Joining<label class="required"></label></th>
+                                        <th class="text-center">Date Of Reliving<label class="required"></label></th>
+                                        <th class="text-center">Country<label class="required"></label></th>
+                                        <th class="text-center">State<label class="required"></label></th>
+                                        <th *ngIf="fbApplicant.controls['applicantWorkExperiences'].value.length > 0">
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-experienceDetailsIndex="rowIndex">
+                                    <tr [formGroupName]="experienceDetailsIndex">
+                                        <td class="vertical-align-top">
+                                            <input type="text" id="company_Name" pInputText
+                                                placeholder="Enter Company Name" formControlName="companyName"
+                                                [maxLength]="50" #companyname alphaOnly
+                                                (keydown)="restrictSpaces($event)"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'companyName')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'companyName')?.errors }">
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'companyName').touched &&formArrayControlWorkExperience(experienceDetailsIndex, 'companyName').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'companyName').errors?.['required']">
+                                                            Please Enter Company Name.</div>
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex, 'companyName').errors?.['minlength']">
+                                                            Company Name Min Length Is 2.</div>
+                                                    </span>
+                                                </div>
+                                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                                    <small>{{companyname.value.length}}/{{maxLength.name}} </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <input type="text" id="comapny_Location" pInputText [maxLength]="50"
+                                                placeholder="Enter Company Location" formControlName="companyLocation"
+                                                #companylocation alphaOnly (keydown)="restrictSpaces($event)">
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'companyLocation').touched &&formArrayControlWorkExperience(experienceDetailsIndex, 'companyLocation').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex, 'companyLocation').errors?.['minlength']">
+                                                            Company Location Min Length Is 2.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <input type="text" id="company_EmployeeId" pInputText [maxLength]="10"
+                                                alphaNumeric (keydown)="restrictSpaces($event)"
+                                                placeholder="Enter Company Employee Id"
+                                                formControlName="companyEmployeeId" #companyemployeeId />
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'companyEmployeeId').touched &&formArrayControlWorkExperience(experienceDetailsIndex, 'companyEmployeeId').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex, 'companyEmployeeId').errors?.['minlength']">
+                                                            Company Location Min Length Is 2.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <p-dropdown id="exp_Designation" appendTo="body"
+                                                placeholder="Select Designation" formControlName="designationId"
+                                                [options]="designations" optionLabel="name" optionValue="lookupDetailId"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'designationId')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'designationId')?.errors }">
+                                            </p-dropdown>
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'designationId').touched && formArrayControlWorkExperience(experienceDetailsIndex, 'designationId').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'designationId').errors?.['required']">
+                                                            Please Select Designation.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <input type="text" id="exp_NatureOfWork" pInputText
+                                                placeholder="Enter Nature Of Work" formControlName="natureOfWork"
+                                                #natureofwork alphaOnly (keydown)="restrictSpaces($event)"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork')?.errors }" />
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork').touched && formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork').errors?.['required']">
+                                                            Please Enter Nature Of Work.</div>
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex, 'natureOfWork').errors?.['minlength']">
+                                                            Nature Of Work Min Length Is 2.</div>
+                                                    </span>
+                                                </div>
+                                                <div class="align-right w-40" style="width:30%; text-align:right;">
+                                                    <small>{{natureofwork.value.length}}/{{maxLength.name}} </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <input type="text" id="exp_WorkedOnProjects" pInputText
+                                                (keydown)="restrictSpaces($event)" alphaOnly
+                                                placeholder="Enter Worked On Projects" alphaOnly #workedOnProjects
+                                                formControlName="workedOnProjects" />
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'workedOnProjects').touched && formArrayControlWorkExperience(experienceDetailsIndex, 'workedOnProjects').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex, 'workedOnProjects').errors?.['minlength']">
+                                                            Worked On Projects Min Length Is 2.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <p-calendar id="exp_DateOfJoining" [readonlyInput]="true" appendTo="body"
+                                                [showIcon]="true" mask="99/99/9999" placeholder="Select Date Of Joining"
+                                                formControlName="dateOfJoining" [style]="{'width':'100%'}"
+                                                [maxDate]="currentDate"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfJoining')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfJoining')?.errors }">
+                                            </p-calendar>
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfJoining').touched && formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfJoining').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfJoining').errors?.['required']">
+                                                            Please Select Date Of Joining.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <p-calendar id="exp_DateOfReliving" [readonlyInput]="true" appendTo="body"
+                                                [showIcon]="true" mask="99/99/9999"
+                                                placeholder="Select Date Of Reliving" formControlName="dateOfReliving"
+                                                [style]="{'width':'100%'}" [maxDate]="currentDate"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfReliving')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfReliving')?.errors }">
+                                            </p-calendar>
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfReliving').touched &&formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfReliving').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'dateOfReliving').errors?.['required']">
+                                                            Please Select Date Of Reliving.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <p-dropdown id="exp_Country" appendTo="body" placeholder="Select Country"
+                                                [options]="countries" optionLabel="name"
+                                                (onChange)="onchangeStateBasedOnCountry($event.value,experienceDetailsIndex)"
+                                                optionValue="lookupDetailId" formControlName="countryId"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'countryId')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'countryId')?.errors }">
+                                            </p-dropdown>
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'countryId').touched && formArrayControlWorkExperience(experienceDetailsIndex, 'countryId').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex, 'countryId').errors?.['required']">
+                                                            Please Select Country.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="vertical-align-top">
+                                            <p-dropdown id="exp_State" appendTo="body" placeholder="Select State"
+                                                formControlName="stateId"
+                                                [options]="statesbasedOnCountryId[experienceDetailsIndex]"
+                                                optionLabel="name" optionValue="lookupDetailId"
+                                                [ngClass]="{'is-invalid ng-dirty': formArrayControlWorkExperience(experienceDetailsIndex, 'stateId')?.touched &&
+                                            formArrayControlWorkExperience(experienceDetailsIndex, 'stateId')?.errors }">
+                                            </p-dropdown>
+                                            <div class="flex">
+                                                <div class="align-left w-60" style="width:70%">
+                                                    <span
+                                                        *ngIf="formArrayControlWorkExperience(experienceDetailsIndex,'stateId').touched && formArrayControlWorkExperience(experienceDetailsIndex,'stateId').invalid">
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf="formArrayControlWorkExperience(experienceDetailsIndex,'countryId').untouched && formArrayControlWorkExperience(experienceDetailsIndex,'stateId').touched ||
+                                                          formArrayControlWorkExperience(experienceDetailsIndex,'countryId').invalid && formArrayControlWorkExperience(experienceDetailsIndex,'stateId').touched">
+                                                            Please Select Country First.</div>
+                                                        <div class="ng-invalid ng-touched p-error"
+                                                            *ngIf=" formArrayControlWorkExperience(experienceDetailsIndex,'countryId').touched &&  formArrayControlWorkExperience(experienceDetailsIndex,'stateId').errors?.['required'] && formArrayControlWorkExperience(experienceDetailsIndex,'countryId').valid">
+                                                            Please Select State.</div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center"
+                                            *ngIf="fbApplicant.controls['applicantWorkExperiences'].value.length > 0">
+                                            <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                                *ngIf="!this.faApplicantExperienceDetails().controls[experienceDetailsIndex].get('experienceId')?.value"
+                                                (click)="faApplicantExperienceDetails().removeAt(experienceDetailsIndex)"></i>
+                                            <i class="pi pi-fw pi-verified text-3xl"
+                                                *ngIf="this.faApplicantExperienceDetails().controls[experienceDetailsIndex].get('experienceId')?.value"></i>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-fieldset>
+                </div>
+                <br>
+                <!-- Applicant applicantSkills Details -->
+                <p-fieldset legend=" Technical Skills" [toggleable]="true">
+                    <div class="text-right">
+                        <button pButton pRipple id="Skills_Btn" class="mb-3 pi pi-plus"
+                            (click)="addApplicantSkillsDetails()"></button>
+                    </div>
+                    <div class=" scrolling_content" formArrayName="applicantSkills">
+                        <p-table #dt2 [value]="faApplicantSkillsDetails().controls" dataKey="id" [rows]="10"
+                            [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                            [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                            [rowsPerPageOptions]="[10,25,50]" [scrollable]="true" scrollDirection="vertical"
+                            scrollHeight="300px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">Skills<label class="required"></label></th>
+                                    <th class="text-center">Expertise(Give Your Assesment)<label
+                                            class="required"></label></th>
+                                    <th *ngIf="fbApplicant.controls['applicantSkills'].value.length > 0">
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-applicantSkillsDetailsIndex="rowIndex">
+                                <tr [formGroupName]="applicantSkillsDetailsIndex">
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="app_Skills" appendTo="body" placeholder="Select Skills"
+                                            formControlName="skillId" [options]="skills" optionLabel="name"
+                                            optionValue="lookupDetailId" [style]="{'width':'100%'}" [ngClass]="{'is-invalid ng-dirty': formArrayControlSkills(applicantSkillsDetailsIndex, 'skillId')?.touched &&
+                                            formArrayControlSkills(applicantSkillsDetailsIndex, 'skillId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlSkills(applicantSkillsDetailsIndex, 'skillId').touched && formArrayControlSkills(applicantSkillsDetailsIndex, 'skillId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlSkills(applicantSkillsDetailsIndex, 'skillId').errors?.['required']">
+                                                        Please Select Skills.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top pt-3 text-center">
+                                        <app-star-rating [control]="getExpertiseControl(applicantSkillsDetailsIndex)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise')?.touched &&
+                                        formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise')?.errors }">
+                                        </app-star-rating>
+                                        <!-- <p-rating number="3" [cancel]="false" formControlName="expertise"
+                                            (click)="validateRowforApplicantSkillDetails(applicantSkillsDetailsIndex)"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise')?.touched &&
+                                            formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise')?.errors }">
+                                        </p-rating> -->
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:100%">
+                                                <span
+                                                    *ngIf="formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise').touched && formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlSkills(applicantSkillsDetailsIndex, 'expertise').errors?.['required']">
+                                                        Please Select Expertise.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"
+                                        *ngIf="fbApplicant.controls['applicantSkills'].value.length > 0">
+                                        <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                            *ngIf="!this.faApplicantSkillsDetails().controls[applicantSkillsDetailsIndex].get('applicationskillId')?.value"
+                                            (click)="  faApplicantSkillsDetails().removeAt(applicantSkillsDetailsIndex)"></i>
+                                        <i class="pi pi-fw pi-verified text-3xl"
+                                            *ngIf="this.faApplicantSkillsDetails().controls[applicantSkillsDetailsIndex].get('applicationskillId')?.value"></i>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-fieldset>
+                <br>
+                <!-- Applicant applicant LanguageSkills Details -->
+                <p-fieldset legend="Language Skills" [toggleable]="true">
+                    <div class="text-right">
+                        <button pButton pRipple id="LanguageSkills_Btn" class="mb-3 pi pi-plus"
+                            (click)="addApplicantLanguageSkillsDetails()"></button>
+                    </div>
+                    <div class=" scrolling_content" formArrayName="applicantLanguageSkills">
+                        <p-table #dt2 [value]="faApplicantLanguageSkillsDetails().controls" dataKey="id" [rows]="10"
+                            [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                            [paginator]="false" [autoLayout]="true" responsiveLayout="scroll"
+                            [rowsPerPageOptions]="[10,25,50]" [scrollable]="true" scrollDirection="vertical"
+                            scrollHeight="300px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">Language<label class="required"></label></th>
+                                    <th class="text-center">Can Read</th>
+                                    <th class="text-center">Can Write</th>
+                                    <th class="text-center">Can Speak</th>
+                                    <th *ngIf="fbApplicant.controls['applicantLanguageSkills'].value.length > 0">
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-applicantLanguageSkillsDetailsIndex="rowIndex">
+                                <tr [formGroupName]="applicantLanguageSkillsDetailsIndex">
+                                    <td class="vertical-align-top">
+                                        <p-dropdown id="language_Skills" appendTo="body" placeholder="Select Language"
+                                            formControlName="languageId" [options]="languages" optionLabel="name"
+                                            optionValue="lookupDetailId" [style]="{'width':'100%'}"
+                                            [ngClass]="{'is-invalid ng-dirty': formArrayControlLanguage(applicantLanguageSkillsDetailsIndex, 'languageId')?.touched &&
+                                            formArrayControlLanguage(applicantLanguageSkillsDetailsIndex, 'languageId')?.errors }">
+                                        </p-dropdown>
+                                        <div class="flex">
+                                            <div class="align-left w-60" style="width:70%">
+                                                <span
+                                                    *ngIf="formArrayControlLanguage(applicantLanguageSkillsDetailsIndex, 'languageId').touched && formArrayControlLanguage(applicantLanguageSkillsDetailsIndex, 'languageId').invalid">
+                                                    <div class="ng-invalid ng-touched p-error"
+                                                        *ngIf="formArrayControlLanguage(applicantLanguageSkillsDetailsIndex, 'languageId').errors?.['required']">
+                                                        Please Select Language.</div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="vertical-align-top" [ngClass]="'canRead' ? 'text-center' : ''">
+                                        <p-checkbox [binary]="true" formControlName="canRead">
+                                        </p-checkbox>
+                                    </td>
+                                    <td class="vertical-align-top" [ngClass]="'canWrite' ? 'text-center' : ''">
+                                        <p-checkbox [binary]="true" formControlName="canWrite">
+                                        </p-checkbox>
+                                    </td>
+                                    <td class="vertical-align-top" [ngClass]="'canSpeak' ? 'text-center' : ''">
+                                        <p-checkbox [binary]="true" formControlName="canSpeak">
+                                        </p-checkbox>
+                                    </td>
+                                    <td class="text-center"
+                                        *ngIf="fbApplicant.controls['applicantLanguageSkills'].value.length > 0">
+                                        <i class="pi pi-fw pi-times-circle text-3xl cursor-pointer"
+                                            *ngIf="!this.faApplicantLanguageSkillsDetails().controls[applicantLanguageSkillsDetailsIndex].get('applicationskillId')?.value"
+                                            (click)="faApplicantLanguageSkillsDetails().removeAt(applicantLanguageSkillsDetailsIndex)"></i>
+                                        <i class="pi pi-fw pi-verified text-3xl"
+                                            *ngIf="this.faApplicantLanguageSkillsDetails().controls[applicantLanguageSkillsDetailsIndex].get('applicationskillId')?.value"></i>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </p-fieldset>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class=" footer dialog-footer">
+    <button pButton pRipple type="submit" label="Save Applicant" class="p-button-raised p-button-primary"
+        id="SubmitApplicantForm" [disabled]="fbApplicant.invalid" (click)="onSubmit()"></button>
+</div>

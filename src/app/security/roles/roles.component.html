@@ -1,0 +1,162 @@
+<div class="col-12  p-0">
+  <div class="card">
+    <!-- Toolbar -->
+    <p-toolbar styleClass="p-mb-4">
+      <ng-template pTemplate="left">
+        <h4>Roles</h4>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="New Role" icon="pi pi-plus" class="p-button-primary p-mr-2" id="Role_addRole"
+          (click)="initRole({})" *ngIf="permission?.CanManageRoles"></button>
+      </ng-template>
+    </p-toolbar>
+
+    <!-- table -->
+    <p-table #dt1 [value]="roles" dataKey="id" [rows]="10" [rowHover]="true" paginatorDropdownAppendTo="body"
+      [alwaysShowPaginator]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [showCurrentPageReport]="true" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+      [paginator]="true" [globalFilterFields]="globalFilterFields" [autoLayout]="true" responsiveLayout="scroll"
+      [resizableColumns]="true" [rowsPerPageOptions]="[10,25,50]" [tableStyle]="{ width: 'autoLayout'}">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between flex-column sm:flex-row">
+          <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"
+            id="Role_clearSearchField"></button>
+          <span class="p-input-icon-left mb-2">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword"
+              id="Role_roleSearch" class="w-full" />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width:5px;" *ngIf="permission?.CanManageRoles"></th>
+          <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+            {{col?.label}}
+            <p-columnFilter id="Role_roleColumnFilter" type="text" [field]="col.header" display="menu"></p-columnFilter>
+            <p-sortIcon [field]="col.header"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-role>
+        <tr [ngClass]="{'read-only-row': role?.isActive == false}">
+          <td *ngIf="permission?.CanManageRoles"><button pButton pRipple icon="pi pi-pencil" style="padding: 0px;"
+              (click)="initRole(role)" id="Role_roleEdit"
+              class="p-element p-ripple p-button-text p-button p-component"></button></td>
+          <td *ngFor="let col of headers" [ngClass]="col?.field == 'isActive' ? 'text-center' : ''">
+            <span
+              *ngIf="col?.field != 'createdAt' && col?.field != 'updatedAt' && col?.field != 'isActive'">{{role[col.field]}}</span>
+            <span *ngIf="col?.field == 'createdAt' || col?.field == 'updatedAt'">
+              {{role[col.field] | date: mediumDate }}
+            </span>
+            <span *ngIf="col?.field === 'isActive'">
+              <i class="fa" [ngClass]="{'fa-check': role[col.field], 'fa-close': !role[col.field]}"
+                [style.color]="role[col.field] ? '#119e2f' : '#e24c4c'"
+                style="font-size:18px; vertical-align: sub;"></i>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="md:text-center m-5" colspan="9">No Roles Found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Dialog  -->
+
+    <p-dialog header="Role" [(visible)]="dialog" [modal]="true" showEffect="fade"
+      [breakpoints]="{'960px': '70%', '640px': '80%'}" [style]="{width: '50%'}">
+      <div class="flex flex-column align-items-center justify-content-center">
+        <form [formGroup]="fbrole" (ngSubmit)="onSubmit()" id="Role_roleForm">
+          <div class="grid">
+            <div class="col-12 roles-container">
+              <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-6">
+                  <label class="required">Role Name:</label>&nbsp;
+                  <input pInputText id="Role_roleName" type="text" formControlName="name" placeholder="Enter Role Name"
+                    #name alphaOnly [maxlength]="maxLength.name" (keydown)="restrictSpaces($event)"
+                    [maxlength]="maxLength.name"
+                    [ngClass]="{ 'is-invalid ng-dirty': roleFormControls['name'].touched && roleFormControls['name'].errors }" />
+                  <div class="flex">
+                    <div class="align-left w-60" style="width:70%">
+                      <span
+                        *ngIf="roleFormControls['name'].touched && roleFormControls['name'].errors?.['notUniqueName']">
+                        <div class="ng-invalid ng-touched p-error">
+                          Role name must be unique.
+                        </div>
+                      </span>
+                      <span *ngIf="roleFormControls['name'].touched && roleFormControls['name'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                          *ngIf="roleFormControls['name'].errors?.['required']">
+                          Please Enter Role Name.</div>
+                        <div class="ng-invalid ng-touched p-error" *ngIf="roleFormControls['name'].errors?.['pattern']">
+                          Name Should Contains Alphabets.</div>
+                        <div class="ng-invalid ng-touched p-error"
+                          *ngIf="roleFormControls['name'].errors?.['minlength']">
+                          Name Min Length Is 2.</div>
+                      </span>
+                    </div>
+                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                      <small>{{name.value.length}}/50</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                  <label class="required">Employee Role:</label>
+                  <p-dropdown appendTo="body" id="eRoleTitle_dropdown" [autoDisplayFirst]="false" optionLabel="name"
+                    [options]="eRolesInfo" optionValue="eroleId" formControlName="eroleId"
+                    placeholder="Select Employee Role"
+                    [ngClass]="{ 'is-invalid ng-dirty': roleFormControls['eroleId'].touched && roleFormControls['eroleId'].errors}">
+                  </p-dropdown>
+
+                  <div class="flex">
+                    <div class="align-left w-60" style="width:70%">
+                      <span *ngIf="roleFormControls['eroleId'].touched && roleFormControls['eroleId'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                          *ngIf="roleFormControls['eroleId'].errors?.['required']">
+                          Please Select Employee Role.
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                  <label>Is Active:</label><br>
+                  &nbsp;<p-inputSwitch formControlName="isActive" [readonly]="role.eRole === 'CEO'"
+                    id="Role_roleIsActive">
+                  </p-inputSwitch>
+
+                </div>
+                <div class="field col-12">
+                  <label class="required">Permissions:</label><br>
+                  <div class="grid col-12">
+                    <p-accordion *ngFor="let screen of screens"
+                      class="col-12 xl:col-4 md:col-6 sm:col-6 accordion_roles" [multiple]="false">
+                      <p-accordionTab [header]="screen" [selected]="false" [cache]="false" id="Role_{{ screen }}Tab">
+                        <div class="col-12 role-accordian-view" *ngFor="let permission of getPermissions(screen)">
+                          <p-inputSwitch [(ngModel)]="permission.assigned" [ngModelOptions]="{ standalone: true }"
+                            id="Role_{{ permission.displayName }}"
+                            [disabled]="(role.eRole === 'CEO' && screen === 'Users') || ((role.eRole === 'Team Member' || role.eRole === 'Project Manager' || role.eRole === 'Scrum' || role.eRole === 'Team Lead'  || role.eRole === 'HR Admin' || role.eRole === 'HR' || role.eRole === 'CEO') && screen === 'SelfEmployee')">
+                          </p-inputSwitch><br />
+                          <label for="ny">{{ permission.displayName }}</label>
+                        </div>
+                      </p-accordionTab>
+                    </p-accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="col-12 lg:col-4 md:col-4 sm:col-6" style="float:right">
+          <button pButton pRipple type="submit" [label]="submitLabel" [disabled]="!this.fbrole.valid"
+            class="p-button-raised p-button-primary" id="Role_roleSubmitButton" (click)="onSubmit()"></button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>

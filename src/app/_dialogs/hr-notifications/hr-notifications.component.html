@@ -1,0 +1,99 @@
+<div class=" align-items-center justify-content-center">
+    <form [formGroup]="fbHrNotification">
+        <div class="grid p-5 m-1 content_scroll" style="height:400px; ">
+            <div class="col-12 md:col-5 mt-4">
+                <div class="p-fluid p-formgrid grid ">
+                    <div class="col-11 p-1">
+                        <label class="required">Message Type:</label>
+                        <p-dropdown appendTo="body" id="messageType_HRNotify" placeholder="Select Message Type"
+                            [autoDisplayFirst]="false" [options]="messageTypes" optionLabel="name"
+                            formControlName="messageTypeId" optionValue="lookupDetailId"
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['messageTypeId'].touched && FormControls['messageTypeId'].errors}">
+                        </p-dropdown>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControls['messageTypeId'].touched && FormControls['messageTypeId'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['messageTypeId'].errors?.['required']">
+                                        Please Select Message Type.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-11 p-1">
+                        <label class="required">Message:</label>
+                        <textarea id="message_HRNotify" #Wishes rows="3" placeholder="Enter Message" pInputTextarea
+                            formControlName="message" class="freeze_text-area col-12 mb-1" [maxLength]="256"
+                            (keydown)="restrictSpaces($event)" #message
+                            [ngClass]="{'is-invalid ng-dirty': FormControls['message'].touched && FormControls['message'].errors}">
+                  </textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['message'].touched && FormControls['message'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['message'].errors?.['required']">
+                                        Please Enter Message.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{message.value.length}}/256</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-11 p-1">
+                        <label class="required">Notify Till:</label>
+                        <p-calendar appendTo="body" placeholder="Select Notify Till" [readonlyInput]="true"
+                            [minDate]="minDate" [showIcon]="true" formControlName="notifyTill" id="notifyTill_HRNotify"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControls['notifyTill'].touched && FormControls['notifyTill'].errors }">
+                        </p-calendar>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span *ngIf="FormControls['notifyTill'].touched && FormControls['notifyTill'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControls['notifyTill'].errors?.['required']">
+                                        Please Select Notify Till.</div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-7 roles-container">
+                <p-table #dt2 [value]="notifications" dataKey="id" [rows]="10" [rowHover]="true"
+                    styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm mt-5" [paginator]="false"
+                    [autoLayout]="true" responsiveLayout="scroll" [rowsPerPageOptions]="[10,25,50]" [scrollable]="true"
+                    scrollDirection="vertical" scrollHeight="260px" [style]="{width: 'max'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="text-center">Actions</th>
+                            <th class="text-center">Message Type</th>
+                            <th class="text-center">Message</th>
+                            <th class="text-center">Notify Till</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-notification let-notificationDetailsIndex="rowIndex">
+                        <tr *ngIf="notification.messageType!='Birthday'">
+                            <td >
+                                <div class="flex justify-content-center" >
+                                    <button pButton pRipple icon="pi pi-trash" id="HRNotofications_deleteBtn"
+                                        class="p-element p-ripple p-button-text p-button p-component col-2 p-0"
+                                        (click)="delete(notification)"></button>
+                                </div>
+                            </td>
+                            <td class="text-left">{{ notification?.messageType}}</td>
+                            <td class="text-left">{{ notification?.message}}</td>
+                            <td class="text-left">{{ notification?.notifyTill |date:mediumDate}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </form>
+</div>
+<div class=" footer dialog-footer">
+    <div class=" button-container mt-1">
+        <p-button type="button" label="Save" [disabled]="fbHrNotification.invalid" (click)="addNotification()" id="HRNotifications_SaveBtn">
+        </p-button>
+    </div>
+</div>

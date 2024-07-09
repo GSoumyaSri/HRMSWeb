@@ -1,0 +1,611 @@
+<div class="grid">
+    <div class="col-12 pt-0">
+        <div class="flex flex-column sm:flex-row align-items-center gap-3 mb-5">
+            <div class="flex flex-column align-items-center sm:align-items-start">
+            </div>
+        </div>
+        <div class="grid">
+            <div class="col-12 md:col-4 lg:col-3">
+                <div class="card p-4 orange-200 text-left applicant-p-block-home">
+                    <div class="text-center">
+                        <div class="avatar_emp_dboard">
+                            <img [src]="empDetails?.photo ? empDetails?.photo : defaultPhoto" [alt]="empDetails?.photo"
+                                class="shadow-2 my-1 mx-0 employee_profile_pic avatar_emp_dboard" />
+                        </div>
+                        <br />
+                        <h5 class="m-5 mb-2 mt-0 text-primary">{{ empDetails?.employeeName}}</h5>
+                        <h6 class="m-5 mb-2 mt-0 text-green-500" pTooltip="Designation" tooltipPosition="bottom">{{
+                            empDetails?.designation}}</h6>
+                    </div>
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Employee Id"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.code}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-intersex text-primary text-700 mr-2  dicon" pTooltip="Gender"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.gender}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi pi-envelope text-primary text-700 mr-2 dicon" pTooltip="Email Id"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.officeEmailId}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-dateofjoining text-primary text-700 mr-2 dicon" pTooltip="Date Of Joining"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.dateofJoin | date:dateOfJoining}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi pi-mobile text-primary text-700 mr-2 dicon" pTooltip="Mobile Number"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.mobileNumber}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-birthday-cake text-primary text-700 mr-2 dicon" pTooltip="Date Of Birth"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.originalDOB | date:dateOfJoining}}</span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-POC text-700 font-bold text-primary mr-2 dicon" pTooltip="Reporting To"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">
+                            <span>{{ empDetails?.reportingTo}}</span>
+                        </span>
+                    </span><br />
+                    <span class="inline-flex align-items-left mb-2">
+                        <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="Experience In Company"
+                            tooltipPosition="top"></i>
+                        <span class="text-700 mr-2 dtext">{{ empDetails?.experienceInCompany}}</span>
+                    </span><br />
+                </div>
+            </div>
+            <div class="col-12 md:col-8 lg:col-4">
+                <div class="grid" style="margin: -1rem">
+                    <div class="col-12 sm:col-12">
+                        <div class="card-headr chart_head gap-2 ">
+                            <div class="card-title text-center">
+                                <h6 class="m-0">Privilege Leaves</h6>
+                            </div>
+                        </div>
+                        <div class="card text-0  pt-2 stat_background overview-ifo">
+                            <div class="flex justify-content-between ">
+                                <div class="overview-info">
+                                    <h6 class="m-0 mb-1 ">Used/Allocated</h6>
+                                    <h4 class="m-0 mt-2">
+                                        <span pTooltip="Used Privilege Leaves" tooltipPosition="bottom">{{
+                                            empDetails?.usedPrivilegeLeavesInYear}}</span>/<span
+                                            pTooltip="Allocated Privilege Leaves"
+                                            tooltipPosition="bottom">{{empDetails?.allottedPrivilegeLeaves}}</span>
+                                    </h4>
+                                </div>
+                                <div class="overview-ifo">
+                                    <h6 class="m-0 mb-1 ">Available </h6>
+                                    <h4 class="m-0 mt-2"><b>{{
+                                            empDetails?.allottedPrivilegeLeaves-empDetails?.usedPrivilegeLeavesInYear}}</b>
+                                    </h4>
+                                </div>
+                            </div>
+                            <hr class="primary_hr" />
+                            <div class="flex justify-content-between">
+                                <div class="overview-ifo">
+                                    <p class="m-0 mb-1  text-primary text-500">Monthly Consumed </p>
+                                    <p class="m-0 text-gray-500  text-500">{{this.usedPLsInMonth}}</p>
+                                    <p class="m-0  text-gray-500  text-500" *ngIf="this.usedPLsInMonth === undefined">0
+                                    </p>
+                                </div>
+
+                                <div class="d-leave overview-ifo text-center">
+                                    <p class="m-0 mb-1  text-500">
+                                        {{this.monthlyPLs}}/{{this.yearlyPLs}}
+                                    </p>
+                                    <i class="pi pi-angle-left d-leave-font " (click)="gotoPreviousMonthPLs()"
+                                        id="employeeDashboard_PreviousMonthPls">
+                                    </i>
+                                    <p-calendar styleClass="only-icon dashboard_mon" [(ngModel)]="selectedMonthforPL"
+                                        [showIcon]="true" view="month" [yearNavigator]="true" yearRange="2000:2030"
+                                        [readonlyInput]="true" inputId="monthpicker" [maxDate]="currentDate"
+                                        (onSelect)="onMonthSelectPLs($event)" pTooltip="Monthly PL's"
+                                        tooltipPosition="top" id="employeeDashboard_PlsBasedOnCalender">
+                                    </p-calendar>
+                                    <i class="pi pi-angle-right d-leave-font " (click)="gotoNextMonthPLs()"
+                                        id="employeeDashboard_futureMonthPls"></i>
+                                </div>
+                                <div class="overview-info">
+                                    <p class="m-0 mb-1 text-primary  text-500"
+                                        [ngClass]="{'att_disabled': !(empDetails?.allottedPrivilegeLeaves > 0 && empDetails?.usedPrivilegeLeavesInYear < empDetails?.allottedPrivilegeLeaves)}">
+                                        Apply PL </p>
+                                    <i class="pi icon-calendar text-4xl att-pointer" label="Primary" pTooltip="Apply PL"
+                                        tooltipPosition="right" id="employeeDashboard_applyPlsBtn"
+                                        (click)="openComponentDialog(employeeleaveDialogComponent, 'PL', ActionTypes.save)"
+                                        [ngClass]="{'att_disabled': !(empDetails?.allottedPrivilegeLeaves > 0 && empDetails?.usedPrivilegeLeavesInYear < empDetails?.allottedPrivilegeLeaves)}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 sm:col-12">
+                        <div class="card-headr chart_head gap-2 ">
+                            <div class="card-title text-center">
+                                <h6 class="m-0">Casual Leaves</h6>
+                            </div>
+                        </div>
+                        <div class="card text-0  pt-2  stat_background overview-ifo ">
+                            <div class="flex justify-content-between">
+                                <div class="overview-info">
+                                    <h6 class="m-0  mb-1 ">Used/Allocated</h6>
+                                    <h4 class="m-0 mt-2">
+                                        <span pTooltip="Used Casual Leaves" tooltipPosition="bottom">{{
+                                            empDetails?.usedCasualLeavesInYear}}</span>/<span
+                                            pTooltip="Allocated Casual Leaves" tooltipPosition="bottom">{{
+                                            empDetails?.allottedCasualLeaves}}</span>
+                                    </h4>
+                                </div>
+                                <div class="overview-ifo">
+                                    <h6 class="m-0 mb-1 ">Available </h6>
+                                    <h4 class="m-0 mt-2"><b>{{
+                                            empDetails?.allottedCasualLeaves-empDetails?.usedCasualLeavesInYear}}</b>
+                                    </h4>
+                                </div>
+                            </div>
+                            <hr class="primary_hr" />
+                            <div class="flex justify-content-between">
+                                <div class="overview-ifo">
+                                    <p class="m-0 mb-1 text-primary text-500">Monthly Consumed </p>
+                                    <p class="m-0  text-500">{{ this.usedCLsInMonth}}</p>
+                                    <p class="m-0  text-500" *ngIf="this.usedCLsInMonth === undefined">0</p>
+                                </div>
+
+                                <div class="d-leave overview-ifo text-center">
+                                    <p class="m-0 mb-1  text-500">
+                                        {{this.monthlyCLs}}/{{this.yearlyCLs}}
+                                    </p>
+                                    <i class="pi pi-angle-left d-leave-font  " (click)="gotoPreviousMonthCLs()"
+                                        id="employeeDashboard_PreviousMonthCls">
+                                    </i>
+                                    <p-calendar styleClass="only-icon dashboard_mon" [(ngModel)]="selectedMonthforCL"
+                                        [showIcon]="true" view="month" [yearNavigator]="true" yearRange="2000:2030"
+                                        [readonlyInput]="true" inputId="monthpicker" [maxDate]="currentDate"
+                                        (onSelect)="onMonthSelectCLs($event)" pTooltip="Monthly CL's"
+                                        tooltipPosition="top" id="employeeDashboard_ClsBasedOnCalender">
+                                    </p-calendar>
+                                    <i class="pi pi-angle-right d-leave-font " (click)="gotoNextMonthCLs()"
+                                        id="employeeDashboard_futureMonthCls"></i>
+                                </div>
+                                <div class="overview-info">
+                                    <p class="m-0 mb-1 text-primary text-500"
+                                        [ngClass]="{'att_disabled': !(empDetails?.allottedCasualLeaves > 0 && empDetails?.usedCasualLeavesInYear < empDetails?.allottedCasualLeaves)}">
+                                        Apply CL </p>
+                                    <i class="pi icon-calendar text-white text-4xl att-pointer" label="Primary"
+                                        pTooltip="Apply CL" tooltipPosition="right" id="employeeDashboard_applyClsBtn"
+                                        (click)="openComponentDialog(employeeleaveDialogComponent, 'CL', ActionTypes.save)"
+                                        [ngClass]="{'att_disabled': !(empDetails?.allottedCasualLeaves > 0 && empDetails?.usedCasualLeavesInYear < empDetails?.allottedCasualLeaves)}">
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-5  " *ngIf="this.permissions.CanViewNotifications">
+                <div class="card-headr chart_head gap-2 ">
+                    <div class="card-title text-center">
+                        <h6 class="m-0">Notifications </h6>
+                    </div>
+                </div>
+                <div class=" p-2 py-2 orange-200  applicant-n-block-home ">
+                    <div class=" employee_card_dashbard2">
+                        <p-tabView>
+                            <p-tabPanel header="HR Notifications" id="employeeDashboard_HrNotificationTab">
+                                <ng-template pTemplate="content">
+                                    <ng-template pTemplate="header">
+                                        HR Notifications
+                                        <p-badge *ngIf="hasHRNotifications"
+                                            [value]="hasHRNotifications.length.toString()"></p-badge>
+                                    </ng-template>
+                                    <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;"
+                                        *ngIf="notifications && notifications?.length > 0 && hasHRNotifications ; else noHRTemplate">
+                                        <div class="" *ngFor="let employee of notifications">
+                                            <li class="border-round-lg p-3 mb-1"
+                                                *ngIf="employee.messageType !='Birthday'"
+                                                style="background-color: var(--primary-lighter-color)">
+                                                <div class="flex justify-content-between align-items-center mb-1">
+                                                    <div class="flex align-items-center  w-100 gap-1">
+                                                        <span
+                                                            class="mt-1 text-900 block text-md line-height-2  overflow-hidden text-overflow-ellipsis"
+                                                            style="width:80%;">
+                                                            {{employee?.message}}
+                                                        </span>
+                                                        <span
+                                                            class="text-gray-500 font-semibold text-sm line-height-1 w-20"
+                                                            style="width:20%;">{{transformDateIntoTime(employee?.createdAt)}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </div>
+                                    </ul>
+
+                                    <ng-template #noHRTemplate>
+                                        <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                            style="background-color: var(--primary-lighter-color)">
+                                            <div class="text-center m-3">
+                                                <p class="m-0">There are no HR notifications.</p>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ng-template>
+                            </p-tabPanel>
+                            <p-tabPanel header="Today Birthdays" id="employeeDashboard_todayBirthdaysTab">
+                                <ng-template pTemplate="content">
+                                    <div class="overflow-auto">
+                                        <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;"
+                                            *ngIf="notifications && notifications?.length > 0&& hasBirthdayNotifications; else noBirthdaysTemplate">
+                                            <div class="" *ngFor="let employee of notifications">
+                                                <li class="border-round-lg pt-2 px-3 pb-2 mb-1"
+                                                    *ngIf="employee.messageType =='Birthday'"
+                                                    style="background-color: var(--primary-lighter-color)">
+                                                    <div class="flex  align-items-center mb-0">
+                                                        <span class="text-primary" style="width:10%;"><i
+                                                                class="pi icon-cake"></i></span>
+                                                        <div style="width:80%;" class="flex align-items-center gap-1">
+                                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300"
+                                                                *ngIf="employee.code" class="inline-block"
+                                                                value="{{employee?.code}}"></p-tag>
+                                                            <h6 class="line-height-3 m-0 font-medium">
+                                                                {{employee?.employeeName}}</h6>
+
+                                                        </div>
+                                                        <div style="width:30%;">
+                                                            <div
+                                                                *ngIf="this.employeeId != employee?.employeeId && this.permissions.CanSendBirthdayWishes">
+                                                                <div
+                                                                    *ngIf="(getStatus(employee?.employeeId) | async) as notifications">
+                                                                    <button type="button" pButton icon="pi icon-redeem"
+                                                                        id="employeeDashboard_sendwishesBtn"
+                                                                        class="p-button-rounded p-button-text p-button-sm flex-shrink-0"
+                                                                        (click)="showBirthdayDialog(employee)"
+                                                                        *ngIf="notifications.length == 0">&nbsp; Send
+                                                                        Greetings
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </div>
+                                        </ul>
+
+                                        <ng-template #noBirthdaysTemplate>
+                                            <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                                style="background-color: var(--primary-lighter-color)">
+                                                <div class="text-center m-3">
+                                                    <p class="m-0">Today, there are no employee birthdays.</p>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </ng-template>
+                            </p-tabPanel>
+                            <p-tabPanel header="Greetings" id="employeeDashboard_birthdayGreetingsTab"
+                                *ngIf="notificationReplies && notificationReplies.length > 0">
+                                <ng-template pTemplate="content">
+                                    <ul class="list-none p-0 overflow-auto" style=" max-height: 300px;"
+                                        *ngIf="notificationReplies && notificationReplies.length > 0 ; else noHRTemplate">
+                                        <div class="" *ngFor="let employee of notificationReplies">
+                                            <li class="border-round-lg pt-2 px-3 pb-2 mb-1"
+                                                style="background-color: var(--primary-lighter-color)">
+                                                <div class="flex justify-content-between align-items-center mb-1">
+                                                    <div class="flex align-items-center gap-1">
+                                                        <span
+                                                            class="mt-1 text-600 block text-sm line-height-2  overflow-hidden text-overflow-ellipsis">
+                                                            Birthday Wishes
+                                                            from {{employee?.employeeName}}.</span>
+                                                        <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300"
+                                                            *ngIf="employee.code" class="inline-block"
+                                                            value="{{employee?.code}}"></p-tag>
+                                                    </div>
+                                                </div>
+                                                <div class="flex justify-content-between align-items-center">
+                                                    <h6 class="line-height-3 m-0 font-medium font-medium">
+                                                        {{employee?.message}}
+                                                    </h6>
+                                                </div>
+                                            </li>
+                                        </div>
+                                    </ul>
+
+                                    <ng-template #noHRTemplate>
+                                        <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                            style="background-color: var(--primary-lighter-color)">
+                                            <div class="text-center m-3">
+                                                <p class="m-0">There are no birthday greetings.</p>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ng-template>
+                            </p-tabPanel>
+                            <p-tabPanel header="Upcoming Birthdays" id="employeeDashboard_upcomingBirthdaysTab">
+                                <ng-template pTemplate="content">
+                                    <div class="overflow-auto">
+                                        <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;"
+                                            *ngIf="UpcomingBirthdays && UpcomingBirthdays.length > 0; else upComingTemplate">
+                                            <div class="" *ngFor="let employee of UpcomingBirthdays">
+                                                <li class="border-round-lg pt-3 px-3 pb-3 mb-1"
+                                                    style="background-color: var(--primary-lighter-color)">
+                                                    <div class="flex  align-items-center mb-0">
+                                                        <span class="text-primary" style="width:10%;"><i
+                                                                class="pi icon-cake"></i></span>
+                                                        <div style="width:80%;" class="flex align-items-center gap-1">
+                                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300"
+                                                                *ngIf="employee.employeeCode" class="inline-block"
+                                                                value="{{employee?.employeeCode}}"></p-tag>
+                                                            <h6 class="line-height-3 m-0 font-medium">
+                                                                {{employee?.employeeName}}</h6>
+
+                                                        </div>
+                                                        <div style="width:30%;">
+                                                            <div>
+                                                                &nbsp;
+                                                                {{employee?.originalDOB | date:'dd MMM'}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </div>
+                                        </ul>
+                                        <ng-template #upComingTemplate>
+                                            <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                                style="background-color: var(--primary-lighter-color)">
+                                                <div class="text-center m-3">
+                                                    <p class="m-0">There are no upcoming birthdays.</p>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </ng-template>
+                            </p-tabPanel>
+                            <p-tabPanel header="Employees On Leave Today" id="employeeDashboard_employeesOnLeaveTab"
+                                *ngIf="employeeRole === 'Team Lead' || employeeRole === 'Project Manager'">
+                                <ng-template pTemplate="content">
+                                    <div class="overflow-auto">
+                                        <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;"
+                                            *ngIf="EmployeesOnLeaveToday&& EmployeesOnLeaveToday.length > 0; else employeeLeavesTemplate">
+                                            <div class="" *ngFor="let employee of EmployeesOnLeaveToday">
+                                                <li class="border-round-lg pt-2 px-3 pb-2 mb-1"
+                                                    style="background-color: var(--primary-lighter-color)">
+                                                    <div class="flex  align-items-center mb-0">
+                                                        <div style="width:80%;" class="flex align-items-center gap-1">
+                                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300"
+                                                                *ngIf="employee.employeeCode" class="inline-block"
+                                                                value="{{employee?.employeeCode}}"></p-tag>
+                                                            <h6 class="line-height-3 m-0 font-medium">
+                                                                {{employee?.employeeName}}</h6>
+                                                        </div>
+                                                        <div style="width:20%;">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </div>
+                                        </ul>
+                                        <ng-template #employeeLeavesTemplate>
+                                            <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                                style="background-color: var(--primary-lighter-color)">
+                                                <div class="text-center m-3">
+                                                    <p class="m-0">There are no employees on leave today.</p>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </ng-template>
+                            </p-tabPanel>
+                        </p-tabView>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4 p-3">
+                <div class="card-headr chart_head gap-2 ">
+                    <div class="card-title text-center">
+                        <h6 class="m-0">Allocated Assets </h6>
+                    </div>
+                </div>
+                <div class="applicant-n-block-home">
+                    <div class="text-500  text-2xl text-primary text-center m-5 p-5"
+                        *ngIf="!empDetails?.assets || empDetails?.assets.length === 0">
+                        There are no Allocated Assets for this Employee.
+                    </div>
+                    <div class="grid p-3 mt-0 " *ngIf="empDetails?.assets && empDetails?.assets.length > 0">
+                        <div class="col-12 sm:col-6 md:col-6 lg:col-6 pt-0" *ngFor="let asset of empDetails?.assets">
+                            <div class="card text-0 p-3  justify-content-between h-full card_hover">
+                                <div class="overview-info text-center alloted_assets">
+                                    <ng-container *ngIf="asset.thumbnail">
+                                        <div class="project_img_dash">
+                                            <img [src]="asset?.thumbnail !== '0' ? asset?.thumbnail : (asset?.thumbnail == '0' ? this.defaultPhotoforAssets : this.defaultPhotoforAssets)"
+                                                [alt]="asset?.thumbnail"
+                                                class="shadow-2  my-0 mx-0 employee_profile_pic avatar_projects_dash" />
+                                        </div>
+                                    </ng-container>
+                                    <div class="text-center">
+                                        <span class=" text-gray-500" *ngIf="asset.assetCode">
+                                            <b><span class="icon-settings_display text-primary"
+                                                    pTooltip="Asset Type"></span>
+                                            </b>
+                                            {{asset.assetType}}
+                                        </span>
+
+                                    </div>
+                                    <div class="text-left">
+
+                                        <span class=" text-gray-500" *ngIf="asset.assetCode">
+                                            <b><span class="icon-barcode text-primary " pTooltip="Asset Code"></span>
+                                            </b>
+                                            {{asset.assetCode}}
+                                        </span><br />
+                                        <span class=" text-gray-500" *ngIf="asset.assetCode">
+                                            <b><span class="icon-address-card-o text-primary " pTooltip="Asset Name">
+                                                </span>
+                                            </b>
+                                            {{asset.assetName}}
+                                        </span>
+                                    </div>
+                                    <div class="text-left"
+                                        style=" color:gray; border-top:1px solid #ccc; font-size:12px; font-weight: 700;"
+                                        *ngIf="asset.assignedOn"><b>Assigned On:</b> {{asset.assignedOn |
+                                        date:dateOfJoining }} </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-12 md:col-6 lg:col-4 p-3">
+                <div class="card-headr chart_head gap-2 ">
+                    <div class="card-title text-center">
+                        <h6 class="m-0">Holidays </h6>
+                    </div>
+                </div>
+                <div class="applicant-n-block-home">
+                    <div class="p-3">
+                        <p-table id="table" #dtholiday [value]="holidays" dataKey="id" [rowHover]="true"
+                            [alwaysShowPaginator]="false" [paginator]="false"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" paginatorDropdownAppendTo="body" [autoLayout]="true"
+                            responsiveLayout="scroll" [scrollable]="true" scrollHeight="370px">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th *ngFor="let col of headers">
+                                        {{col?.label}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-holiday>
+                                <tr *ngIf="holiday.isActive === true">
+                                    <td *ngFor="let col of headers">
+                                        <span
+                                            *ngIf="col?.field != 'fromDate' && col?.field != 'toDate'">{{holiday[col.field]}}</span>
+                                        <span *ngIf="col?.field == 'fromDate' || col?.field == 'toDate'">
+                                            {{holiday[col.field] |date:dateOfJoining}}
+                                        </span>
+                                        <span *ngIf="col?.field === 'toDate'">
+                                            <span *ngIf="holiday[col.field] === null">
+                                                {{ holiday['fromDate'] | date:dateOfJoining }}
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td class="md:text-center m-5" colspan="50%">No Holidays Found.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-12 md:col-6 lg:col-4 p-3 att-pointer">
+                <div class="card-headr chart_head gap-2 ">
+                    <div class="card-title text-center">
+                        <h6 class="m-0">Assigned Projects </h6>
+                    </div>
+                </div>
+                <div class=" card p-3 orange-200  applicant-n-block-home scroll_div " style="min-height:350px;">
+                    <div class="text-500  text-2xl text-primary text-center m-5 p-5"
+                        *ngIf="!projects || projects?.length === 0">
+                        There are no Assigned Projects for this Employee
+                    </div>
+                    <div class="grid" *ngIf="projects && projects?.length > 0">
+                        <div class="col-6" *ngFor="let project of projects">
+                            <div class="card p-2 text-center card_hover att-pointer"
+                                (click)="openDialog(project.projectId)" id="employeeDashboard_employeesListBasedonProject"
+                                [ngStyle]="project?.periods?.length > 0 ? {'color': 'gray'} : {}">
+                                <div class=" project_img_dash ">
+                                    <img [src]="project?.logo" [alt]="project?.logo"
+                                        class="shadow-2 my-0 mx-0 employee_profile_pic avatar_projects_dash" />
+                                </div>
+                                <h5 class="text-primary m-2">
+                                    {{project.projectName}}</h5>
+                                <div *ngFor="let period of project?.periods" class="text-left"
+                                    style=" color:gray; border-top:1px solid #ccc; font-size:12px; font-weight: 700;">
+                                    <span class="icon-start_time">
+                                        <!-- {{period.endAt  ? ' - '+period.endAt : "  Continuing"}} -->
+                                        {{period.sinceFrom | date:dateOfJoining}} - {{ period.endAt ? (period.endAt |
+                                        date:dateOfJoining) : "Progress"}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Send Wishes" [(visible)]="wishesDialog" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '40%', '640px': '50%'}" class="confirmation_dialog">
+    <form [formGroup]="fbWishes">
+        <div class="col-12 ">
+
+            <textarea id="employeeDashboard_sendwishes_inputField" type="text" #Wishes rows="3" placeholder="Enter Wishes" pInputTextarea
+                formControlName="message" class="freeze_text-area col-12 mb-1" [maxLength]="256"
+                (keydown)="restrictSpaces($event)">
+            </textarea>
+            <div class="align-right w-40" style="width:100%; text-align:right;">
+                <small>{{Wishes.value.length}}/256</small>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <div style="float:right" class="p-2">
+            <button pButton type="button" class="btn btn-primary" label="Send Wishes" (click)="onSubmit()"
+                [disabled]="fbWishes.invalid" id="employeeDashboard_wishes_save_Btn"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Team Members" [(visible)]="teamMembersDialog" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '40%', '640px': '50%'}" class="confirmation_dialog">
+    <div class="content_scroll">
+        <p-table #employeeTable [value]="selectedProject?.members" [paginator]="true" [rows]="6"
+            [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm mb-1">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-center">Employee Id</th>
+                    <th class="text-center">Employee Name</th>
+                    <th class="text-center">Designation</th>
+                    <th class="text-center">Reporting To</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-employee>
+                <tr>
+                    <td class="text-center">
+                        <span *ngIf="employee?.employeeCode">
+                            <p-tag class="inline-block" value=" {{employee?.employeeCode}}">
+                            </p-tag>
+                        </span>
+                    </td>
+                    <td>
+                        <h6 class="line-height-3 m-0 font-medium font-medium ">
+                            {{employee?.employeeName}}
+                        </h6>
+                    </td>
+                    <td>
+                        <h6 class="line-height-3 m-0 font-medium font-medium ">
+                            {{employee?.designationName}}
+                        </h6>
+                    </td>
+                    <td>
+                        <h6 class="line-height-3 m-0 font-medium font-medium ">
+                            {{employee?.reportingTo}}
+                        </h6>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-dialog>

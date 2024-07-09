@@ -1,0 +1,210 @@
+<p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+<div *ngIf="this.permissions.CanManageResignation">
+    <div class="grid" *ngIf="!this.showExitInterviews">
+        <div class="col-12  ">
+            <div class="card">
+                <div class="card-head flex justify-content-between mb-4">
+                    <h4>Resignation Request</h4>
+                    <div *ngIf="findEmployeeInResignationListOrNot">
+                        <button
+                            *ngIf="findEmployeeInResignationListOrNot?.acceptedById === null 
+                    && findEmployeeInResignationListOrNot?.rejectedById ===  null && this.permissions.CanManageResignation"
+                            pButton pRipple type="submit" class="p-button-raised p-button-primary"
+                            (click)="showConfirmationDialog(this.findEmployeeInResignationListOrNot)"
+                            id="Resignation_withdraw" label="Withdraw Resignation">
+                        </button>
+                    </div>
+                </div>
+                <!-- <p-toolbar styleClass="p-mb-4 bg-white">
+                    <ng-template pTemplate="left">
+                        
+                    </ng-template>
+                    <ng-template pTemplate="right">
+                        
+                    </ng-template>
+                </p-toolbar> -->
+                <div class="grid">
+                    <div class="flex flex-column align-items-center justify-content-center sm:col-12 lg:col-6 " style="order: 1; /* Default order for large screens */
+                @media (max-width: 640px) {
+                    order: 2; /* Order for small screens */
+                }">
+                        <form [formGroup]="fbResignation">
+                            <div class="p-fluid p-formgrid">
+                                <div style="margin-bottom: 15px;">
+                                    <label class="required">Employee:</label>&nbsp;
+                                    &nbsp; <input pInputText id="Resignation_employeeId"
+                                        [readonly]="FormControls['employeeId'].value!== null" type="text" #pocNo
+                                        alphaOnly placeholder="Enter Employee" formControlName="employeeName" />
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label class="required">Resignation Reason:</label>&nbsp;
+                                    <p-dropdown formControlName="reasonId" [options]="resignationReasonsList"
+                                        optionLabel="name" id="Resignation_Reason" optionValue="lookupDetailId"
+                                        (onChange)="checkReason()"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['reasonId'].touched &&FormControls['reasonId'].invalid  }"
+                                        placeholder="Select Resignation Reason" appendTo="body"></p-dropdown>
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width:70%">
+                                            <span
+                                                *ngIf="FormControls['reasonId'].touched && FormControls['reasonId'].invalid">
+                                                <div class="ng-invalid ng-touched p-error"
+                                                    *ngIf="FormControls['reasonId'].errors?.['required']">
+                                                    Please Select Resignation Reason.</div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom:15px;" *ngIf="showOtherReasonfield">
+                                    <label class="required">Other Reason: </label>&nbsp; <input pInputText
+                                        id="Resignation_otherReason" type="text" formControlName="otherReason" #reason
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['otherReason'].touched &&FormControls['otherReason'].errors }"
+                                        (keydown)="restrictSpaces($event)" [maxlength]="20" placeholder="Enter Reason"
+                                        #name alphaNumeric />
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width:70%">
+                                            <span
+                                                *ngIf="FormControls['otherReason'].touched && FormControls['otherReason'].invalid">
+                                                <div class="ng-invalid ng-touched p-error"
+                                                    *ngIf="FormControls['otherReason'].errors?.['required']">
+                                                    Please Enter Reason.</div>
+                                            </span>
+                                        </div>
+                                        <div class="align-right w-40" style="width:30%; text-align:right;">
+                                            <small>{{reason.value.length}}/20</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label>Resignation Description:</label>&nbsp;
+                                    <textarea rows="5" cols="30" pInputTextarea formControlName="description" #note
+                                        class="freeze_text-area" [maxlength]="256"
+                                        placeholder="Enter Resignation Description" (keydown)="restrictSpaces($event)"
+                                        id="Resignation_Description"></textarea>
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width:70%">
+                                        </div>
+                                        <div class="align-right w-40" style="width:30%; text-align:right;">
+                                            <small>{{note.value.length}}/256</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-center p-3 pr-0" style="float:right">
+                                <button pButton pRipple type="submit" class="p-button-raised p-button-primary"
+                                    (click)="submit()" id="Resignation_save" [disabled]="!this.fbResignation.valid"
+                                    label="Submit"></button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Resignation Image -->
+                    <div class="sm:col-12 lg:col-6 text-center" style="order: 2; 
+                @media (max-width: 640px) {
+                    order: 1; /* Order for small screens */
+                }">
+                        <img src="assets/layout/images/resignation.JPG" alt="resignation_img" width="60%">
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="grid" *ngIf="this.showExitInterviews">
+        <div class="col-12 ">
+            <div class="card">
+                <p-toolbar styleClass="p-mb-4">
+                    <ng-template pTemplate="left">
+                        <h4>Exit Interviews</h4>
+                    </ng-template>
+                </p-toolbar>
+                <div class="grid col-12 ">
+                    <div class="flex flex-column align-items-center justify-content-center sm:col-12">
+                        <form [formGroup]="fbExitForm" class="col-12">
+                            <div class="grid mt-3">
+                                <div class="col-12 roles-container">
+                                    <div class="p-fluid p-formgrid grid content_scroll">
+                                        <div formArrayName="exitQuestions" class="col-12">
+                                            <table class="table" style="width: 100%;">
+                                                <tr *ngFor="let formGroup of exitQuestionsFormArray?.controls; let i = index"
+                                                    [formGroupName]="i"
+                                                    style="display: grid; grid-template-columns: 50% 20% 30%;">
+                                                    <td>{{ i + 1 }}. {{ exitQuestions[i]?.question }}</td>
+                                                    <td>
+                                                        <app-star-rating [control]="getRating(i)"
+                                                            id="exitInterviewRating{{i}}"
+                                                            [ngClass]="{ 'is-invalid ng-dirty': getRating(i).touched && getRating(i).errors }">
+                                                        </app-star-rating>
+                                                    </td>
+                                                    <td>
+                                                        <textarea rows="2" cols="30" pInputTextarea
+                                                            class="form-control freeze_text-area"
+                                                            formControlName="description" #note
+                                                            id="exitInterviewFeedback{{i}}"
+                                                            (keydown)="restrictSpaces($event)" [maxlength]="256"
+                                                            placeholder="Enter Feedback" id="comment"></textarea>
+                                                        <div class="flex">
+                                                            <div class="align-left w-60" style="width:70%">
+                                                            </div>
+                                                            <div class="align-right w-40"
+                                                                style="width:30%; text-align:right;">
+                                                                <small>{{note.value.length}}/256 </small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-center p-3" style="float: right;">
+                                <button pButton pRipple type="submit" class="p-button-raised p-button-primary"
+                                    (click)="submitExitInterviewQuestions()" id="EXIT_INTERVIEW_SAVE"
+                                    [disabled]="!this.fbExitForm.valid" label="Submit"></button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [header]="'Withdraw Resignation'" [(visible)]="rejectForm" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '70%', '600px': '80%'}">
+    <div class="grid col-12">
+        <div class="flex flex-column align-items-center justify-content-center col-12 pl-4">
+            <form [formGroup]="fbwithDrawResignation">
+                <div class="p-fluid p-formgrid">
+                    <div style="margin-bottom: 15px;">
+                        <label class="required">Description:</label>&nbsp;
+                        <textarea rows="5" cols="30" pInputTextarea formControlName="reviewDescription" #withdraw
+                            class="freeze_text-area" [maxlength]="256" placeholder="Enter Description"
+                            [ngClass]="{ 'is-invalid ng-dirty': FormControl['reviewDescription'].touched &&FormControl['reviewDescription'].errors }"
+                            (keydown)="restrictSpaces($event)" id="resignation_withdraw_Description"></textarea>
+                        <div class="flex">
+                            <div class="align-left w-60" style="width:70%">
+                                <span
+                                    *ngIf="FormControl['reviewDescription'].touched && FormControl['reviewDescription'].invalid">
+                                    <div class="ng-invalid ng-touched p-error"
+                                        *ngIf="FormControl['reviewDescription'].errors?.['required']">
+                                        Please Enter Description.</div>
+                                </span>
+                            </div>
+                            <div class="align-right w-40" style="width:30%; text-align:right;">
+                                <small>{{withdraw.value.length}}/256</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center p-3" style="float:right">
+            <button pButton pRipple type="submit" class="p-button-raised p-button-primary" id="resignation_withdaraw"
+                (click)="withDrawResignation()" [disabled]="!this.fbwithDrawResignation.valid" label="Submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>

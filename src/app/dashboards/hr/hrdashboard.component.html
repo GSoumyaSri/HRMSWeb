@@ -1,0 +1,466 @@
+<div class="grid">
+    <!-- <p-messages [(value)]="msgs1" class="w-full mx-3" styleClass=" w-full border-round-3xl surface-card font-medium text-color-secondary" [enableService]="false"></p-messages> -->
+
+    <div class="col-12">
+        <div class="grid" style="margin: -1rem">
+            <div class="col-12 sm:col">
+                <div class="card surface-card text-500 flex justify-content-between pt-4 h-full" style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-500">Total Employees</h6>
+                        <h1 class="m-0 text-500">53</h1>
+                    </div>
+                    <i class="pi pi-users text-3xl"></i>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card text-0 flex justify-content-between pt-4 h-full" style="background-color: var(--primary-color); min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-0">On Leave</h6>
+                        <h1 class="m-0 text-0">03</h1>
+                    </div>
+                    <i class="pi pi-user-minus text-3xl"></i>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card bg-gray-400 text-white flex justify-content-between pt-4 h-full" style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-white">Total Projects</h6>
+                        <h1 class="m-0 text-white">6</h1>
+                    </div>
+                    <i class="pi pi-clone text-3xl"></i>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card bg-gray-600 text-white flex justify-content-between pt-4 h-full" style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-white">On Hold Projects</h6>
+                        <h1 class="m-0 text-white">1</h1>
+                    </div>
+                    <i class="pi pi-stop text-3xl"></i>
+                </div>
+            </div>
+            <!-- <div class="col-12 sm:col">
+                <div class="card text-white flex justify-content-between pt-4 h-full" style="background: linear-gradient(90deg, #ffb340 0%, #ffa740 100%); min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-white">New Employees</h6>
+                        <h1 class="m-0 text-white">4</h1>
+                    </div>
+                    <i class="pi pi-box text-3xl"></i>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="col-12 xl:col-4">
+        <div class="grid">
+            <div class="col-12  xl:col-12">
+                <div class="card">
+                    <div class="card-header gap-3 pb-2">
+                        <div class="card-title">
+                            <h6>Employee </h6>
+                            <!-- <p class="subtitle">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> -->
+                        </div>
+                    </div>
+                    <p-tabView>
+                        <p-tabPanel header="Unshipped Orders" class="w-full p-0">
+                            <ng-template pTemplate="header">
+                                <div class="pr-2" pBadge value="3" severity="info">
+                                    <h6 class="m-0 mr-2">On Leave</h6>
+                                </div>
+                            </ng-template>
+                            <ul class="list-none p-0 overflow-auto" style="margin: 0 -1.5rem -1rem; max-height: 17.745rem">
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05895"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Manohar S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Jr Android"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05885"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Pavan T.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Android"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#06895"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Sai S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Sr Angular"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05795"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Ram S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Jr IOS"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05895"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Laxman S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Inten"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                               
+                            </ul>
+                            <p-menu #menu [popup]="true" [model]="items"></p-menu>
+                        </p-tabPanel>
+                        <p-tabPanel header="Messages" class="w-full p-0">
+                            <ng-template pTemplate="header">
+                                <div class="pr-2" pBadge value="1" severity="warning">
+                                    <h6 class="m-0 mr-2">WFH</h6>
+                                </div>
+                            </ng-template>
+                            <ul class="list-none p-0 overflow-auto" style="margin: 0 -1.5rem -1rem; max-height: 17.745rem">
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05895"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Manohar S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Jr Android"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05885"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Pavan T.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Android"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05795"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Ram S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Jr IOS"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="">
+                                        <div class="grid ga leav_list m-0 p-0">
+                                            <div class="col-4 p-1">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300 " class="inline-block" value="#05895"></p-tag>
+                                            </div>
+                                            <div class="col-4 p-1">
+                                                <h6 class="line-height-3 m-0 font-medium font-medium "> <b>Laxman S.</b></h6> 
+                                            </div>
+                                            <div class="col-4 p-1 text-right">
+                                                <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300 leavelist_emp_designation " class="inline-block" value="Inten"></p-tag>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1"> <b>1</b> Bamboo Watch, <b>3</b> Blue Band, </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                               
+                            </ul>
+                            <p-menu #menu2 [popup]="true" [model]="items"></p-menu>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <div class="col-12 xl:col-2">
+        <div class="card">
+            <div class="card-header gap-3 pb-2">
+                <div class="card-title">
+                    <h6 class="mb-5">Chart by Attendance </h6>
+                    <!-- <p class="subtitle">Categorized sales data</p> -->
+                </div>
+            </div>
+            <div class="mb-3">
+                <ul class="list-none p-0 m-0">
+                    <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-primary-300 mr-2"></i><span>In Office </span></li>
+                    <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-red-300 mr-2"></i><span>On Leave</span></li>
+                    <li class="mb-5 flex align-items-center"><i class="pi pi-circle-fill text-green-300 mr-2"></i><span>WFH</span></li>
+                </ul>
+                <br/>
+                <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" height="140px" width="140px"></p-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 xl:col-6">
+        <div class="grid">
+            <div class="col-12 md:col-6 xl:col-12">
+                <div class="card">
+                    <div class="card-header gap-3 pb-2">
+                        <div class="card-title">
+                            <h6>Notifications </h6>
+                            <!-- <p class="subtitle">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p> -->
+                        </div>
+                    </div>
+                    <p-tabView>
+                        <p-tabPanel header="Unshipped Orders" class="w-full p-0">
+                            <ng-template pTemplate="header">
+                                <div class="pr-2" pBadge value="6" severity="info">
+                                    <h6 class="m-0 mr-2">HR Notifications</h6>
+                                </div>
+                            </ng-template>
+                            <ul class="list-none p-0 overflow-auto" style="margin: 0 -1.5rem -1rem; max-height: 17.745rem">
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Greetings!                                                
+                                                🛰 It is a proud moment for us as Chandrayaan-3 🚀 India's Mission to Moon 🌝  🛰shall be launched🚀 on -
+                                                 Date : 14th July 23 
+                                                Time : 2:30pm⏱
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Hi Everyone,
+                                                Today Parvathi garu and satya garu(scrum master) is on leave today
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Greetings!                                                
+                                                🛰 It is a proud moment for us as Chandrayaan-3 🚀 India's Mission to Moon 🌝  🛰shall be launched🚀 on -
+                                                Date : 14th July 23 
+                                                Time : 2:30pm⏱
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Hi Everyone,
+                                                Today Parvathi garu and satya garu(scrum master) is on leave today
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Greetings!                                                
+                                                🛰 It is a proud moment for us as Chandrayaan-3 🚀 India's Mission to Moon 🌝  🛰shall be launched🚀 on -
+                                                 Date : 14th July 23 
+                                                Time : 2:30pm⏱
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium">Hi Everyone,
+                                                Hi Everyone,
+                                                Today Parvathi garu and satya garu(scrum master) is on leave today
+                                                </h6>
+                                        </div>
+                                        <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span>
+                                    </div>
+                                </li>                                
+                            </ul>
+                            <p-menu #menu [popup]="true" [model]="items"></p-menu>
+                        </p-tabPanel>
+                        <p-tabPanel header="Messages" class="w-full p-0">
+                            <ng-template pTemplate="header">
+                                <div class="pr-2" pBadge value="3" severity="warning">
+                                    <h6 class="m-0 mr-2">Today Birthdays and Events</h6>
+                                </div>
+                            </ng-template>
+                            <ul class="list-none p-0 overflow-auto" style="margin: 0 -1.5rem -1rem; max-height: 17.745rem">
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium font-medium"> <b>Anna K.</b></h6>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300" class="inline-block" value="#05895"></p-tag>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300" class="inline-block" value="UI Develoer"></p-tag>
+                                        </div>
+
+                                        <!-- <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span> -->
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1 white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam ad itaque voluptatum deleniti impedit! Inventore eius soluta maxime a quisquam alias, at minima ullam reiciendis blanditiis voluptate.
+                                            Dolore, nisi vel.
+                                        </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu2.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium font-medium"> <b>Rakesh B.</b></h6>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300" class="inline-block" value="#05295"></p-tag>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300" class="inline-block" value="Angular"></p-tag>
+                                        </div>
+
+                                        <!-- <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span> -->
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1 white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam ad itaque voluptatum deleniti impedit! Inventore eius soluta maxime a quisquam alias, at minima ullam reiciendis blanditiis voluptate.
+                                            Dolore, nisi vel.
+                                        </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu2.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                                <li class="border-round-lg pt-2 px-3 pb-2 mb-3" style="background-color: var(--primary-lighter-color)">
+                                    <div class="flex justify-content-between align-items-center mb-1">
+                                        <div class="flex align-items-center gap-1">
+                                            <h6 class="line-height-3 m-0 font-medium font-medium"> <b>Praveen K.</b></h6>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-orange-300" class="inline-block" value="#05895"></p-tag>
+                                            <p-tag styleClass="m-0 mr-2 px-2 text-xs bg-blue-300" class="inline-block" value="Tester"></p-tag>
+                                        </div>
+
+                                        <!-- <span class="text-gray-300 font-semibold text-sm line-height-1">4h ago</span> -->
+                                    </div>
+                                    <!-- <div class="flex justify-content-between align-items-center">
+                                        <span class="mt-1 text-400 block text-sm line-height-1 white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam ad itaque voluptatum deleniti impedit! Inventore eius soluta maxime a quisquam alias, at minima ullam reiciendis blanditiis voluptate.
+                                            Dolore, nisi vel.
+                                        </span>
+                                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-sm flex-shrink-0" (click)="menu2.toggle($event)"></button>
+                                    </div> -->
+                                </li>
+                              
+                            </ul>
+                            <p-menu #menu2 [popup]="true" [model]="items"></p-menu>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+            </div>
+            <!-- <div class="col-12 md:col-6 xl:col-12">
+                <div class="card">
+                    <div class="card-header gap-3 pb-2">
+                        <div class="card-title">
+                            <h6>Sales By Category</h6>
+                            <p class="subtitle">Categorized sales data</p>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center justify-content-between">
+                        <ul class="list-none p-0 m-0">
+                            <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-primary-300 mr-2"></i><span>Watches</span></li>
+                            <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-orange-300 mr-2"></i><span>Clothing</span></li>
+                            <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-green-300 mr-2"></i><span>Gadgets</span></li>
+                            <li class="mb-3 flex align-items-center"><i class="pi pi-circle-fill text-cyan-300 mr-2"></i><span>Accessories</span></li>
+                        </ul>
+                        <p-chart type="doughnut" [data]="pieData" [options]="pieOptions" height="140px" width="140px"></p-chart>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+   
+</div>

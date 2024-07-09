@@ -1,0 +1,192 @@
+<div class="grid">
+  <div class="col-12 lg:col-3 md:col-4 sm:col-5">
+    <div class="card p-5 orange-200 text-left applicant-p-block">
+      <button pButton pRipple icon="pi pi-pencil"
+        (click)="openComponentDialog(applicantdialogComponent, viewApplicantDetails, ActionTypes.edit)"
+        class="p-element p-ripple p-button-text p-button-primary p-component"></button>
+      <div class="text-center">
+        <img [src]="viewApplicantDetails?.photo ? viewApplicantDetails?.photo : defaultPhoto"
+          [alt]="viewApplicantDetails?.name" class="shadow-2 my-1 mx-0 employee_profile_pic employee_profile_pic_view"
+          width="100px" />
+        <h4 class="m-5 mt-0 text-primary">{{ viewApplicantDetails?.name}}</h4>
+      </div>
+      <span class="inline-flex align-items-left mb-2">
+        <i class="pi pi-user text-primary text-700 mr-2"></i>
+        <span class="text-700 mr-2">{{ viewApplicantDetails?.gender}}</span>
+      </span><br />
+      <span class="inline-flex align-items-left mb-2">
+        <i class="pi pi-envelope text-primary text-700 mr-2"></i>
+        <span class="text-700 mr-2">{{ viewApplicantDetails?.emailId}}</span>
+      </span><br />
+      <span class="inline-flex align-items-left mb-2">
+        <i class="pi pi-mobile text-primary text-700 mr-2"></i>
+        <span class="text-700 mr-2">{{ viewApplicantDetails?.mobileNo }}</span>
+      </span><br />
+      <span class="inline-flex align-items-left mb-2">
+        <i class="pi pi-calendar text-primary text-700 mr-2"></i>
+        <span class="text-700 mr-2">{{ viewApplicantDetails?.dob | date:mediumDate}}</span>
+      </span><br />
+      <span class="inline-flex align-items-left mb-2">
+        <i class="pi pi-send text-700 text-primary mr-2"></i>
+        <span class="text-700 text-left mr-2">
+          <span>{{ viewApplicantDetails?.addressLine1 }}</span>
+        </span>
+      </span>
+      <span class="flex align-items-center mb-2">
+        <i class="pi pi-flag text-primary text-700 mr-2"></i>
+        <span class="text-700 mr-2">
+          <span>{{ viewApplicantDetails?.country}}</span>
+        </span>
+      </span>
+    </div>
+    <!-- Technical Skills -->
+    <div class="card p-5 orange-200 text-center applicant-p-block2">
+      <div class="flex justify-content-between mb-2">
+        <div class="flex text-primary">
+          <span class="icon-user_skills m-2" style="font-size:20px;"></span>
+          <h4 class="m-2 mt-0 text-primary">Technical Skills</h4>
+        </div>
+        <button pButton pRipple id="addButton" icon="pi pi-plus" class="p-button p-button-text p-1 m-1 " size="small"
+          (click)="openRowEditDialog(viewApplicantDialogDetails,viewApplicantDetails, ActionTypes.add,'technicalSkills')"></button>
+      </div>
+      <div class="flex flex-column">
+        <span class="inline-flex justify-content-between mb-3">
+          <span class="text-700 mr-2 font-bold">Skill</span>
+          <span class="text-700 mr-2 font-bold">Expertise</span>
+        </span>
+        <span class="inline-flex justify-content-between mb-3"
+          *ngFor="let skill of viewApplicantDetails?.savedapplicantSkills">
+          <div style="cursor: pointer;" class="flex justify-content-between align-items-center w-100"
+            (click)="openRowEditDialog(viewApplicantDialogDetails, skill, ActionTypes.edit,'technicalSkills')">
+            <span class="text-700 mr-2 ">{{ skill.skill }}</span>
+            <span class="text-700 mr-2 font-bold">
+              <app-star-rating [control]="patchStarValue(skill.expertise, true)">
+              </app-star-rating>
+            </span>
+          </div>
+        </span>
+      </div>
+    </div>
+    <!-- Language Skills -->
+    <div class="card p-5 orange-200 text-center applicant-p-block">
+      <div class="flex justify-content-between mb-2">
+        <div class="flex text-primary">
+          <span class="icon-language m-2" style="font-size:20px;"></span>
+          <h4 class="m-2 mt-0 text-primary">Language Skills</h4>
+        </div>
+        <button pButton pRipple id="addButton" icon="pi pi-plus" class="p-button p-button-text p-1 m-1"
+          (click)="openRowEditDialog(viewApplicantDialogDetails,viewApplicantDetails, ActionTypes.add,'languageSkills')"></button>
+      </div>
+      <div class="flex flex-column">
+        <span class="inline-flex justify-content-between mb-3">
+          <span class="text-700 mr-2 font-bold">Language</span>
+          <span class="text-700 mr-2 font-bold">Read</span>
+          <span class="text-700 mr-2 font-bold">Write</span>
+          <span class="text-700 mr-2 font-bold">Speak</span>
+        </span>
+        <span class="inline-flex justify-content-between mb-3"
+          *ngFor="let language of viewApplicantDetails?.savedapplicantLanguageSkills">
+          <div style="cursor: pointer;" class="flex justify-content-between align-items-center w-100"
+            (click)="openRowEditDialog(viewApplicantDialogDetails, language, ActionTypes.edit,'languageSkills')">
+            <span class="text-700 mr-2 ">{{ language.language }}</span>
+            <i class="pi pi-times-circle text-primary text-700 mr-2"
+              [ngClass]="{'pi-check-circle': language.canRead, 'pi-times-circle': !language.canRead}"></i>
+            <i class="pi pi-times-circle text-danger  text-700 mr-2"
+              [ngClass]="{'pi-check-circle': language.canWrite, 'pi-times-circle': !language.canWrite}"></i>
+            <i class="pi pi-times-circle text-primary text-700 mr-2"
+              [ngClass]="{'pi-check-circle': language.canSpeak, 'pi-times-circle': !language.canSpeak}"></i>
+          </div>
+        </span>
+      </div>
+    </div>
+    <div class="px-2">
+      <button pButton pRipple class="p-element p-ripple  p-button-primary p-component w-100 text-center"
+        (click)="downloadResume()"> Download
+        Resume <span class="pi pi-download px-5"></span>
+      </button>
+    </div>
+  </div>
+  <!-- Education Details -->
+  <div class="col-12 lg:col-9 md:col-8 sm:col-7">
+    <div class="card applicant-e-block">
+      <div class="flex justify-content-between">
+        <div class="flex text-primary">
+          <span class="icon-study m-2" style="font-size:20px;"></span>
+          <h3 class="m-0 text-primary">Education Details</h3>&nbsp;
+        </div>
+        <button pButton pRipple id="addButton" icon="pi pi-plus"
+          (click)="openRowEditDialog(viewApplicantDialogDetails, null, ActionTypes.add,'education')"></button>
+      </div>
+      <div class="col-12 md:col-12 m-2 Scroll-bar-for-container">
+        <p-timeline [value]="viewApplicantDetails?.savedapplicantEducationDetails" align="alternate">
+          <ng-template pTemplate="content" let-education>
+            <div [ngClass]="{'text-primary': education.isHovered} "
+              (click)="openRowEditDialog(viewApplicantDialogDetails, education, ActionTypes.edit,'education')"
+              (mouseenter)="education.isHovered = true" (mouseleave)="education.isHovered = false"
+              style="cursor: pointer;">
+              <h6 [ngClass]="{'text-primary': education.isHovered}">{{ education.institutionName }}</h6>
+              <p>{{ education.stream }}</p>
+              <p>{{ education.yearOfCompletion | date:mediumDate}}</p>
+              <p>{{ education.gradingValue}}</p>
+            </div>
+          </ng-template>
+        </p-timeline>
+      </div>
+      <hr *ngIf="!viewApplicantDetails?.isFresher === true" />
+      <!-- Experience Details -->
+      <div *ngIf="!viewApplicantDetails?.isFresher === true">
+        <div class="flex justify-content-between">
+          <div class="flex text-primary">
+            <span class="icon-office_details m-2" style="font-size:20px;"></span>
+            <h3 class="m-0 text-primary">Experience Details</h3>
+          </div>
+          <button pButton pRipple id="addButton" icon="pi pi-plus"
+            (click)="openRowEditDialog(viewApplicantDialogDetails, null, ActionTypes.add,'experience')"></button>
+        </div>
+        <div class="col-12 md:col-12 m-2 Scroll-bar-for-container">
+          <p-timeline [value]="viewApplicantDetails?.savedapplicantWorkExperience" align="alternate">
+            <ng-template pTemplate="content" let-experience>
+              <div [ngClass]="{'text-primary': experience.isHovered}"
+                (click)="openRowEditDialog(viewApplicantDialogDetails, experience, ActionTypes.edit,'experience')"
+                (mouseenter)="experience.isHovered = true" (mouseleave)="experience.isHovered = false"
+                style="cursor: pointer;">
+                <h6 [ngClass]="{'text-primary': experience.isHovered}">{{ experience.companyName }}</h6>
+                <p>{{ experience.designation }}</p>
+                <p>{{ experience.companyLocation }}</p>
+                <p>{{ experience.dateOfJoining | date:mediumDate}}</p>
+                <p>{{ experience.dateOfReliving | date:mediumDate}}</p>
+              </div>
+            </ng-template>
+          </p-timeline>
+        </div>
+      </div>
+      <hr />
+      <!-- Certification Details -->
+      <div class="col-12 md:col-12  m-2">
+        <div class="flex justify-content-between mb-2">
+          <div class="flex text-primary">
+            <span class="icon-document-certificate m-2" style="font-size:20px;"></span>
+            <h3 class="m-0 text-primary">Certification Details</h3>
+          </div>
+          <button pButton pRipple id="addButton" icon="pi pi-plus"
+            (click)="openRowEditDialog(viewApplicantDialogDetails, null, ActionTypes.add,'certificates')"></button>
+        </div>
+        <div class="grid">
+          <div class="col-12 lg:col-3 md:col-4 sm:col-6"
+            *ngFor="let certification of viewApplicantDetails?.savedapplicantCertifications">
+            <div style="cursor: pointer;"
+              (click)="openRowEditDialog(viewApplicantDialogDetails, certification, ActionTypes.edit,'certificates')">
+              <div class="applicant_certificate">
+                <h5 class="text-primary mb-0">{{ certification.certificateName }}</h5>
+                <p class="mt-2">{{ certification.franchiseName }}</p>
+                <p><span class="text-primary" pTooltip="Year of Completion">YOC</span> : {{
+                  certification.yearOfCompletion | date:mediumDate}}</p>
+                <p><i class="pi pi-star text-primary text-700 mr-2"></i>: {{ certification.results }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

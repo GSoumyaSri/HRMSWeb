@@ -1,0 +1,51 @@
+<!-- P-Dialog for Unassigning the assets -->
+
+<div class="flex flex-column align-items-center justify-content-center">
+    <form [formGroup]="fbUnAssignAsset">
+        <div class="col-12 roles-container mb-4">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-12">
+                    <label class="required">Revoked On:</label>
+                    <p-calendar id="revoked-on" [readonlyInput]="true" [showIcon]="true"
+                        placeholder="Select Revoked Date" formControlName="revokedOn" appendTo="body"
+                        [ngClass]="{ 'is-invalid ng-dirty': fcUnAssignAsset['revokedOn'].touched && fcUnAssignAsset['revokedOn'].errors }">
+                    </p-calendar>
+                    <span *ngIf="fcUnAssignAsset['revokedOn'].touched && fcUnAssignAsset['revokedOn'].invalid">
+                        <div class="ng-invalid ng-touched p-error"
+                            *ngIf="fcUnAssignAsset['revokedOn'].errors?.['required']">
+                            Please Select Revoked Date.</div>
+                    </span>
+                </div>
+                <div class="field col-12 md:col-12 mb-5">
+                    <label class="required">Reason For Revoke:</label>
+                    <textarea id="reason-for-revoke" #reasonForRevoke rows="5" cols="30"
+                        placeholder="Enter Reason For Revoke" formControlName="reasonForRevoke" pInputTextarea
+                        class="freeze_text-area" [maxLength]="256"
+                        [ngClass]="{ 'is-invalid ng-dirty': fcUnAssignAsset['reasonForRevoke'].touched && fcUnAssignAsset['reasonForRevoke'].errors }">
+                                    </textarea>
+                    <div class="flex">
+                        <div class="align-left w-60" style="width:70%">
+                            <span
+                                *ngIf="fcUnAssignAsset['reasonForRevoke'].touched && fcUnAssignAsset['reasonForRevoke'].invalid">
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="fcUnAssignAsset['reasonForRevoke'].errors?.['required']">
+                                    Please Select Reason For Revoke.</div>
+                                <div class="ng-invalid ng-touched p-error"
+                                    *ngIf="fcUnAssignAsset['reasonForRevoke'].errors?.['minlength']">
+                                    Reason Min Length is 2.</div>
+                            </span>
+                        </div>
+                        <div class="align-right w-40" style="width:30%; text-align:right;">
+                            <small>{{reasonForRevoke.value.length}}/256</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="dialog-footer mt-4">
+    <button pButton pRipple type="submit" label="Submit" class="p-button-raised p-button-primary"
+        [disabled]="fbUnAssignAsset.invalid" (click)="onSubmitUnAssignedAsset()"></button>
+</div>

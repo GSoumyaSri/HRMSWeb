@@ -1,0 +1,54 @@
+<div class="mt-0 p-5 mb-5 pt-3 text-right align-items-right content_scroll">
+    <div class="grid mb-5 align-items-right text-right">
+
+        <div class="text-right w-100 mt-3">
+            <p-button id="redirect-to-add-btn" class="p-element align-items-right text-right p-component p-2 pt-0 mt-3 pb-0"
+                icon="pi pi-plus" label="Assign Asset" *ngIf="this.employeeResignations.length===0"
+                (click)="openComponentDialog(addassetallotmentDialogComponent, null, ActionTypes.add)">
+            </p-button>
+        </div>
+        
+
+        <div class="grid align-items-center text-center p-5 m-5 mb-3"  *ngIf="this.employeeResignations.length>0 && assetAllotments.length===0">
+            <div>
+                <p-checkbox [(ngModel)]="revokedAssets" [binary]="true" inputId="ny" id="submit-revoke-assets-checkbox"></p-checkbox>
+                <label for="ny" class="ml-2">Revoked All Assets</label>
+            </div>
+           
+        </div>
+    </div>
+    <div class="grid mb-5 mt-0">
+        <div class="lg:col-4 md:col-6 sm:c0l-12 xs:col-12" *ngFor="let assetAllotment of assetAllotments">
+            <div class="p-1 card border-1 text-center surface-border">
+                <div class="avatar">
+                    <img [src]="assetAllotment.thumbnail ? assetAllotment.thumbnail :this.defaultPhoto"
+                        [alt]="assetAllotment.assetName" class="shadow-2 my-1 mx-0 employee_profile_pic  avatar" />
+                </div>
+                <div>
+                    <span pTooltip="Asset Name" tooltipPosition="top" class="icon-address-card-o text-primary"></span>
+                    {{assetAllotment.assetName}}
+                </div>
+                <div>
+                    <span class="icon-barcode text-primary" tooltipPosition="top" pTooltip="Asset Code"></span>
+                    {{assetAllotment.assetCode}}
+                </div>
+                <div>
+                    <span class="pi pi-calendar text-primary" tooltipPosition="top" pTooltip="Allocated On"></span>
+                    {{assetAllotment.assignedOn | date: 'MM-dd-yyyy'}}
+                </div>
+                <button id="unassign-asset-btn" pButton pRipple type="submit" label="Unassign"
+                    class="p-element p-ripple p-button-text p-button p-component p-button-primary w-100 mt-1"
+                    (click)="openComponentDialog(unassignassetDialogComponent, assetAllotment, ActionTypes.unassign)"></button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+</div>
+<div class="mt-5 footer dialog-footer" *ngIf="this.employeeResignations.length>0 && assetAllotments.length===0">
+    <p-button id="submit-revoke-assets-btn" class="p-element align-items-right text-right p-component p-2 pt-0 pb-0" label="Submit"
+    (click)="revokedAllAssets()" [disabled]="!this.revokedAssets">
+    </p-button>
+</div>

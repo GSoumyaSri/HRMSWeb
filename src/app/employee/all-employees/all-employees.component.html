@@ -1,0 +1,224 @@
+<div class="grid">
+  <div class="col-12  ">
+    <div class="card">
+      <p-dataView #dv [value]="employees" [paginator]="dv._layout ==  'grid' && dv.rows > 10" [rows]="12"
+        filterBy="employeeName,code,employeeRoleName,dateofJoin,officeEmailId,mobileNumber,certificateDOB,gender,reportingTo,designation"
+        [sortField]="sortField" [sortOrder]="sortOrder" layout="grid" [alwaysShowPaginator]="false">
+        <ng-template pTemplate="header">
+          <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+            <div *ngIf="showSearchBar">
+              <div class="p-inputgroup">
+                <input id="search-name-id" type="text" #filter pInputText placeholder="Search Keyword"
+                  (input)="onFilter(dv, $event)" />
+                <span class="p-inputgroup-addon" id="clear-card" (click)="clearcard(dv)"><i
+                    class="pi pi-undo"></i></span>
+              </div>
+            </div>
+            <p-dataViewLayoutOptions (click)="hideSearchBar(dv);clearcard(dv);searchKeyword=''" id="navigate-view">
+            </p-dataViewLayoutOptions>
+            <div class="flex">
+              <div *ngIf="permissions?.CanDownloadEmployees">
+                <span>
+                  <button pButton class="p-button doc_button mr-2" icon="icon-csv-svgrepo-com-1"
+                    pTooltip="Download Employees CSV" tooltipPosition="left" id="csv-download"
+                    (click)="downloadEmployeesReport()"></button>
+                </span>
+                <span>
+                  <button pButton class="p-button doc_button mr-2" icon="pi pi-file-pdf" id="pdf-download"
+                    pTooltip="Download Employees PDF" tooltipPosition="left" (click)="openMultiselect()"></button>
+                </span>
+              </div>
+              <div class="mx-2">
+                <p-dropdown [options]="employeeStatusOptions" [(ngModel)]="selectedEmployeeStatus" id="selected-status"
+                  optionLabel="label" (ngModelChange)="initEmployees(selectedEmployeeStatus.value)"></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template let-employee pTemplate="listItem">
+          <ng-container *ngIf="employee === employees[0]">
+            <!-- table -->
+            <div class="col-12">
+              <p-table #dtEmployees [value]="employees" dataKey="employeeId" [rows]="10" [rowHover]="true"
+                styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm pb-5" [paginator]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true" [alwaysShowPaginator]="false" [globalFilterFields]="globalFilterFields"
+                [rowsPerPageOptions]="[10,25,50]" [autoLayout]="true" responsiveLayout="scroll"
+                [resizableColumns]="true">
+                <ng-template pTemplate="caption">
+                  <div class="flex justify-content-between flex-column sm:flex-row">
+                    <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                      (click)="clear(dtEmployees)" id="clear-table"></button>
+                    <span class="p-input-icon-left mb-2">
+                      <i class="pi pi-search"></i>
+                      <input pInputText type="text" [(ngModel)]="searchKeyword" #filter id="search"
+                        (input)="onGlobalFilter(dtEmployees, $event)" placeholder="Search Keyword" class="w-full" />
+                    </span>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Image</th>
+                    <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+                      {{col?.label}}
+                      <p-columnFilter type="text" [field]="col.header" display="menu">
+                      </p-columnFilter>
+                      <p-sortIcon [field]="col.header"></p-sortIcon>
+                    </th>
+                    <th></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-employee>
+                  <tr>
+                    <td>
+                      <img
+                        [src]="employee.photo ? employee.photo : employee?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                        [alt]="employee.employeeName" class="my-4 md:my-0 w-10 md:w-2rem shadow-2 mr-2" />
+                    </td>
+                    <td *ngFor="let col of headers">
+                      <span
+                        *ngIf="col?.field == 'code' || col?.field == 'employeeName' || col?.field == 'designation'||col?.field == 'gender'  || col?.field == 'mobileNumber'||col?.field =='officeEmailId' || col?.field == 'createdBy'||col?.field == 'reportingTo'">
+                        {{employee[col.field]}}
+                      </span>
+                      <span *ngIf="col?.field === 'relievingDate'">
+                        {{ employee[col.field] | date:'mediumDate' }}
+                      </span>
+                      <span *ngIf="col.field == 'dateofJoin'">
+                        {{employee[col.field] | date:mediumDate}}</span>
+                    </td>
+                    <td class="text-center">
+                      <button pbutton="" pripple="" type="button" label="Primary" id="view-employee"
+                        (click)="viewEmployeeDtls(employee?.employeeId,'Enroll Employee')"
+                        class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                        ng-reflect-label="Primary">
+                        <span class="p-button-label pi pi-chevron-right" pTooltip="View Employee"
+                          tooltipPosition="top"></span>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td class="text-center m-5" colspan="15">No Employees Found.</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </ng-container>
+        </ng-template>
+        <ng-template let-employee pTemplate="gridItem">
+          <div class="col-12 md:col-4 lg:col-4 sm:col-6"
+            (click)="viewEmployeeDtls(employee?.employeeId,'Enroll Employee')">
+            <div class="card m-2 border-1 surface-border card-height card_hover">
+              <div class=" mb-2 grid">
+
+
+                <div class="col-12 lg:col-4 md:col-12 p-1  text-left employee_profile_pic_div">
+                  <div class="avatar_employee">
+                    <img
+                      [src]="employee.photo ? employee.photo : employee?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                      [alt]="employee.employeeName" class="shadow-2 mb-1 mx-0  employee_profile_pic  avatar" />
+                    <br />
+                    
+                  </div>
+                  <div style="display:grid;">
+                    <span class="text-600 font-medium text-md text-color mt-1">
+                      <i class="pi pi-calendar text-500 text-primary text-1xl pb-1" pTooltip="DOJ"
+                        tooltipPosition="top"></i> :
+                      {{employee?.dateofJoin | date: mediumDate}}
+                    </span>
+                    
+                    <span class="text-600 font-medium text-md text-color mt-1">
+                      <i class="pi pi-phone text-500 text-primary text-1xl pb-1" pTooltip="Mobile Number"
+                        tooltipPosition="top"></i> :
+                      {{employee?.mobileNumber}}
+                    </span>
+                  </div>
+                  
+                </div>
+                <div class="col-12 lg:col-8 md:col-12 p-1 px-3 employee_info">
+                  <div class=" text-xl name_bold text-primary  mb-2 py-0">{{ employee?.employeeName }}
+                  </div>
+                  <span class="text-600 font-medium text-md text-color">
+                    <i class="pi pi-id-card text-300 text-primary text-1xl pb-1" pTooltip="Employee Id"
+                      tooltipPosition="top"></i> :
+                    {{employee?.code}}
+                  </span>
+                  <br />
+                  <span class="text-500 font-medium text-md text-color">
+                    <i class="pi icon-intersex text-600 text-primary text-2xl  pb-2" pTooltip="Gender"
+                      tooltipPosition="top"></i> :
+                    {{employee?.gender}}
+                  </span><br />
+                  <span class="text-600 font-medium text-md text-color">
+                    <i class="pi pi icon-birthday-cake text-300 text-primary text-1xl  pb-1" pTooltip="DOB"
+                      tooltipPosition="top"></i> :
+                    {{employee?.certificateDOB| date: mediumDate}}
+                  </span>
+                  <br />
+                  <span class="text-600 font-medium text-md text-color">
+                    <i class="pi pi-star text-500 text-primary text-1xl  pb-1" pTooltip="Designation"
+                      tooltipPosition="top"></i> :
+                    {{employee?.designation }}
+                  </span>
+
+                  <br />
+                  <span class="text-600 font-medium text-md text-color">
+                    <i class="pi pi-at text-500 text-primary text-1xl pb-1" pTooltip="Office Email Id"
+                      tooltipPosition="top"></i>
+                    :
+                    {{employee?.officeEmailId}}
+                  </span>
+                  <br />
+                  <span class="text-600 font-medium text-md text-color">
+                    <i class="pi icon-POC text-500 text-primary text-1xl pb-1" pTooltip="Reporting To"
+                      tooltipPosition="top"></i> :
+                    {{employee?.reportingTo }}
+                  </span>
+                  <br />
+                  <span class="text-600 font-medium text-md text-color" *ngIf="employee.relievingDate !== null">
+                    <i class="pi icon-experiance text-primary text-700 mr-2 dicon" pTooltip="DOR"
+                      tooltipPosition="top"></i> :
+                    {{employee?.relievingDate | date: mediumDate}}
+                  </span>
+                </div>
+              </div>
+              <!-- <div class="grid">
+                <div class="relative col-9 p-0 mb-3  employee_info">
+                  
+                  <br />
+                 
+                  <br />
+                </div>
+                <div class="mb-3 col-3 p-0">
+                  <button pbutton="" type="button" label="Primary"
+                    id="view-employee"
+                    class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                    ng-reflect-label="Primary">
+                    <span class="p-button-label pi pi-chevron-right" pTooltip="View Employee"
+                      tooltipPosition="top"></span>
+                  </button>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+  </div>
+</div>
+<p-dialog header="Please Select Columns" [(visible)]="Confirmationdialog" [modal]="true" showEffect="fade"
+  [breakpoints]="{'960px': '70%', '640px': '80%'}" [style]="{width: '20%'}" class="p-5">
+  <div class="mb-5 mt-2">
+    <p-multiSelect optionLabel="text" [options]="PDFheaders" [(ngModel)]="selectedColumns" id="ColumnSelection"
+      selectedItemsLabel="{0} columns selected" placeholder="Choose Columns" appendTo="body" [style]="{'width':'100%'}">
+    </p-multiSelect>
+  </div>
+
+
+  <ng-template pTemplate="footer">
+    <button class="p-button-raised p-button-primary m-2 " pButton pRipple type="submit" id="download-pdf"
+      (click)="onDownloadButtonClick(selectedColumns)">Download PDF</button>&nbsp;
+  </ng-template>
+</p-dialog>

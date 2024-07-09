@@ -1,0 +1,366 @@
+<!-- Toolbar -->
+<p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+<p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+        <h4>Recruitment Process</h4>
+    </ng-template>
+    <ng-template pTemplate="center">
+        <p-dropdown [options]="this.JobOpeningsList" placeholder="Select Processed Jobs"
+            optionValue="jobOpeninginprocessId" [(ngModel)]="this.jobOpeninginprocessId"
+            (onChange)="initApplicants(this.jobOpeninginprocessId)" optionLabel="jobTitle"></p-dropdown>
+    </ng-template>
+    <ng-template pTemplate="right">
+        <p-checkbox [(ngModel)]="isRPChecked" [binary]="true"
+            (onChange)="this.initApplicants(this.jobOpeninginprocessId)" name="isActive"></p-checkbox>
+        <label for="ny" class="ml-1">Hide UnderProcess</label>
+    </ng-template>
+
+</p-toolbar>
+<div class="card " id="main-card">
+    <div class="grid">
+        <div class="col-12 md:col-4 lg:col-3 sm:col-6">
+            <h5>Initial Qualification</h5>
+            <div class="multi-progress-bar">
+                <div class="progress-segment"
+                    [style.width]="(this.applicantsList.length / this.applicants.length) * 100 + '%'"
+                    style="text-align: center;background-color: rgb(246, 123, 16)">
+                    <div class="progress-segment"
+                        [style.width]="(getTechnicalRound1Count() / this.applicantsList.length) * 100 + '%'"
+                        style="background-color: rgb(48, 137, 220)">
+                        <div class="progress-segment"
+                            [style.width]="(getHRRound1Count() / getTechnicalRound1Count()) * 100 + '%'"
+                            style="background-color: rgb(48, 220, 91)">
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-segment"
+                    [style.width]="100-(this.applicantsList.length / this.applicants.length) * 100 + '%'"
+                    style="text-align: center; background-color: rgb(230, 224, 224);">
+                    {{100-(this.applicantsList.length / this.applicants.length) * 100 |number:'1.0-1'}}%
+                </div>
+            </div>
+
+            <div *ngFor="let applicant of applicantsList">
+                <div *ngIf="applicant.technicalRound1At===null && applicant.hrRoundAt===null">
+                    <div class="card card-header surface-border orange-200 card-height border-1 m-0 mt-2 p-2  mb-0">
+                        <b>{{applicant.name}}</b>
+                    </div>
+                    <div class="card mt-0 mb-2  border-1 pb-2 surface-border "
+                        class="{{ applicant.isInProcess ? 'recruitment' : '' }}">
+                        <div class=" mb-3 grid">
+                            <div class="col-12 lg:col-8 md:col-12 p-1 px-2 employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-calendar text-300 text-primary text-1xl  pb-1"></i> : {{
+                                    applicant.dob|date:'dd-MMM-yyyy'}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-phone text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.mobileNo}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-at text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.emailId}}
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="grid">
+                            <div class="relative col-7 p-0 mb-3  employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi  text-500 text-primary text-1xl pb-1">Skills </i> :
+                                    {{ applicant.skills}}</span>
+                            </div>
+                            <div class="grid m-0 pb-3">
+                                <button pbutton pripple type="button" label="Primary"
+                                    (click)="viewApplicantDtls(applicant.applicantId)"
+                                    class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                    ng-reflect-label="Primary">
+                                    <span class="p-button-label pi pi-chevron-right"></span>
+                                </button>
+                                <button pButton pRipple type="submit" label="Move to Technical"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess"
+                                    (click)="showConfirmationDialogToMoveTechnical(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 md:col-4 lg:col-3 sm:col-6">
+            <h5>Technical Round</h5>
+            <div class="multi-progress-bar">
+                <div class="progress-segment"
+                    [style.width]="(getTechnicalRound1Count() / this.applicantsList.length) * 100 + '%'"
+                    style="text-align: center;color: white;background-color: rgb(246, 123, 16)">
+                    {{(getTechnicalRound1Count() / this.applicantsList.length) * 100|number:'1.0-1'}}%
+                </div>
+                <div class="progress-segment"
+                    [style.width]="100-(getTechnicalRound1Count() / this.applicantsList.length) * 100 + '%'"
+                    style="text-align: center;background-color: rgb(230, 224, 224);">
+                    {{100-(getTechnicalRound1Count() / this.applicantsList.length) * 100 |number:'1.0-1'}}%
+                </div>
+            </div>
+            <div *ngFor="let applicant of applicantsList">
+                <div *ngIf="applicant.technicalRound1At!==null && applicant.hrRoundAt===null">
+                    <div class="card card-header surface-border orange-200 card-height border-1 m-0 mt-2 p-2  mb-0">
+                        <b>{{applicant.name}}</b>
+                    </div>
+                    <div class="card mt-0 mb-2  border-1 pb-2 surface-border "
+                        class="{{ applicant.isInProcess ? 'recruitment' : '' }}">
+                        <div class=" mb-3 grid">
+                            <div class="col-12 lg:col-8 md:col-12 p-1 px-2 employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-calendar text-300 text-primary text-1xl  pb-1"></i> : {{
+                                    applicant.dob|date:'dd-MMM-yyyy'}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-phone text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.mobileNo}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-at text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.emailId}}
+                                </span>
+                            </div>
+                            <div *ngIf="applicant.isSelectedInTR1!==null"
+                                class="col-12 lg:col-4 md:col-12 p-1 px-2 employee_info text-center">
+                                <i class="pi  text-500 text-primary text-1xl pb-1">Ratting </i><br />
+                                <app-star-rating [control]="patchStarValue(applicant.tR1Rating, true)">
+                                </app-star-rating>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <div class="relative col-7 p-0 mb-3  employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi  text-500 text-primary text-1xl pb-1">Skills </i> :
+                                    {{ applicant.skills}}</span>
+                            </div>
+                            <div class="grid m-0 pb-3">
+                                <button pbutton pripple type="button" label="Primary"
+                                    (click)="viewApplicantDtls(applicant.applicantId)"
+                                    class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                    ng-reflect-label="Primary">
+                                    <span class="p-button-label pi pi-chevron-right"></span>
+                                </button>
+                                <button pButton pRipple type="submit" label="Add Interview Result"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInTR1===null"
+                                    (click)="showDialogToMoveHR(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                                <button pButton pRipple type="submit" label="Move to HR"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInTR1===true"
+                                    (click)="showConfirmationDialog(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12 md:col-4 lg:col-3 sm:col-6">
+            <h5>HR Round </h5>
+            <div class="multi-progress-bar">
+                <div class="progress-segment"
+                    [style.width]="(getHRRound1Count() / getTechnicalRound1Count()) * 100 + '%'"
+                    style="text-align: center;color: white;background-color: rgb(246, 123, 16)">
+                    {{(getHRRound1Count() / getTechnicalRound1Count()) * 100|number:'1.0-1'}}%
+                </div>
+                <div class="progress-segment"
+                    [style.width]="100-(getHRRound1Count() / getTechnicalRound1Count()) * 100 + '%'"
+                    style="text-align: center;background-color: rgb(230, 224, 224);">
+                    {{100-(getHRRound1Count() / getTechnicalRound1Count()) * 100 |number:'1.0-1'}}%
+                </div>
+            </div>
+            <div *ngFor="let applicant of applicantsList">
+                <div *ngIf="applicant.technicalRound1At!==null && applicant.hrRoundAt!==null">
+                    <div class="card card-header surface-border orange-200 card-height border-1 m-0 mt-2 p-2  mb-0">
+                        <b>{{applicant.name}}</b>
+                    </div>
+                    <div class="card mt-0 mb-2  border-1 pb-2 surface-border "
+                        class="{{ applicant.isInProcess ? 'recruitment' : '' }}">
+                        <div class=" mb-3 grid">
+                            <div class="col-12 lg:col-8 md:col-12 p-1 px-2 employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-calendar text-300 text-primary text-1xl  pb-1"></i> : {{
+                                    applicant.dob|date:'dd-MMM-yyyy'}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-phone text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.mobileNo}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-at text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.emailId}}
+                                </span>
+                            </div>
+                            <div *ngIf="applicant.isSelectedInHRRound!==null"
+                                class="col-12 lg:col-4 md:col-12 p-1 px-2 employee_info text-center">
+                                <i class="pi  text-500 text-primary text-1xl pb-1">Ratting </i><br />
+                                <app-star-rating [control]="patchStarValue(applicant.tR1Rating, true)">
+                                </app-star-rating>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <div class="relative col-7 p-0 mb-3  employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi  text-500 text-primary text-1xl pb-1">Skills </i> :
+                                    {{ applicant.skills}}</span>
+                            </div>
+                            <div class="grid m-0 pb-3">
+                                <button pbutton pripple type="button" label="Primary"
+                                    (click)="viewApplicantDtls(applicant.applicantId)"
+                                    class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                    ng-reflect-label="Primary">
+                                    <span class="p-button-label pi pi-chevron-right"></span>
+                                </button>
+                                <button pButton pRipple type="submit" label="Add Interview Result"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInHRRound===null"
+                                    (click)="showDialogToMoveHR(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                                <button pButton pRipple type="submit" label="Move to FinalRound"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInHRRound===true"
+                                    (click)="showConfirmationDialog(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-4 lg:col-3 sm:col-6">
+            <h5>Contract Proposal </h5>
+            <p-progressBar [value]="30" class=""></p-progressBar>
+            <!-- <div *ngFor="let applicant of applicantsList">
+                <div *ngIf="applicant.technicalRound1At!==null && applicant.hrRoundAt!==null &&
+                applicant.isSelectedInHRRound">
+                    <div class="card card-header surface-border orange-200 card-height border-1 m-0 mt-2 p-2  mb-0">
+                        <b>{{applicant.name}}</b>
+                    </div>
+                    <div class="card mt-0 mb-2  border-1 pb-2 surface-border "
+                        class="{{ applicant.isInProcess ? 'recruitment' : '' }}">
+                        <div class=" mb-3 grid">
+                            <div class="col-12 lg:col-8 md:col-12 p-1 px-2 employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-calendar text-300 text-primary text-1xl  pb-1"></i> : {{
+                                    applicant.dob|date:'dd-MMM-yyyy'}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-phone text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.mobileNo}}
+                                </span>
+                                <br />
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi pi-at text-500 text-primary text-1xl pb-1"></i> : {{
+                                    applicant.emailId}}
+                                </span>
+                            </div>
+                            <div *ngIf="applicant.isSelectedInHRRound!==null"
+                                class="col-12 lg:col-4 md:col-12 p-1 px-2 employee_info text-center">
+                                <i class="pi  text-500 text-primary text-1xl pb-1">Ratting </i>
+                                <p-rating [cancel]="false"></p-rating>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <div class="relative col-7 p-0 mb-3  employee_info">
+                                <span class="text-600 font-medium text-md">
+                                    <i class="pi  text-500 text-primary text-1xl pb-1">Skills </i> :
+                                    {{ applicant.skills}}</span>
+                            </div>
+                            <div class="grid m-0 ">
+                                <button pbutton pripple type="button" label="Primary"
+                                    (click)="viewApplicantDtls(applicant.applicantId)"
+                                    class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                    ng-reflect-label="Primary">
+                                    <span class="p-button-label pi pi-chevron-right"></span>
+                                </button>
+                                <button pButton pRipple type="submit" label="Add Interview Result"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInHRRound===null"
+                                    (click)="showDialogToMoveHR(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                                <button pButton pRipple type="submit" label="Move to FinalRound"
+                                    *ngIf="permissions?.CanManageRecruitmentProcess && applicant.isSelectedInHRRound===true"
+                                    (click)="showConfirmationDialog(applicant)"
+                                    class="p-button-raised p-button-primary"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Technical Interview Result " [(visible)]="HRdialog" [modal]="true" showEffect="fade"
+    [breakpoints]="{'960px': '70%', '640px': '80%'}" [style]="{width: '50%'}">
+    <form [formGroup]="fbRecruitment">
+        <div class="col-12 roles-container">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <label class="required">Recruitment Stage:</label>&nbsp;
+                    &nbsp;
+                    <p-dropdown id="RP_Stage" appendTo="body" class="w-100" [options]="attributeStages"
+                        optionLabel="name" placeholder="Select Recruitment Stage" formControlName="recruitmentStageId"
+                        optionValue="lookupDetailId" [style]="{'width':'100%'}" [readonly]="true"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['recruitmentStageId'].touched && FormControls['recruitmentStageId'].errors}">
+                    </p-dropdown>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label class="required">Attribute Type:</label>&nbsp;
+                    &nbsp;
+                    <p-dropdown id="RP_attributeType" appendTo="body" class="w-100" [options]="attributeTypes"
+                        optionLabel="attributeType" placeholder="Select Attribute Type"
+                        formControlName="attributeTypeId" optionValue="attributeTypeId" [style]="{'width':'100%'}"
+                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['attributeTypeId'].touched && FormControls['attributeTypeId'].errors}">
+                    </p-dropdown>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label class="required pb-1">Recruitment Attributes:</label>
+                    <div *ngFor="let item of faInterviewResultsDetails().controls;let i=index" class="pl-2">
+                        {{item.get('assessmentTitle').value }}<br />
+                        <app-star-rating [control]="getExpertiseControl(i)" id="RP_expertise{{i}}"></app-star-rating>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <div class="grid">
+                        <div class="col-6">
+                            <label>Soft skills:</label><br />
+                            <span *ngIf="jobDetails?.softSkills">
+                                <ul>
+                                    <li *ngFor="let skill of jobDetails.softSkills.split(','); let last = last">
+                                        {{ skill.trim() }}
+                                    </li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <label>Technical skills:</label><br />
+                            <span *ngIf="jobDetails?.softSkills">
+                                <ul>
+                                    <li *ngFor="let skill of jobDetails.technicalSkills.split(','); let last = last">
+                                        {{ skill.trim() }}
+                                    </li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <div class="col-12 lg:col-4 md:col-4 sm:col-6" style="float:right">
+            <button pButton pRipple type="submit" (click)="onSubmit()" class="p-button-raised p-button-primary"
+                id="RP_InterviewResult" [disabled]="!this.fbRecruitment.valid" label="Submit"></button>
+        </div>
+    </ng-template>
+</p-dialog>

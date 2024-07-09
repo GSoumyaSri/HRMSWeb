@@ -1,0 +1,201 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-dataView #dv [value]="applicants" [paginator]="dv.layout === 'grid' && dv.rows > 10" [rows]="12"
+                filterBy="name,emailId,mobileNo,gender,experienceStatus,pendingDetails" [sortField]="sortField"
+                [sortOrder]="sortOrder" layout="grid">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between ">
+                        <h4>Disqualified Applicants</h4>
+                        <div>
+                            <div class="p-inputgroup">
+                                <!-- <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span> -->
+                                <input id="search-name-id" type="text" #filter pInputText
+                                    placeholder="Search by Name or Id" (input)="onFilter(dv, $event)" />
+                                <span class="p-inputgroup-addon" (click)="clearcard(dv)"><i
+                                        class="pi pi-undo"></i></span>
+                            </div>
+                        </div>
+                        <div class="mt-1">
+                            <div class="p-inputgroup">
+                                <p-inputSwitch *ngIf="dv._layout !== 'list'" [(ngModel)]="checked"
+                                    (onChange)="filterData()"></p-inputSwitch>
+                                <span *ngIf="dv._layout !== 'list'">
+                                    Search By Skills
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template let-applicant pTemplate="listItem">
+                    <ng-container *ngIf="applicant === applicants[0]">
+                        <!-- table -->
+                        <div class="col-12">
+                            <p-table #dtApplicants [value]="applicants" dataKey="id" [rows]="10" [rowHover]="true"
+                                styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm "
+                                [paginator]="true"
+                                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                [showCurrentPageReport]="true" [alwaysShowPaginator]="false"
+                                [globalFilterFields]="globalFilterFields" [autoLayout]="true" responsiveLayout="scroll"
+                                [rowsPerPageOptions]="[10,25,50]">
+                                <ng-template pTemplate="caption">
+                                    <div class="flex justify-content-between flex-column sm:flex-row">
+                                        <button pButton label="Clear" class="p-button-outlined mb-2"
+                                            icon="pi pi-filter-slash" (click)="clear(dtApplicants)"></button>
+                                        <span class="p-input-icon-left mb-2">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText type="text" #filter
+                                                (input)="onGlobalFilter(dtApplicants, $event)"
+                                                placeholder="Search Keyword" class="w-full" />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th class="text-center">Image</th>
+                                        <th class="text-center" *ngFor="let col of headers"
+                                            [pSortableColumn]="col.header">
+                                            {{col?.label}}
+                                            <p-columnFilter type="text" [field]="col.header" display="menu">
+                                            </p-columnFilter>
+                                            <p-sortIcon [field]="col.header"></p-sortIcon>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-applicant>
+                                    <tr>
+                                        <td class="text-center">
+                                            <img [src]="applicant.photo ? applicant.photo : applicant?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                                                [alt]="applicant.name"
+                                                class="my-4 md:my-0 w-10 md:w-10rem shadow-2 mr-2" /><br />
+                                        </td>
+                                        <td class="text-center" *ngFor="let col of headers"
+                                            [ngClass]="{ 'text-wrap': col.field === 'skills'}">
+                                            <span>{{applicant[col.field]}}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button pbutton="" pripple="" type="button" label="Primary"
+                                                (click)="viewApplicantDtls(applicant.applicantId)"
+                                                class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                                ng-reflect-label="Primary">
+                                                <span class="p-button-label pi pi-chevron-right"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td class="text-center m-5" colspan="15">No Applicants Found.</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </ng-container>
+                </ng-template>
+                <ng-template let-applicant pTemplate="gridItem">
+                    <div class="col-12 md:col-4 lg:col-3 sm:col-6 p-0 m-0">
+                        <div class="card m-2 border-1 surface-border card-height ">
+                            <div class=" mb-0 grid">
+                                <div class="col-12 md:col-6 p-0 m-0 text-center">
+                                    <img [src]="applicant.photo ? applicant.photo : applicant?.gender == 'Male' ?  './assets/layout/images/men-emp.jpg' : './assets/layout/images/women-emp.jpg'"
+                                        [alt]="applicant.name"
+                                        class="shadow-2 my-1 mx-0 applicant_profile_pic zoomable-img" /><br />
+
+                                    <div class="text-left ml-2">
+                                        <span class="text-xl font-bold">
+                                            <i class="pi pi-users text-600 text-primary text-1xl  pb-2"
+                                                pTooltip="Applicant Name" tooltipPosition="bottom"></i> :
+                                            {{applicant.name}}
+                                        </span><br />
+                                        <span class="text-600 font-medium text-md">
+                                            <i class="icon-id text-800 text-primary text-1xl pb-2"
+                                                pTooltip="Experience Status" tooltipPosition="bottom"></i> :
+                                            {{applicant.experienceStatus}}
+                                        </span><br />
+
+                                    </div>
+                                </div>
+                                <div class="col-12 md:col-6 text-center">
+                                    <p-knob [(ngModel)]="applicant.status" [strokeWidth]="10" [size]="60"
+                                        [readonly]="true"></p-knob>
+                                    <br />
+                                    <div class=" grid mt-0 text-center" *ngIf="applicant.status == 0">
+                                        <span class="text-600 font-medium text-md text-center w-100"
+                                            *ngIf="applicant.pendingDetails">
+                                            Pending: </span>
+                                        <div class="col-12 p-1 m-0">
+                                            <span class="text-600 font-medium text-md">
+                                                <ng-container *ngIf="applicant && applicant.pendingDetails">
+                                                    <ng-container
+                                                        *ngIf="applicant.pendingDetails.includes('ApplicantEducationDetails')">
+                                                        <i class="icon-study text-primary text-1xl p-2 pb-1"
+                                                            pTooltip="Education" tooltipPosition="bottom"></i>
+                                                        <!-- Education icon -->
+                                                    </ng-container>
+                                                    <ng-container
+                                                        *ngIf="applicant.pendingDetails.includes('ApplicantCertifications')">
+                                                        <i class="icon-document-certificate text-primary text-1xl p-2 pb-1"
+                                                            pTooltip="Certification" tooltipPosition="bottom"></i>
+                                                        <!-- Certifications icon -->
+                                                    </ng-container>
+                                                    <ng-container
+                                                        *ngIf="applicant.pendingDetails.includes('ApplicantWorkExperience')">
+                                                        <i class="icon-office_details text-primary text-1xl p-2 pb-1"
+                                                            pTooltip="Experience" tooltipPosition="bottom"></i>
+                                                        <!-- Work Experience icon -->
+                                                    </ng-container>
+                                                    <ng-container
+                                                        *ngIf="applicant.pendingDetails.includes('ApplicantLanguageSkills')">
+                                                        <i class="icon-language text-primary text-1xl p-2 pb-1"
+                                                            pTooltip="Language" tooltipPosition="bottom"></i>
+                                                        <!-- Language icon -->
+                                                    </ng-container>
+                                                    <ng-container
+                                                        *ngIf="applicant.pendingDetails.includes('ApplicantSkills')">
+                                                        <i class="icon-user_skills text-primary text-1xl p-2 pb-1"
+                                                            pTooltip="Technical Skill" tooltipPosition="bottom"></i>
+                                                        <!-- Skill icon -->
+                                                    </ng-container>
+                                                </ng-container>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-12 lg:col-9 md:col-12 p-1 px-2 employee_info">
+                                    <span class="text-600 font-medium text-md">
+                                        <i class="pi pi-envelope text-300 text-primary text-1xl  pb-1"
+                                            pTooltip="Email Id" tooltipPosition="bottom"></i> :
+                                        {{applicant.emailId}}
+                                    </span>
+                                    <br />
+                                    <span class="text-600 font-medium text-md">
+                                        <i class="pi pi-phone text-500 text-primary text-1xl pb-1"
+                                            pTooltip="Mobile Number" tooltipPosition="bottom"></i> :
+                                        {{applicant.mobileNo}}
+                                    </span>
+                                    <br />
+                                    <span class="text-600 font-medium text-md">
+                                        <i class="pi pi-star text-300 text-primary text-1xl  pb-1"
+                                            pTooltip="Technical Skills" tooltipPosition="bottom"></i> :
+                                        {{applicant.skills}}
+                                    </span>
+                                </div>
+                                <div class="col-12 lg:col-3 md:col-12 p-1 px-2 employee_info">
+                                    <button pbutton="" pripple="" type="button" label="Primary"
+                                        pTooltip="View Applicant" tooltipPosition="left"
+                                        (click)="viewApplicantDtls(applicant.applicantId)"
+                                        class="p-element p-ripple p-button-text p-button p-component view_profile_button"
+                                        ng-reflect-label="Primary">
+                                        <span class="p-button-label pi pi-chevron-right"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div>
