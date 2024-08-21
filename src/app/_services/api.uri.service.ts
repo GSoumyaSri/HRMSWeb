@@ -197,12 +197,24 @@ export const GET_UPCOMING_BIRTHDAYS="Notification/GetUpcomingBirthdaysNotificati
 export const GET_EMPLOYEES_ON_LEAVE="Notification/GetCurrentDayLeaves";
 export const RESIGNATION_NOTIFICATIONS="Resignation/GetResignationsNotifications"
 export const GET_DOCUMENTS_ACCEPTENCE="Resignation/UpdateDocStatus";
+export const GET_BUDGET_NOTIFICATIONS="Notification/GetMonthlyBudgetsNotifications";
 // Admin Dashboard
 export const GET_ADMIN_DASHBOARD = "AdminDashboard/GetAdminDashboard";
 export const GET_ATTENDANCE_COUNT_BASED_ON_TYPE = "AdminDashboard/GetAttendanceCountsBasedOnType";
 export const GET_ATTENDANCE_COUNT_BASED_ON_PROJECTS = "AdminDashboard/GetAttendanceCountsBasedOnTypeByProjects";
 export const GET_EMPLOYEES_OF_ATTENDANCE_COUNT = "AdminDashboard/GetEmployeesofAttendanceCounts";
 export const GET_EMPLOYEES_OF_ATTENDANCE_COUNT_BY_PROJECTS = "AdminDashboard/GetEmployeesofAttendanceCountsBasedonProjectId";
+export const GET_HIGHEST_CATEGORY_EXPENSES = "AdminDashboard/GetHighestCategoryExpense";
+export const GET_TOTAL_AMOUNT_SPENT = "AdminDashboard/GetTotalCategoryAmountSpent";
+export const GET_TOTAL_MONTHLY_DEPOSITS = "AdminDashboard/GetTotalMonthlyDeposits";
+export const GET_CARRY_FORWARD_AMOUNT="AdminDashboard/GetCarryForwardAmount"
+export const GET_BALANCE_AMOUNT="AdminDashboard/GetBalanceAmount";
+export const GET_MONTHLY_CREDIT_DEBIT_DETAILS="AdminDashboard/GetMonthlyCreditDebitDetails";
+export const GET_YEARLY_CREDIT_DEBIT_DETAILS="AdminDashboard/GetYearlyCreditDebitDetails";
+export const GET_FINANCIAL_SUMMARY_BY_CATEGORY="AdminDashboard/GetCategoryBasedFianacialSummaryDetails";
+export const GET_DAILY_EXPENDITURE_BY_CATEGORY="AdminDashboard/GetCategoryBasedDailyExpenditureDetails";
+export const GET_MONTHLY_EXPENDITURE_BY_CATEGORY="AdminDashboard/GetCategoryBasedMonthlyExpenditureDetails";
+export const GET_YEARLY_EXPENDITURE_BY_CATEGORY="AdminDashboard/GetCategoryBasedYearlyExpenditureDetails";
 //Reports
 export const GET_MONTHLY_ATTENDANCE_PDFREPORT = "Report/AttendanceReportOnYearAndMonth"
 export const GET_YEARLY_ATTENDANCE_PDFREPORT = "Report/AttendanceReportOnYear"
@@ -221,6 +233,8 @@ export const GET_LEAVES_AS_ON_DATE = "Report/EmployeeLeaveStatisticsAsOnDate"
 export const GET_ASSETS_REPORT = "Report/AssetsReport";
 export const GET_ACTIVE_EMPLOYEES_REPORT = "Report/EmployeesDetailsReport";
 export const GET_PROJECT_ALLOTMENTS_REPORT = "Report/AllottedMembersInProjectReport";
+export const GET_MONTHLY_REGULAR_PAYMENT_REPORT = "Report/MonthlyRegularPaymentsReport";
+
 
 //Leave Statistics
 export const GET_LEAVE_STATISTICS = "Attendance/GetLeaveStatistics";
@@ -230,3 +244,48 @@ export const UPDATE_LEAVE_STATISTICS = "Attendance/UpdateLeaveAccumulation";
 
 //Feedback
 export const UPDATE_FEEDBACK = "Admin/UpdateFeedback";
+
+//Expenditures
+export const GET_EXPENSE_URI = "Expense/GetAllExpenses";
+export const CREATE_EXPENSE_URI = "Expense/CreateExpenses";
+export const UPDATE_EXPENSE_URI = "Expense/UpdateExpenses";
+export const DELETE_EXPENSE_URI = "Expense/DeleteExpenses";
+export const GET_DEPOSIT_URI = "Deposit/GetDeposits";
+export const CREATE_DEPOSIT_URI = "Deposit/CreateDeposits";
+export const GET_MONTHLY_REGULAR_PAYMENT_LIST_URI = "MonthlyPaymentList/GetMonthlyPaymentList";
+
+//SALARIES
+export const GET_SALARY_HIKES="Employee/GetEmployeesSalaryHike"
+export const ADD_SALARYHIKE="Employee/CreateSalaryHike"
+
+
+//Invoices
+// https://localhost:7215/hrmsapi/Invoice/GetComapanyAddressDetails
+export const GET_COMPANYFROMADDRESS = "Invoice/GetComapanyAddressDetails";
+// https://localhost:7215/hrmsapi/Invoice/GetCompanyBankingdetails
+export const GET_BANKINGDETAILS = "Invoice/GetCompanyBankingdetails";
+// https://localhost:7215/api/Invoice/GetClientAddressDetails
+export const GET_CLIENTADDRESSDETAILS = "Invoice/GetClientsAddressDetails"
+
+//Reviews
+
+
+
+
+// export const GET_APPRISALREVIEW = "EmployeeReview/GetEmployeeReviews";
+
+export const GET_DropDownAPPRISALREVIEW = "EmployeeReview/GetEmployeeReviewDetails";
+//  export const POST_ApprisalReview = "EmployeeReview/CreateEmployeeReview"
+
+//  export const GET_InternalREVIEW = "EmployeeInternalReview/GetInternalReviews";
+
+//  export const POST_InternalReview = "EmployeeInternalReview/CreateEmployeeInternalReview"
+
+
+//  EmployeeInternalReview/GetEmployeeProjects
+//  export const GET_PROJECTNAMES= "EmployeeInternalReview/GetEmployeeProjects";
+
+
+export const GET_REVIEWS = "Reviews/GetReviewDetails";
+export const POST_Reviews = "Reviews/CreateReviews";
+

@@ -16,6 +16,14 @@ import { RecruitmentdashboardComponent } from './recruitmentdashboard/recruitmen
 import { RecruitmentAttributesComponent } from './recruitment/recruitmentattributes.component';
 import { DisqualifiedApplicantsComponent } from './disqualified-applicants/disqualified-applicants.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ExpenselistComponent } from './expenselist/expenselist.component';
+import { DepositsComponent } from './deposits/deposits.component';
+import { RegularpaymentsComponent } from './regularpayments/regularpayments.component';
+import { ExpensereportsComponent } from './expensereports/expensereports.component';
+import { PayslipsComponent } from './payslips/payslips.component';
+import { SalaryhistoryComponent } from './salaryhistory/salaryhistory.component';
+import { InvoicegenerationComponent } from './invoicegeneration/invoicegeneration.component';
+import { AppraisalreviewComponent } from './appraisalreview/appraisalreview.component';
 @NgModule({
   declarations: [
     LookupsComponent,
@@ -30,7 +38,15 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     RecruitmentAttributesComponent,
     RecruitmentProcessComponent,
     RecruitmentdashboardComponent,
-    DisqualifiedApplicantsComponent
+    DisqualifiedApplicantsComponent,
+    ExpenselistComponent,
+    DepositsComponent,
+    RegularpaymentsComponent,
+    ExpensereportsComponent,
+    PayslipsComponent,
+    SalaryhistoryComponent,
+    InvoicegenerationComponent,
+    AppraisalreviewComponent,
   ],
   imports: [
     AdminRoutingModule,

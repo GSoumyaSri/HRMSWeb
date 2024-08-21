@@ -13,6 +13,14 @@ import { RecruitmentProcessComponent } from './recruitmentprocess/recruitmentpro
 import { RecruitmentdashboardComponent } from './recruitmentdashboard/recruitmentdashboard.component';
 import { RecruitmentAttributesComponent } from './recruitment/recruitmentattributes.component';
 import { DisqualifiedApplicantsComponent } from './disqualified-applicants/disqualified-applicants.component';
+import { ExpenselistComponent } from './expenselist/expenselist.component';
+import { RegularpaymentsComponent } from './regularpayments/regularpayments.component';
+import { DepositsComponent } from './deposits/deposits.component';
+import { ExpensereportsComponent } from './expensereports/expensereports.component';
+import { PayslipsComponent } from './payslips/payslips.component';
+import { SalaryhistoryComponent } from './salaryhistory/salaryhistory.component';
+import { InvoicegenerationComponent } from './invoicegeneration/invoicegeneration.component';
+import { AppraisalreviewComponent } from './appraisalreview/appraisalreview.component';
 
 @NgModule({
     imports: [RouterModule.forChild([
@@ -31,6 +39,15 @@ import { DisqualifiedApplicantsComponent } from './disqualified-applicants/disqu
         { path: 'project', data: { breadcrumb: 'Projects' }, component: ProjectComponent },
         { path: 'd3-org-chart', component: D3OrgChartComponent },
         { path: 'viewapplicant', data: { breadcrumb: 'View Applicant' }, component: ViewapplicantComponent },
+        { path: 'expenselist', data: { breadcrumb: 'Expense List' }, component: ExpenselistComponent },
+        { path: 'regularpayments', data: { breadcrumb: 'Regular Payments' }, component: RegularpaymentsComponent },
+        { path: 'deposits', data: { breadcrumb: 'Deposits' }, component: DepositsComponent },
+        { path: 'expensereports', data: { breadcrumb: 'Reports' }, component: ExpensereportsComponent },
+        { path: 'payslips', data: { breadcrumb: 'PaySlip' }, component: PayslipsComponent },
+        { path: 'salaryhistory', data: { breadcrumb: 'Salary History' }, component: SalaryhistoryComponent },
+        { path: 'invoicegeneration', data: { breadcrumb: 'Invoice Generation' }, component: InvoicegenerationComponent },
+        { path: 'apprisalreview', data: { breadcrumb: 'Apprisal Review' }, component: AppraisalreviewComponent },
+        
 
     ])],
     exports: [RouterModule]

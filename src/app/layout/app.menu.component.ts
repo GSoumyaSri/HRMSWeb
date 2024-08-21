@@ -222,12 +222,119 @@ export class AppMenuComponent implements OnInit {
 
                             }
                         ]
+                        
                     },
                     {
                         label: 'Job Openings',
                         icon: 'icon-job font-weight-800',
                         routerLink: ['admin/jobopenings'],
                         permission: this.jwtService.Permissions.CanViewJobOpenings
+
+                    },
+                ]
+            },
+            {
+                label: 'Expenditures',
+                icon: 'font-bold icon-recru',
+                permission: this.GroupPermission('Recruitment'),
+                items: [
+                    {
+                        label: 'Expense List',
+                        icon: 'pi pi-list',
+                        routerLink: ['admin/expenselist'],
+                        permission: this.jwtService.Permissions.CanViewAssets
+
+                    },
+                    {
+                        label: 'Deposists',
+                        icon: 'pi pi-dollar',
+                        routerLink: ['admin/deposits'],
+                        permission: this.jwtService.Permissions.CanViewApplicants
+                    },
+                    {
+                        label: 'Regular Payment List',
+                        icon: 'pi pi-money-bill',
+                        routerLink: ['admin/regularpayments'],
+                        permission: this.jwtService.Permissions.CanViewApplicants
+
+                    },
+                    // {
+                    //     label: 'Reports',
+                    //     icon: 'pi pi-file-export',
+                    //     routerLink: ['admin/expensereports'],
+                    //     permission: this.jwtService.Permissions.CanViewRecruitmentAttributes
+
+                    // },
+                   
+                ]
+                
+            },
+            {
+                label: 'Invoices',
+                icon: 'pi pi-receipt pi-align-left',
+                permission: this.GroupPermission('Assets'),
+                items: [
+                    {
+                        label: 'Invoice Generation',
+                        icon: 'pi pi-fw pi-align-left',
+                        routerLink: ['admin/invoicegeneration'],
+                        permission: this.jwtService.Permissions.CanViewAssets
+
+                    },
+                ]
+            },
+            {
+                label: 'Reviews',
+                icon: 'font-bold icon-recru',
+                permission: this.GroupPermission('Recruitment'),
+                items: [
+                    {
+                        label: 'ApprisalReview',
+                        icon: 'pi pi-fw pi-align-left',
+                        routerLink: ['admin/apprisalreview'],
+                        permission: this.jwtService.Permissions.CanViewAssets
+
+                    },
+                    // {
+                    //     label: 'PerformnceReview',
+                    //     icon: 'pi pi-fw pi-align-left',
+                    //     routerLink: ['admin/performancereview'],
+                    //     permission: this.jwtService.Permissions.CanViewApplicants
+                    // },
+                    // {
+                    //     label: 'InternalReview',
+                    //     icon: 'pi pi-fw pi-align-left',
+                    //     routerLink: ['admin/internalreview'],
+                    //     permission: this.jwtService.Permissions.CanViewApplicants
+
+                    // },
+                    // {
+                    //     label: 'Reports',
+                    //     icon: 'pi pi-fw pi-align-left',
+                    //     routerLink: ['admin/reports'],
+                    //     permission: this.jwtService.Permissions.CanViewRecruitmentAttributes
+
+                    // },
+                   
+                ]
+            },
+            {
+                label: 'Salaries',
+                icon: 'font-bold icon-recru',
+                permission: this.GroupPermission('Recruitment'),
+                items: [
+                    {
+                        label: 'PaySlip',
+                        icon: 'pi pi-fw pi-align-left',
+                        routerLink: ['admin/payslips'],
+                        permission: this.jwtService.Permissions.CanViewAssets
+
+                    },
+                    {
+                        label: 'Salary History',
+                        icon: 'pi pi-fw pi-history',
+                        routerLink: ['admin/salaryhistory'],
+                        permission: this.jwtService.Permissions.CanViewAssets
 
                     },
                 ]
@@ -253,7 +360,7 @@ export class AppMenuComponent implements OnInit {
 
                 ]
             },
-
+            
 
 
             // {

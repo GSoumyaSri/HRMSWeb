@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AssetsDto, AssetsViewDto, ClientDetailsDto, ClientNamesDto, EmployeeHierarchyDto, EmployeeRolesDto, EmployeesForAllottedAssetsViewDto, EmployeesList, FeedbackDto, HolidayDto, HolidaysViewDto, JobOpeningsDetailsViewDto, LookupViewDto, ProjectAllotments, ProjectDetailsDto, ProjectStatus, ProjectViewDto } from '../_models/admin';
+import { AddSalaryHikeDto, AssetsDto, AssetsViewDto, ClientDetailsDto, ClientNamesDto, EmployeeHierarchyDto, EmployeeRolesDto, EmployeesForAllottedAssetsViewDto, EmployeesList, FeedbackDto, HolidayDto, HolidaysViewDto, JobOpeningsDetailsViewDto, LookupViewDto, ProjectAllotments, ProjectDetailsDto, ProjectStatus, ProjectViewDto, SalaryHikesDto } from '../_models/admin';
 import { AssetAllotmentDto, AssetAllotmentViewDto, AssetsByAssetTypeIdViewDto, RevokeAssetRequest } from '../_models/admin/assetsallotment';
 import { ApiHttpService } from './api.http.service';
 import {
     CREATE_ASSETS_URI, CREATE_HOLIDAY_URI, CREATE_LOOKUP_URI, GET_ASSETS_BY_ASSETTYPE_URI, GET_ASSETS_URI, GET_HOLIDAY_URI, GET_LOOKUP_URI, UPDATE_ASSETS_URI, UPDATE_LOOKUP_URI, CREATE_ASSET_ALLOTMENT_URI, GET_PROJECTS_URI, GET_YEARS_FROM_HOLIDAYS_URI, GET_ASSET_ALLOTMENTS_URI, UNASSIGNED_ASSET_ALLOTMENT_URI, UPDATE_PROJECT_URI, CREATE_PROJECT_URI, GET_CLIENTNAMES_URI, GET_CLIENT_DETAILS, GET_EMPLOYEES, EMPLOYEES_FOR_ALLOTTED_ASSETS_URI, GET_EMPLOYEESLIST, UNASSIGNED_EMPLOYEE_URI, GET_PROJECT_WITH_ID, GET_EMPLOYEE_ROLES_INFO, GET_EMPLOYEE_HIERARCHY_BASED_ON_PROJECTS, GET_JOB_DETAILS, CREATE_JOB_OPENINGS_DETAILS, GET_PROJECT_STATUSES, UPDATE_JOB, CREATE_RECRUITMENT_ATTRIBUTE, GET_RECRUITMENT_DETAILS, UPDATE_RECRUITMENT_ATTRIBUTE,
     GET_PROJECT_LOGO,
-    UPDATE_FEEDBACK
+    UPDATE_FEEDBACK,
+    GET_SALARY_HIKES,
+    ADD_SALARYHIKE
 } from './api.uri.service';
 
 @Injectable({
@@ -130,5 +132,13 @@ export class AdminService extends ApiHttpService {
     }
     public UpdateFeedback(feedBack: FeedbackDto[]) {
         return this.post<FeedbackDto[]>(UPDATE_FEEDBACK, feedBack);
+    }
+
+    //Salaries
+    public GetSalaryHikes(){
+        return this.get<SalaryHikesDto>(GET_SALARY_HIKES)
+    }
+    public AddSalaryHike(addsalaryhike: AddSalaryHikeDto){
+        return this.post<AddSalaryHikeDto[]>(ADD_SALARYHIKE, addsalaryhike)
     }
 }

@@ -1,0 +1,399 @@
+<div class="col-12 p-0">
+    <div class="card" id="main-card">
+        <p-confirmDialog [style]="{width: '20%'}" class="confirm_dialog"></p-confirmDialog>
+        <p-toolbar styleClass="p-mb-4">
+            <ng-template pTemplate="left">
+                <h4>PaySlip</h4>
+            </ng-template>
+            <ng-template pTemplate="center">
+                <!-- <div class="pr-2">
+                    <p-button icon="pi pi-angle-left mr-2" pTooltip="Previous" (click)="gotoPreviousMonth()"
+                        tooltipPosition="left" id="Leaves_previousMonth">
+                    </p-button>
+                </div> -->
+                <div>
+                    <p-calendar styleClass="only-icon" [showIcon]="true" view="month" id="Attendance_selectMonth"
+                        [yearNavigator]="true" yearRange="2000:2030" [readonlyInput]="true" inputId="monthpicker"
+                        (onSelect)="onMonthYearSelect($event)" [maxDate]="maxDate">
+                    </p-calendar>
+                    <p class="text-xs">{{ selectedDate }}</p>
+                </div>
+                <!-- <div class="pl-2">
+                    <p-button icon="pi pi-angle-right ml-2" pTooltip="Next" tooltipPosition="right"></p-button>
+                </div> -->
+            </ng-template>
+        </p-toolbar>
+        <div class="col-12 roles-container ">
+            <p-fieldset legend="Basic Info" [toggleable]="true">
+                <form [formGroup]="fbpayslips" id="EmployeePersonalDetailsForm">
+                    <div class="grid mt-3">
+                        <div class="col-12 roles-container">
+                            <div id="hrms" class="p-fluid p-formgrid grid content_scroll">
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Employee Code:</label>
+                                    <p-autoComplete formControlName="employeeCode" [suggestions]="filteredEmployees"
+                                        (completeMethod)="filterEmployee($event)" field="employeeCode"
+                                        (onSelect)="onEmployeeSelect($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': fbpayslips.get('employeeCode')?.touched && fbpayslips.get('employeeCode').errors }"
+                                        placeholder="Enter Employee Code">
+                                    </p-autoComplete>
+                                    <div
+                                        *ngIf="fbpayslips.get('employeeCode')?.touched && fbpayslips.get('employeeCode').invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="fbpayslips.get('employeeCode').errors?.['required']">
+                                            Please Enter Employee Code.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Name:</label>
+                                    <input type="text" id="name" pInputText placeholder="Enter Name"
+                                        formControlName="name" [readonly]="fbpayslips.get('name').touched"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['name']?.touched && FormControls['name'].errors }" />
+                                    <div *ngIf="FormControls['name']?.touched && FormControls['name'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['name'].errors?.['required']">
+                                            Please Enter Name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Department:</label>
+                                    <input type="text" id="DepartmentName" pInputText
+                                        placeholder="Enter Department Name" formControlName="DepartmentName"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['DepartmentName']?.touched && FormControls['DepartmentName'].errors }" />
+                                    <div
+                                        *ngIf="FormControls['DepartmentName']?.touched && FormControls['DepartmentName'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['DepartmentName'].errors?.['required']">
+                                            Please Enter Department Name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Designation:</label>
+                                    <input type="text" id="Designation" pInputText placeholder="Enter Designation"
+                                        formControlName="Designation" [readonly]="fbpayslips.get('Designation').touched" 
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['Designation']?.touched && FormControls['Designation'].errors }" />
+                                    <div
+                                        *ngIf="FormControls['Designation']?.touched && FormControls['Designation'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['Designation'].errors?.['required']">
+                                            Please Enter Designation.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Date Of Joining:</label>
+                                    <input type="text" id="dateofJoin" pInputText placeholder="Select Date Of Joining"
+                                        appendTo="body" formControlName="dateofJoin" mask="99/99/9999"
+                                        [readonly]="fbpayslips.get('dateofJoin').touched"
+                                        [ngClass]="{ 'is-invalid ng-dirty': fbpayslips.get('dateofJoin').touched && fbpayslips.get('dateofJoin').invalid }" />
+                                    <div
+                                        *ngIf="fbpayslips.get('dateofJoin').touched && fbpayslips.get('dateofJoin').invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="fbpayslips.get('dateofJoin').errors?.['required']">
+                                            Please Enter Date Of Joining..
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Date Of Joining:</label>
+                                    <p-calendar 
+                                        placeholder="Select Date Of Joining" 
+                                        appendTo="body" 
+                                        id="dateofJoin"
+                                        formControlName="dateofJoin" 
+                                        mask="99/99/9999"
+                                        [disabled]="isReadonly"
+
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['dateofJoin']?.touched && FormControls['dateofJoin'].errors }">
+                                    </p-calendar>
+                                    <div
+                                        *ngIf="FormControls['dateofJoin']?.touched && FormControls['dateofJoin'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['dateofJoin'].errors?.['required']">
+                                            Please Enter Date Of Joining.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required" for="uanNo">UAN Number:</label>
+                                    <input type="text" id="uanNo" placeholder="Enter UAN Number" pInputText
+                                        formControlName="uanNo" #uanNo numericOnly [maxlength]="12"
+                                        (keydown)="restrictSpaces($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['uanNo']?.touched && FormControls['uanNo'].errors }" />
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width: 70%;">
+                                            <span
+                                                *ngIf="FormControls['uanNo']?.touched && FormControls['uanNo'].invalid">
+                                                <div class="ng-invalid ng-touched p-error"
+                                                    *ngIf="FormControls['uanNo'].errors?.['required']">
+                                                    Please Enter UAN Number.
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <!-- <div class="align-right w-40" style="width: 30%; text-align: right;">
+                                            <small>{{uanNo.value.length}}/{{maxLength.uanNo}}</small>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required" for="panNo">PAN Number:</label>
+                                    <input type="text" id="panNo" placeholder="Enter PAN Number" pInputText
+                                        formControlName="panNo" #panNo aphanumericOnly [maxlength]="12"
+                                        (keydown)="restrictSpaces($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['panNo']?.touched && FormControls['panNo'].errors }" />
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width: 70%;">
+                                            <span
+                                                *ngIf="FormControls['panNo']?.touched && FormControls['panNo'].invalid">
+                                                <div class="ng-invalid ng-touched p-error"
+                                                    *ngIf="FormControls['panNo'].errors?.['required']">
+                                                    Please Enter PAN Number.
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <div class="align-right w-40" style="width: 30%; text-align: right;">
+                                            <small>{{panNo.value.length}}/{{maxLength.panNo}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required" for="BankNo">Bank A/c No:</label>
+                                    <input type="text" id="BankNo" placeholder="Enter Bank Account Number" pInputText
+                                        formControlName="BankNo" #BankNo numericOnly [maxlength]="18"
+                                        (keydown)="restrictSpaces($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['BankNo']?.touched && FormControls['BankNo'].errors }" />
+                                    <div class="flex">
+                                        <div class="align-left w-60" style="width: 70%;">
+                                            <span
+                                                *ngIf="FormControls['BankNo']?.touched && FormControls['BankNo'].invalid">
+                                                <div class="ng-invalid ng-touched p-error"
+                                                    *ngIf="FormControls['BankNo'].errors?.['required']">
+                                                    Please Enter Bank A/c Number.
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <div class="align-right w-40" style="width: 30%; text-align: right;">
+                                            <small>{{BankNo.value.length}}/{{maxLength.accountNo}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Total Working Days:</label>
+                                    <input type="text" id="Workingdays" pInputText
+                                        placeholder="Enter Total Working Days" formControlName="Workingdays" [readonly]="isWorkingDaysReadonly"
+                                        #Workingdays numericOnly [maxlength]="2" (keydown)="restrictSpaces($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['Workingdays']?.touched && FormControls['Workingdays'].errors }" />
+                                    <div
+                                        *ngIf="FormControls['Workingdays']?.touched && FormControls['Workingdays'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['Workingdays'].errors?.['required']">
+                                            Please Enter Total Working Days.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Days Worked:</label>
+                                    <input type="text" id="daysworked" pInputText placeholder="Enter Days Worked"
+                                        formControlName="daysworked" #daysworked numericOnly [maxlength]="2"
+                                        (keydown)="restrictSpaces($event)"
+                                        [ngClass]="{ 'is-invalid ng-dirty': FormControls['daysworked']?.touched && FormControls['daysworked'].errors }" />
+                                    <div
+                                        *ngIf="FormControls['daysworked']?.touched && FormControls['daysworked'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="FormControls['daysworked'].errors?.['required']">
+                                            Please Enter Worked Days.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </p-fieldset>
+        </div>
+        <div class="col-12 roles-container ">
+            <p-fieldset legend="Earnings" [toggleable]="true">
+                <form [formGroup]="fbpayearnings" id="EmployeeEarningDetailsForm">
+                    <div class="grid mt-3">
+                        <div class="col-12 roles-container">
+                            <div id="hrms" class="p-fluid p-formgrid grid content_scroll">
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">GrossSalary:</label>
+                                    <input type="text" id="salary" pInputText placeholder="Enter GrossSalary"
+                                        formControlName="salary" #salary numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['salary']?.touched && EarningsControls['salary'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['salary']?.touched && EarningsControls['salary'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['salary'].errors?.['required']">
+                                            Please Enter GrossSalary.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Basic Pay</label>
+                                    <input type="text" id="basicpay" pInputText placeholder="Enter BasicPay"
+                                        formControlName="basicpay" [readonly]="isReadonly" #basicpay numericOnly [maxlength]="12" 
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['basicpay']?.touched && EarningsControls['basicpay'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['basicpay']?.touched && EarningsControls['basicpay'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['basicpay'].errors?.['required']">
+                                            Please Enter Basic Pay.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">House Rent Allowance</label>
+                                    <input type="text" id="houserent" pInputText
+                                        placeholder="Enter House Rent Allowances" formControlName="houserent"  [readonly]="isReadonly" #houserent
+                                        numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['houserent']?.touched && EarningsControls['houserent'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['houserent']?.touched && EarningsControls['houserent'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['houserent'].errors?.['required']">
+                                            Please Enter House Rent Allowances.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Medical Allowances</label>
+                                    <input type="text" id="medicalallowances" pInputText
+                                        placeholder="Enter Medical Allowances" formControlName="medicalallowances" [readonly]="isReadonly"
+                                        #medicalallowances numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['medicalallowances']?.touched && EarningsControls['medicalallowances'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['medicalallowances']?.touched && EarningsControls['medicalallowances'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['medicalallowances'].errors?.['required']">
+                                            Please Enter Medical Allowances.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Conveyance Allowance</label>
+                                    <input type="text" id="conveyanceallowances" pInputText
+                                        placeholder="Enter Conveyance Allowances" formControlName="conveyanceallowances" [readonly]="isReadonly"
+                                        #conveyanceallowances numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['conveyanceallowances']?.touched && EarningsControls['conveyanceallowances'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['conveyanceallowances']?.touched && EarningsControls['conveyanceallowances'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['conveyanceallowances'].errors?.['required']">
+                                            Please Enter Conveyance Allowances.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Other Allowances</label>
+                                    <input type="text" id="otherallowances" pInputText
+                                        placeholder="Enter Other Allowances" formControlName="otherallowances" [readonly]="isReadonly"
+                                        #otherallowances numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': EarningsControls['otherallowances']?.touched && EarningsControls['otherallowances'].errors }" />
+                                    <div
+                                        *ngIf="EarningsControls['otherallowances']?.touched && EarningsControls['otherallowances'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="EarningsControls['otherallowances'].errors?.['required']">
+                                            Please Enter Other Allowances.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </p-fieldset>
+        </div>
+        <div class="col-12 roles-container ">
+            <p-fieldset legend="Deductions" [toggleable]="true">
+                <form [formGroup]="fbpaydeductions" id="EmployeeEarningDetailsForm">
+                    <div class="grid mt-3">
+                        <div class="col-12 roles-container">
+                            <div id="hrms" class="p-fluid p-formgrid grid content_scroll">
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">E.S.I(or) Group Insurance</label>
+                                    <input type="text" id="ESI" pInputText
+                                        placeholder="Enter E.S.I(or) Group Insurance" formControlName="ESI" #ESI
+                                        numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': DeductionsControls['ESI']?.touched && DeductionsControls['ESI'].errors }" />
+                                    <div
+                                        *ngIf="DeductionsControls['ESI']?.touched && DeductionsControls['ESI'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="DeductionsControls['ESI'].errors?.['required']">
+                                            Please Enter ESI.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Provident Fund:</label>
+                                    <input type="text" id="PF" placeholder="Enter Provident Fund" pInputText
+                                        formControlName="PF" #PF numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': DeductionsControls['PF']?.touched && DeductionsControls['PF'].errors }" />
+                                    <div
+                                        *ngIf="DeductionsControls['PF']?.touched && DeductionsControls['PF'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="DeductionsControls['PF'].errors?.['required']">
+                                            Please Enter Provident Fund.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Professional Tax:</label>
+                                    <input type="text" id="ProfessionalTax" placeholder="Enter Professional Tax"
+                                        pInputText formControlName="ProfessionalTax" #ProfessionalTax numericOnly
+                                        [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': DeductionsControls['ProfessionalTax']?.touched && DeductionsControls['ProfessionalTax'].errors }" />
+                                    <div
+                                        *ngIf="DeductionsControls['ProfessionalTax']?.touched && DeductionsControls['ProfessionalTax'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="DeductionsControls['ProfessionalTax'].errors?.['required']">
+                                            Please Enter Professional Tax.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Advance TDS:</label>
+                                    <input type="text" id="AdvanceTDS" placeholder="Enter TDS" pInputText
+                                        formControlName="AdvanceTDS" #TDS numericOnly [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': DeductionsControls['AdvanceTDS']?.touched && DeductionsControls['AdvanceTDS'].errors }" />
+                                    <div
+                                        *ngIf="DeductionsControls['AdvanceTDS']?.touched && DeductionsControls['AdvanceTDS'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="DeductionsControls['AdvanceTDS'].errors?.['required']">
+                                            Please Enter TDS.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field col-12 lg:col-4 md:col-6">
+                                    <label class="required">Misc. Deductions</label>
+                                    <input type="text" id="MiscDeduction" placeholder="Enter Misc. Deductions"
+                                        pInputText formControlName="MiscDeduction" #miscdeduction numericOnly
+                                        [maxlength]="12"
+                                        [ngClass]="{ 'is-invalid ng-dirty': DeductionsControls['MiscDeduction']?.touched && DeductionsControls['MiscDeduction'].errors }" />
+                                    <div
+                                        *ngIf="DeductionsControls['MiscDeduction']?.touched && DeductionsControls['MiscDeduction'].invalid">
+                                        <div class="ng-invalid ng-touched p-error"
+                                            *ngIf="DeductionsControls['MiscDeduction'].errors?.['required']">
+                                            Please Enter Misc. Deductions.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </p-fieldset>
+            <br>
+            <div class="text-center">
+                <button pButton pRipple type="submit" label="Generate PaySlip"
+                    class="p-button-raised p-button-primary"
+                    [disabled]="!fbpayslips.valid || !fbpayearnings.valid || !fbpaydeductions.valid"
+                    (click)="GeneratePayslip()"></button>
+            </div>
+        </div>
+    </div>
+</div>

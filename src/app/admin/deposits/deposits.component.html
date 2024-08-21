@@ -1,0 +1,261 @@
+<div class="card" id="main-card">
+    <!-- Table -->
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <h4>Deposits</h4>
+        </ng-template>
+        <ng-template pTemplate="right">
+            <button pButton label="Add Deposit" class="p-button-primary p-mr-2" icon="pi pi-plus"
+                    (click)="onAdd()" id="btn-clear"></button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dtUsers [value]="users" dataKey="id" [rows]="10" paginatorDropdownAppendTo="body" [rowHover]="true"
+        [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [globalFilterFields]="globalFilterFields" [autoLayout]="true"
+        responsiveLayout="scroll" responsiveLayout="scroll" [resizableColumns]="true" [rowsPerPageOptions]="[10,25,50]">
+        <ng-template pTemplate="caption">
+            <div class="flex justify-content-between flex-column sm:flex-row">
+                <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                    (click)="clear(dtUsers)" id="btn-clear"></button>
+                <span class="p-input-icon-left mb-2">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" #filter (input)="onGlobalFilter(dtUsers, $event)"
+                        placeholder="Search Keyword" class="w-full" id="search-input" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th *ngIf="permissions?.CanManageUsers"></th>
+                <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+                    {{col?.label}}
+                    <p-columnFilter type="text" [field]="col.header" display="menu" id="Users_ColumnFilter">
+                    </p-columnFilter>
+                    <p-sortIcon [field]="col.header" id="Users_sorting"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td *ngFor="let col of headers" [ngClass]="col?.field == 'isActive' ? 'text-center' : ''">
+                    <span *ngIf="col?.field != 'creditDate' && col?.field != 'updatedAt' && col?.field != 'isActive'">
+                        {{user[col.field]}}
+                    </span>
+                    <span *ngIf="col?.field == 'creditDate' || col?.field == 'updatedAt'">
+                        {{user[col.field] | date: mediumDate}}
+                    </span>
+                    <span *ngIf="col?.field === 'isActive'">
+                        <i class="fa" [ngClass]="{'fa-check': user[col.field], 'fa-close': !user[col.field]}"
+                            [style.color]="user[col.field] ? '#119e2f' : '#e24c4c'"
+                            style="font-size:18px; vertical-align: sub;"></i>
+                    </span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td class="md:text-center" colspan="50%" *ngIf="loading">Loading....</td>
+                <td class="md:text-center" colspan="50%">No Deposits Found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+    <!-- Dailog -->
+    <p-dialog header="Deposits" [(visible)]="dialog" [modal]="true" showEffect="fade" (ngSubmit)="onSubmit()"
+        [breakpoints]="{'960px': '70%', '640px': '80%'}" [style]="{width: '50%'}" [draggable]="false">
+        <div class="flex flex-column align-items-center justify-content-center">
+            <form [formGroup]="depositForm" id="DepositForm">
+                <div class="grid mt-3">
+                    <div class="col-12 roles-container">
+                        <div id="hrms" class="p-fluid p-formgrid grid content_scroll">
+
+                            <!-- Carry Forward Amount -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label>Carry Forward Amount:</label>
+                                <input type="text" readonly id="carryForwardAmount" placeholder="Enter Carry Forward Amount" pInputText
+                                    formControlName="carryForwardAmount" #carryForwardAmount numericOnly [maxlength]="10"
+                                    (keydown)="restrictSpaces($event)" 
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['carryForwardAmount'].touched && FormControls['carryForwardAmount'].errors }" />
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['carryForwardAmount'].touched && FormControls['carryForwardAmount'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['carryForwardAmount'].errors?.['required']">
+                                                Please Enter Carry Forward Amount.
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                                        <small>{{carryForwardAmount.value.length}}/{{maxLength.phoneNo}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Amount:</label>
+                                <input type="text" id="amount" placeholder="Enter Amount" pInputText
+                                    formControlName="amount" #amount numericOnly [maxlength]="10"
+                                    (keydown)="restrictSpaces($event)"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['amount'].touched && FormControls['amount'].errors }" />
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['amount'].touched && FormControls['amount'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['amount'].errors?.['required']">
+                                                Please Enter Amount.
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                                        <small>{{amount.value.length}}/{{maxLength.phoneNo}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Credit Date -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Credit Date:</label>
+                                <p-calendar [readonlyInput]="true" placeholder="Select Credit Date" appendTo="body"
+                                    [showIcon]="true" id="creditDate" formControlName="creditDate"
+                                    [maxDate]="maxDate"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['creditDate'].touched && FormControls['creditDate'].errors}">
+                                </p-calendar>
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['creditDate'].touched && FormControls['creditDate'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['creditDate'].errors?.['required']">
+                                                Please Select Credit Date.
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Description:</label>
+                                <input type="text" id="description" pInputText placeholder="Enter Description"
+                                    formControlName="description" #description alphaOnly [maxlength]="50"
+                                    (keydown)="restrictSpaces($event)"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['description'].touched && FormControls['description'].errors }" />
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['description'].touched && FormControls['description'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['description'].errors?.['required']">
+                                                Please Enter Description.
+                                            </div>
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['description'].errors?.['minlength']">
+                                                Description Min Length Is 2.
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                                        <small>{{description.value.length}}/{{maxLength.name}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Mode Dropdown -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Payment Mode:</label>
+                                <p-dropdown id="paymentMethodName_dropdown" placeholder="Select Payment Mode"
+                                    [autoDisplayFirst]="false" [options]="PaymentMethod"
+                                    optionLabel="name" optionValue="lookupDetailId"
+                                    formControlName="PaymentMethodId" appendTo="body"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['PaymentMethodId'].touched && FormControls['PaymentMethodId'].errors}">
+                                </p-dropdown>
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['PaymentMethodId'].touched && FormControls['PaymentMethodId'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['PaymentMethodId'].errors?.['required']">
+                                                Please Select Payment Mode.
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Credited By -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Credited By:</label>
+                                <input type="text" id="creditedBy" pInputText placeholder="Enter Credited By"
+                                    formControlName="creditedBy" #creditedBy alphaOnly [maxlength]="15"
+                                    (keydown)="restrictSpaces($event)"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['creditedBy'].touched && FormControls['creditedBy'].errors }" />
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['creditedBy'].touched && FormControls['creditedBy'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['creditedBy'].errors?.['required']">
+                                                Please Enter Credited By.
+                                            </div>
+                                            <!-- <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['creditedBy'].errors?.['minlength']">
+                                                creditedBy Min Length Is 2.
+                                            </div> -->
+                                        </span>
+                                    </div>
+                                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                                        <small>{{creditedBy.value.length}}/{{maxLength.name}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Credited To -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label class="required">Credited To:</label>
+                                <input type="text" id="creditedTo" pInputText placeholder="Enter Credited To"
+                                    formControlName="creditedTo" #creditedTo alphaOnly [maxlength]="20"
+                                    (keydown)="restrictSpaces($event)"
+                                    [ngClass]="{ 'is-invalid ng-dirty': FormControls['creditedTo'].touched && FormControls['creditedTo'].errors }" />
+                                <div class="flex">
+                                    <div class="align-left w-60" style="width:70%">
+                                        <span
+                                            *ngIf="FormControls['creditedTo'].touched && FormControls['creditedTo'].invalid">
+                                            <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['creditedTo'].errors?.['required']">
+                                                Please Enter Credited To.
+                                            </div>
+                                            <!-- <div class="ng-invalid ng-touched p-error"
+                                                *ngIf="FormControls['creditedTo'].errors?.['minlength']">
+                                                Credited To Min Length Is 2.
+                                            </div> -->
+                                        </span>
+                                    </div>
+                                    <div class="align-right w-40" style="width:30%; text-align:right;">
+                                        <small>{{creditedTo.value.length}}/{{maxLength.name}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IsActive -->
+                            <div class="field col-12 lg:col-4 md:col-6">
+                                <label>Is Active: </label>
+                                <br> &nbsp; <p-inputSwitch formControlName="IsActive" id="Lookup_lookupIsActive">
+                                </p-inputSwitch>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <ng-template pTemplate="footer">
+            <div class="col-12 lg:col-4 md:col-4 sm:col-6" style="float:right">
+                <button pButton pRipple type="submit" [label]="this.submitlabel" class="p-button-raised p-button-primary"
+                    id="SubmitButton" (click)="onSubmit()" [disabled]="depositForm.invalid"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

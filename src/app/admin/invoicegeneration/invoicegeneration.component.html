@@ -1,0 +1,227 @@
+<div class="col-12 p-0">
+  <div class="card" id="main-card">
+    <p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+    <!-- Toolbar -->
+    <p-toolbar styleClass="p-mb-4">
+      <ng-template pTemplate="left">
+        <h4>Invoices</h4>
+      </ng-template>
+    </p-toolbar>
+
+    <form [formGroup]="fbinvoice" id="invoiceform">
+      <div class="grid mt-3">
+        <div class="col-12 roles-container">
+          <div id="hrms" class="p-fluid p-formgrid grid content_scroll">
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Invoice Number:</label>
+              <input type="text" id="invoice_number" pInputText placeholder="Enter Invoice Number"
+                formControlName="invoiceNumber" #invoiceNumber alphaNumeric [maxlength]="8"
+                (keydown)="restrictSpaces($event)"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['invoiceNumber']?.touched && FormControls['invoiceNumber'].errors }" />
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['invoiceNumber']?.touched && FormControls['invoiceNumber'].invalid">
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['invoiceNumber'].errors?.['required']">
+                      Please Enter Invoice Number.
+                    </div>
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['invoiceNumber'].errors?.['minlength']">
+                      Invoice Number Min Length Is 2.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Invoice Name:</label>
+              <input type="text" id="invoice_Name" pInputText placeholder="Enter Invoice Name" formControlName="invoiceName"
+                #invoiceName alphaOnly [maxlength]="30" (keydown)="restrictSpaces($event)"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['invoiceName'].touched && FormControls['invoiceName'].errors }" />
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['invoiceName'].touched && FormControls['invoiceName'].invalid">
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['invoiceName'].errors?.['required']">
+                      Please Enter Invoice Name.</div>
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['invoiceName'].errors?.['minlength']">
+                      First Name Min Length Is 2.</div>
+                  </span>
+                </div>
+                <!-- <div class="align-right w-40" style="width:30%; text-align:right;">
+                  <small>{{firstname.value.length}}/{{maxLength.name}} </small>
+                </div> -->
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required" for="inputtext3">Amount :</label>
+              <input type="text" id="amount" placeholder="Enter Amount" pInputText formControlName="amount" #amount
+                numericOnly [maxlength]="10"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['amount']?.touched && FormControls['amount'].errors }" />
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['amount']?.touched && FormControls['amount'].invalid">
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['amount'].errors?.['required']">
+                      Please Enter Amount.
+                    </div>
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['amount'].errors?.['pattern']">
+                      First Digit Should Be Greater Than 0 And Must Contains 10 Digits.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Date:</label>
+              <p-calendar appendTo="body" placeholder="Select From Date" [readonlyInput]="true" [minDate]="minDateValue"
+                [showIcon]="true" formControlName="invoicedate" mask="99/99/9999" id="invoicedate"
+                [disabledDays]="[0, 6]" [maxDate]="maxDate"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['invoicedate']?.touched && FormControls['invoicedate'].errors }">
+              </p-calendar>
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['invoicedate']?.touched && FormControls['invoicedate'].invalid">
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['invoicedate'].errors?.['required']">
+                      Please Select Date.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">To :</label>
+              <p-dropdown id="clientname_dropdown" formControlName="clientName" [autoDisplayFirst]="false"
+                placeholder="Select Client Name" optionLabel="companyName" appendTo="body"
+                optionValue="clientAddressId" [options]="clientaddress" (onChange)="onClientAddressChange($event)"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['clientName']?.touched && FormControls['clientName'].errors}">
+                <ng-template let-address pTemplate="item">
+                  <div class="address-item">
+                    <div>{{ address.companyName || '' }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['clientName']?.touched && FormControls['clientName'].invalid">
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['clientName'].errors?.['required']">
+                      Please Select Client Name.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field  col-12 md:col-4 p-2 mb-1">
+              <label class="required">CIN/GST No: </label>&nbsp; <input pInputText id="Project_cinNo" type="text"
+                placeholder="Enter CIN/GST No" #cinno
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['cinno'].touched && FormControls['cinno'].errors }"
+                (keydown)="restrictSpaces($event)" alphaNumeric [maxlength]="21" formControlName="cinno" />
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['cinno'].touched && FormControls['cinno'].invalid">
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['cinno'].errors?.['required']"> Please Enter CIN/GST No.
+                    </div>
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['cinno'].errors?.['minlength'] || FormControls['cinno'].errors?.['maxlength']">
+                      CIN/GST No. Must be 21 digits.</div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 md:col-4 p-2 mb-1">
+              <label class="required">Client Address:</label>
+              <input type="text" id="clientaddress" pInputText placeholder="Enter Client Address"
+                formControlName="clientaddress"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['clientaddress']?.touched && FormControls['clientaddress'].errors }" />
+              <div *ngIf="FormControls['clientaddress']?.touched && FormControls['clientaddress'].invalid">
+                <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['clientaddress'].errors?.['required']">
+                  Please Enter Client Address.
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Company Address:</label>
+              <p-dropdown id="fromaddress_dropdown" formControlName="fromAddressId" [autoDisplayFirst]="false"
+                placeholder="Select Company Address" optionLabel="companyName" [options]="companyaddress"
+                appendTo="body" optionValue="id"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['fromAddressId']?.touched && FormControls['fromAddressId'].errors}">
+                <ng-template let-address pTemplate="item">
+                  <div class="address-item">
+                    <div>{{ address.companyName || '' }}</div>
+                    <div *ngIf="address.addressLine1">{{ address.addressLine1 }}</div>
+                    <div *ngIf="address.addressLine2">{{ address.addressLine2 }}</div>
+                    <div *ngIf="address.city || address.state || address.postalCode">
+                      {{ address.addressLine3 || '' }},
+                      {{ address.city || '' }} - {{ address.postalCode || '' }}, {{ address.state || '' }}
+                    </div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['fromAddressId']?.touched && FormControls['fromAddressId'].invalid">
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['fromAddressId'].errors?.['required']">
+                      Please Select Company Address.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Bank Details:</label>
+              <p-dropdown id="bankdetails_dropdown" formControlName="bankDetailId" [autoDisplayFirst]="false"
+                placeholder="Select Bank Details" optionLabel="accountName" [options]="bankingdetails" appendTo="body"
+                optionValue="bankDetailId" [options]="bankingdetails"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['bankDetailId']?.touched && FormControls['bankDetailId'].errors}">
+                <ng-template let-bank pTemplate="item">
+                  <div class="bank-item">
+                    <div>{{ bank.accountName || '' }}</div>
+                    <div *ngIf="bank.accountType">Account Type: {{ bank.accountType }}</div>
+                    <div *ngIf="bank.accountNumber">Account Number: {{ bank.accountNumber }}</div>
+                    <div *ngIf="bank.ifscCode">IFSC Code: {{ bank.ifscCode }}</div>
+                    <div *ngIf="bank.Name">Branch: {{ bank.Name }}</div>
+                    <div *ngIf="bank.Address">{{ bank.Address }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['bankDetailId']?.touched && FormControls['bankDetailId'].invalid">
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['bankDetailId'].errors?.['required']">
+                      Please Select Bank Details.
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 lg:col-4 md:col-6">
+              <label class="required">Project Name:</label>
+              <input type="text" id="project_Name" pInputText placeholder="Enter Project Name" formControlName="projectName"
+                #projectName alphaOnly [maxlength]="50" (keydown)="restrictSpaces($event)"
+                [ngClass]="{ 'is-invalid ng-dirty': FormControls['projectName'].touched && FormControls['projectName'].errors }" />
+              <div class="flex">
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['projectName'].touched && FormControls['projectName'].invalid">
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['projectName'].errors?.['required']">
+                      Please Enter Project Name.</div>
+                    <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['projectName'].errors?.['minlength']">
+                      First Name Min Length Is 2.</div>
+                  </span>
+                </div>
+                <!-- <div class="align-right w-40" style="width:30%; text-align:right;">
+                  <small>{{firstname.value.length}}/{{maxLength.name}} </small>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="text-center">
+      <button pButton pRipple type="submit" label="Generate Invoice" class="p-button-raised p-button-primary"
+        [disabled]="!fbinvoice.valid" (click)="GenerateInvoice()"></button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,76 @@
+<p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+        <h4>Monthly Regular Payments</h4>
+    </ng-template>
+
+    <ng-template pTemplate="center">
+        <div class="pr-2">
+            <p-button icon="pi pi-angle-left mr-2" (click)="gotoPreviousMonth()" id="Payments_previousMonth">
+            </p-button>
+        </div>
+        <div>
+            <p-calendar styleClass="only-icon" [(ngModel)]="selectedMonth" [maxDate]="currentDate" [showIcon]="true"
+                view="month" id="Attendance_selectMonth" [yearNavigator]="true" yearRange="2000:2030"
+                [readonlyInput]="true" inputId="monthpicker" (onSelect)="onMonthSelect($event)">
+            </p-calendar>
+        </div>
+        <div class="pl-2">
+            <p-button icon="pi pi-angle-right ml-2" (click)="gotoNextMonth()" id="Payments_nextMonth">
+            </p-button>
+        </div>
+        <div class="pl-2" style="margin-top: 10px;">
+            <b>{{ getMonthYearDate() | date: 'MMM/yyyy' }}</b>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="right">
+        <!-- <div class="p-input-icon-left dropdown_icon pr-2">
+            <span>
+                <button (click)="exportPdf()" pButton class="p-button doc_button mx-2" id="Payments_PDFBtn"
+                    pTooltip="Download Regular Payments PDF" icon="pi pi-file-pdf"></button>
+            </span>
+        </div> -->
+        <div class="p-input-icon-left dropdown_icon pr-2">
+            <button pButton class="p-button doc_button" icon="icon-csv-svgrepo-com-1" pTooltip="Download Regular Payments CSV"
+                tooltipPosition="left" id="holiday_csvBtn" (click)="downloadRegularPaymentsReportCSV()"></button>
+        </div>
+    </ng-template>
+</p-toolbar>
+
+<p-table #dtUsers [value]="RegularPaymentsdata" dataKey="id" [rows]="10" paginatorDropdownAppendTo="body" [rowHover]="true"
+    [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm"
+    [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true" [globalFilterFields]="globalFilterFields" [autoLayout]="true"
+    responsiveLayout="scroll" responsiveLayout="scroll" [resizableColumns]="true" [rowsPerPageOptions]="[10,25,50]">
+    <ng-template pTemplate="caption">
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of headers">
+                {{col?.label}}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user let-i="index">
+        <tr>
+            <td *ngFor="let col of headers" [ngClass]="col?.field == 'isActive' ? 'text-center' : ''">
+                <span *ngIf="col?.field != 'date' && col?.field != 'updatedAt' && col?.field != 'isActive'">
+                    {{user[col.field]}}
+                </span>
+                <span *ngIf="col?.field == 'date' || col?.field == 'updatedAt'">
+                    {{user[col.field] | date: mediumDate}}
+                </span>
+                <span *ngIf="col?.field === 'isActive'">
+                    <i class="fa" [ngClass]="{'fa-check': user[col.field], 'fa-close': !user[col.field]}"
+                        [style.color]="user[col.field] ? '#119e2f' : '#e24c4c'"
+                        style="font-size:18px; vertical-align: sub;"></i>
+                </span>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td class="md:text-center" colspan="50%" *ngIf="loading">Loading....</td>
+            <td class="md:text-center" colspan="50%">No Data Found.</td>
+        </tr>
+    </ng-template>
+</p-table>

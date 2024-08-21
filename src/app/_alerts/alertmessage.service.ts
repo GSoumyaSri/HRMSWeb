@@ -276,5 +276,16 @@ export const ALERT_CODES: { [key: string]: string } = {
     'AER002': 'Employee Resignation Not Accepted',
     'ERD001': 'Employee Resignation Documents sent successfully',
     'ERD002': 'Employees Resignation Documents Not Added',
+
+    //Expenditures
+    'EXP001': 'Expense Added Successfully',
+    'EXP002': 'Expense Updated Successfully',
+    'EXP003': 'Expense Not Added',
+    'EXP004': 'Expense Not Updated',
+    'EXP005': 'Deposit Added Successfully',
+    'EXP006': 'Deposit Updated Successfully',
+    'EXP007': 'Deposit Not Added',
+    'EXP008': 'Deposit Not Updated',
+    'EXP009': 'Expense Deleted Successfully',
 }
 

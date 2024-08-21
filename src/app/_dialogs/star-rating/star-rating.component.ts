@@ -16,7 +16,13 @@ export class StarRatingComponent {
   highlightedStar: number | null = null;
 
   ngOnInit(): void {
+    // if (this.control) {
+    //   this.control.valueChanges.subscribe((value) => {
+    //     this.ratings = value;
+    //   });
+    // }
     if (this.control) {
+      this.ratings = this.control.value || 0;
       this.control.valueChanges.subscribe((value) => {
         this.ratings = value;
       });
@@ -27,7 +33,7 @@ export class StarRatingComponent {
     }
   }
 
-  handleValueofExpertise(index: number): void {
+  handleValueofExpertise(index: number): void {    
     if (this.ratings !== null && this.control) {
       
       // Get the existing value from this.control
@@ -48,6 +54,10 @@ export class StarRatingComponent {
   }
 
   handleClick(index: number): void {
+    console.log('Clicked star index:', index);
+    console.log('Current ratings:', this.ratings);
+    if(this.ratings == null) this.ratings = 0;
+
     if (this.ratings !== null) {
       let fillLevel: number;
 

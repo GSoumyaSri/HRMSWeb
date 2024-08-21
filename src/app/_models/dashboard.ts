@@ -37,23 +37,23 @@ export class projectsForSelfEmployeeViewDto {
     description?: string;
     sinceFrom?: Date;
     endAt?: Date;
-    members?:teamMembers[];
+    members?: teamMembers[];
     teamMembers?: string;
-    logo?:string;
+    logo?: string;
 }
 
-export class teamMembers{
-    employeeId?:number;
-    employeeCode?:string;
-    employeeName?:string;
-    designationName?:string;
-    reportingTo?:string;
+export class teamMembers {
+    employeeId?: number;
+    employeeCode?: string;
+    employeeName?: string;
+    designationName?: string;
+    reportingTo?: string;
 }
 export class selfEmployeeMonthlyLeaves {
     employeeLeaveId?: number;
     employeeName?: string;
     leaveType?: string;
-    leaveTypeId?:number;
+    leaveTypeId?: number;
     status?: string;
     isDeleted?: boolean;
     isHalfDayLeave?: boolean;
@@ -139,7 +139,7 @@ export class adminDashboardViewDto {
 export class AttendanceCountBasedOnTypeViewDto {
     value?: string;
     lwp?: number;
-    ll?:number;
+    ll?: number;
     pt?: number;
     cl?: number;
     pl?: number;
@@ -185,4 +185,39 @@ export class employeesOnLeave {
 export class absentEmployees {
     employeeStatus?: string;
     employeesCount?: number;
+}
+export class highestExpendituresViewDto {
+    period: string;
+    categoryName: string;
+    totalAmount: number;
+}
+export class TotalAmountSpentViewDto {
+    categoryName: string;
+    totalAmountSpent: number;
+}
+
+export class TotalMonthlyDepositsViewDto {
+    monthlyTotalDeposits: number;
+}
+export class CarryForwardAmountViewDto { 
+    carryForwardAmount: number;
+}
+export class BalanceAmountViewDto { 
+    balanceAmount: number;
+}
+export class MonthlyBudgetNotificationsViewDto {
+    notification?: string;
+    approvedExpenses?: number;
+    monthlyBudget?: number;
+    remainingBudget?: number;
+}
+export class BudgetChartViewDto {
+    totalMonthlyCredits?: number;
+    totalMonthlyDebits?: number;
+    totalYearlyCredits?: number;
+    totalYearlyDebits?: number;
+}
+export class CategoryBudgetChartViewDto {
+    categoryName: string;
+    totalAmountSpent: number;
 }

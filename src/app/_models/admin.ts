@@ -168,6 +168,7 @@ export class EmployeesList {
     selfId?: number;
     usedInChart?: boolean = false;
     isActive?: boolean;
+  roleName: any;
 }
 export class ProjectAllotments {
     employeeId?: number
@@ -405,4 +406,38 @@ export class FeedbackDto{
     comments?:string;
     updatedBy?:string;
     updatedAt?:Date;
+}
+
+export class SalaryHikesDto{
+    id :number
+    employeeId?:number;  
+    employeeCode?:string;
+    employeeName?:string;
+    dateofJoin?:Date;
+    salaryIncrement?:number;
+    incrementProposedDate?:Date;
+    incrementDate?:Date;
+    isActive?:boolean;
+    presentGrossSalary?:number;
+    incrementGrossSalary?:number;
+    createdAt:Date;
+    createdBy:string;
+    updatedAt:string;
+    updatedBy:string;
+}
+
+export class AddSalaryHikeDto{
+    id :number
+    employeeId?:number
+    salaryIncrement?:number
+    dateofJoin?:Date;
+    incrementProposedDate?:Date
+    incrementDate?:Date
+    presentGrossSalary?:number;
+    incrementGrossSalary?:number;
+    isActive?:boolean
+    createdAt:Date;
+    createdBy:string;
+    updatedAt:string;
+    updatedBy:string;
 }

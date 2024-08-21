@@ -1,0 +1,49 @@
+<p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+        <h4>Expense Reports</h4>
+    </ng-template>
+
+    <!-- <ng-template pTemplate="center">
+        <div class="pr-2">
+            <p-button icon="pi pi-angle-left mr-2" (click)="gotoPreviousMonth()" id="Attendance_previousMonth">
+            </p-button>
+        </div>
+        <div>
+            <p-calendar styleClass="only-icon" [(ngModel)]="selectedMonth" [showIcon]="true" view="month"
+                id="Attendance_selectMonth" [yearNavigator]="true" yearRange="2000:2030" [readonlyInput]="true"
+                inputId="monthpicker" (onSelect)="onMonthSelect($event)">
+            </p-calendar>
+        </div>
+        <div class="pl-2">
+            <p-button icon="pi pi-angle-right ml-2" (click)="gotoNextMonth()" id="Attendance_nextMonth">
+            </p-button>
+        </div>
+        <div class="pl-2" style="margin-top: 10px;">
+            <b>{{ getMonthYearDate() | date: 'MMM/yyyy' }}</b>
+        </div>
+    </ng-template> -->
+    <ng-template pTemplate="right">
+        <div class="p-input-icon-left dropdown_icon pr-2">
+
+            <p-splitButton [pTooltip]="'Download Regular Payments PDF'" tooltipPosition="left" class="pdf_group"
+            id="Attendance_PDFReportDropdown"
+                icon="pi pi-plus" [model]="items">
+                <ng-template pTemplate="dropdownicon">
+                    <i class="pi icon-pdf-svgrepo-com-2"></i>
+                </ng-template>
+            </p-splitButton>
+
+        </div>
+        <div class="p-input-icon-left dropdown_icon pr-2">
+            <div class="p-input-icon-left dropdown_icon  pr-2">
+                <p-splitButton [pTooltip]="'Download Regular Payments CSV'" tooltipPosition="left" class="csv_group"
+                id="Attendance_CSVReportDropdown"
+                    icon="pi pi-plus" [model]="excelItems">
+                    <ng-template pTemplate="dropdownicon">
+                        <i class="icon-csv-svgrepo-com-1 "></i>
+                    </ng-template>
+                </p-splitButton>
+            </div>
+        </div>
+    </ng-template>
+</p-toolbar>

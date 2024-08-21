@@ -10,10 +10,11 @@ import { ViewAssetAllotmentsDialogComponent } from 'src/app/_dialogs/viewassetal
 import { DATE_FORMAT, DATE_FORMAT_MONTH, FORMAT_DATE, FORMAT_MONTH, MEDIUM_DATE, MONTH, ORIGINAL_DOB } from 'src/app/_helpers/date.formate.pipe';
 import { LookupDetailsDto, LookupViewDto } from 'src/app/_models/admin';
 import { Actions, DialogRequest } from 'src/app/_models/common';
-import { AttendanceCountBasedOnTypeViewDto, EmployeesofAttendanceCountsViewDto, adminDashboardViewDto, NotificationsRepliesDto, NotificationsDto } from 'src/app/_models/dashboard';
+import { AttendanceCountBasedOnTypeViewDto, EmployeesofAttendanceCountsViewDto, adminDashboardViewDto, NotificationsRepliesDto, NotificationsDto, TotalAmountSpentViewDto, TotalMonthlyDepositsViewDto, CarryForwardAmountViewDto, BalanceAmountViewDto, MonthlyBudgetNotificationsViewDto, BudgetChartViewDto, CategoryBudgetChartViewDto } from 'src/app/_models/dashboard';
 import { DashboardService } from 'src/app/_services/dashboard.service';
 import { JwtService } from 'src/app/_services/jwt.service';
 import { LookupService } from 'src/app/_services/lookup.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 
 @Component({
@@ -30,11 +31,17 @@ export class AdminDashboardComponent implements OnInit {
     pieDataforProjects: any;
     chartFilled: boolean;
     chart: string;
+    creditDebitbar: string;
+    expenditurechart: string;
     ActionTypes = Actions;
     year: number = new Date().getFullYear();
     year1: number = new Date().getFullYear();
     yearToPatch: any;
     month: number = new Date().getMonth() + 1;
+    monthforCD: number = new Date().getMonth() + 1;
+    yearforCD: number = new Date().getFullYear();
+    monthforEX: number = new Date().getMonth() + 1;
+    yearforEX: number = new Date().getFullYear();
     selectedMonth: any;
     selectedMonth1: any;
     selectedDate: any;
@@ -69,6 +76,30 @@ export class AdminDashboardComponent implements OnInit {
     EmployeesOnLeaveToday: any;
     resignationNotifications: any
     dialogRequest: DialogRequest = new DialogRequest();
+    highestExpenditure: any;
+    monthlyExpenditure: any;
+    yearlyExpenditure: any;
+    TotalAmountSpentDtls: TotalAmountSpentViewDto;
+    totalAmountSpent: any;
+    currentMonthName: string;
+    monthlyTotalDeposits: any;
+    totalMonthlyDepositsDataDtls: TotalMonthlyDepositsViewDto;
+    Month: any;
+    Year: any
+    CategoryExpenselist: boolean = false;
+    CategoryExpenseData: any
+    CarryForwardAmountDtls: any;
+    Carrydata: any;
+    previousMonthName: string;
+    BalanceAmountDtls: any;
+    BalanceAmtData: any = [{}];
+    BudgetNotificationsdata: MonthlyBudgetNotificationsViewDto | [{}];
+    budgetCount: BudgetChartViewDto[] = [];
+    barDataforCreditDebit: any;
+    barOptionsforCreditDebit: any;
+    ExpenditureCount: CategoryBudgetChartViewDto[] = [];
+    barDataforExpenditure: any;
+    barOptionsforExpenditure: any;
 
     constructor(private dashboardService: DashboardService,
         private router: Router, public ref: DynamicDialogRef,
@@ -87,8 +118,14 @@ export class AdminDashboardComponent implements OnInit {
         this.initWishesForm();
         this.inItAdminDashboard();
         this.chart = 'Date';
+        this.creditDebitbar = 'Month';
+        this.expenditurechart = 'Date';
         const currentDate = new Date();
         this.month = currentDate.getMonth() + 1;
+        this.monthforCD = currentDate.getMonth() + 1;
+        this.yearforCD = currentDate.getFullYear();
+        this.monthforEX = currentDate.getMonth() + 1;
+        this.yearforEX = currentDate.getFullYear();
         this.year = currentDate.getFullYear();
         this.year1 = currentDate.getFullYear();
         this.yearToPatch = FORMAT_DATE(new Date(this.year1, 1, 1));
@@ -101,7 +138,15 @@ export class AdminDashboardComponent implements OnInit {
         this.initNotifications();
         this.initUpcomingBirthdays();
         this.initEmployeesOnLeave();
-        this.initResignations()
+        this.inittotalamountspent();
+        this.setCurrentMonthName();
+        this.inittotalmontlydeposits();
+        this.initBalanceAmount();
+        this.initCarryForwardAmount();
+        this.initBudgetNotifications();
+        this.initResignations();
+        this.getBudgetSummary();
+        this.getExpenditureBar();
         if (this.jwtService.EmployeeId) {
             this.initNotificationsBasedOnId()
         }
@@ -261,7 +306,142 @@ export class AdminDashboardComponent implements OnInit {
                 this.getAttendanceCountsBasedOnProject();
         }
     }
+    gotoPreviousMonthforCD() {
+        if (this.monthforCD > 1) {
+            this.monthforCD--;
+        } else {
+            this.monthforCD = 12; // Reset to December
+            this.yearforCD--;     // Decrement the year
+        }
+        this.getBudgetSummary();
+    }
+    onMonthSelectforCD(event) {
+        this.selectedMonth = event;
+        this.monthforCD = this.selectedMonth.getMonth() + 1;
+        this.yearforCD = this.selectedMonth.getFullYear();
+        this.getBudgetSummary();
+    }
 
+    gotoNextMonthforCD() {
+        if (this.currentDate < new Date(this.yearforCD, this.monthforCD, 1))
+            this.alertMessage.displayInfo('No Data is Available for Future Dates')
+        else {
+
+            if (this.monthforCD < 12) {
+                this.monthforCD++;
+            } else {
+                this.monthforCD = 1; // Reset to January
+                this.yearforCD++;    // Increment the year
+            }
+            this.getBudgetSummary();
+        }
+    }
+    gotoPreviousYearforCD() {
+        this.yearforCD--;
+        this.yearToPatch = FORMAT_DATE(new Date(this.yearforCD, 1, 1));
+        this.yearToPatch.setHours(0, 0, 0, 0);
+        this.getBudgetSummary();
+    }
+
+    onYearSelectforCD(event) {
+        const date = new Date(event);
+        const yearNumber = date.getFullYear();
+        this.yearforCD = yearNumber;
+        this.yearToPatch = FORMAT_DATE(new Date(this.yearforCD, 1, 1));
+        this.yearToPatch.setHours(0, 0, 0, 0);
+        this.getBudgetSummary();
+    }
+
+    gotoNextYearforCD() {
+        if (this.currentDate < new Date(this.yearforCD + 1, 1, 1))
+            this.alertMessage.displayInfo('No Data is Available for Future Dates')
+
+        else {
+            this.yearforCD++;
+            this.yearToPatch = FORMAT_DATE(new Date(this.yearforCD, 1, 1));
+            this.yearToPatch.setHours(0, 0, 0, 0);
+            this.getBudgetSummary();
+        }
+    }
+    gotoPreviousDayforEX() {
+        const previousDay = new Date(this.selectedDate);
+        previousDay.setDate(previousDay.getDate() - 1);
+        this.selectedDate = previousDay;
+        this.getExpenditureBar();
+    }
+
+    onDaySelectforEX(event) {
+        this.selectedDate = DATE_FORMAT(new Date(event));
+        this.getExpenditureBar();
+    }
+
+    gotoNextDayforEX() {
+        const nextDay = new Date(this.selectedDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        if (this.currentDate < nextDay)
+            this.alertMessage.displayInfo('No Data is Available for Future Dates')
+        else {
+            this.selectedDate = nextDay;
+            this.getExpenditureBar();
+        }
+    }
+
+    gotoPreviousMonthforEX() {
+        if (this.monthforEX > 1) {
+            this.monthforEX--;
+        } else {
+            this.monthforEX = 12; // Reset to December
+            this.yearforEX--;     // Decrement the year
+        }
+        this.getExpenditureBar();
+    }
+    onMonthSelectforEX(event) {
+        this.selectedMonth = event;
+        this.monthforEX = this.selectedMonth.getMonth() + 1;
+        this.yearforEX = this.selectedMonth.getFullYear();
+        this.getExpenditureBar();
+    }
+
+    gotoNextMonthforEX() {
+        if (this.currentDate < new Date(this.yearforEX, this.monthforEX, 1))
+            this.alertMessage.displayInfo('No Data is Available for Future Dates')
+        else {
+
+            if (this.monthforEX < 12) {
+                this.monthforEX++;
+            } else {
+                this.monthforEX = 1; // Reset to January
+                this.yearforEX++;    // Increment the year
+            }
+            this.getExpenditureBar();
+        }
+    }
+    gotoPreviousYearforEX() {
+        this.yearforEX--;
+        this.yearToPatch = FORMAT_DATE(new Date(this.yearforEX, 1, 1));
+        this.yearToPatch.setHours(0, 0, 0, 0);
+        this.getExpenditureBar();
+    }
+
+    onYearSelectforEX(event) {
+        const date = new Date(event);
+        const yearNumber = date.getFullYear();
+        this.yearforEX = yearNumber;
+        this.yearToPatch = FORMAT_DATE(new Date(this.yearforEX, 1, 1));
+        this.yearToPatch.setHours(0, 0, 0, 0);
+        this.getExpenditureBar();
+    }
+
+    gotoNextYearforEX() {
+        if (this.currentDate < new Date(this.yearforEX + 1, 1, 1))
+            this.alertMessage.displayInfo('No Data is Available for Future Dates')
+        else {
+            this.yearforEX++;
+            this.yearToPatch = FORMAT_DATE(new Date(this.yearforEX, 1, 1));
+            this.yearToPatch.setHours(0, 0, 0, 0);
+            this.getExpenditureBar();
+        }
+    }
     updateSelectedMonth() {
         this.selectedMonth1 = FORMAT_DATE(new Date(this.year, this.month - 1, 1));
         this.selectedMonth1.setHours(0, 0, 0, 0);
@@ -941,6 +1121,9 @@ export class AdminDashboardComponent implements OnInit {
         this.employeeslist = true;
         this.OnLeaveEmployeeList = this.admindashboardDtls?.savedemployeesOnLeave;
     }
+    showCategoryExpenselist() {
+        this.CategoryExpenselist = true;
+    }
     navigateProjects() {
         this.router.navigate(['admin/project'], { queryParams: { showOngoingProjects: true } })
     }
@@ -1064,6 +1247,451 @@ export class AdminDashboardComponent implements OnInit {
             this.initResignations();
             event.preventDefault(); // Prevent the default form submission
         });
+    }
+
+    inittotalamountspent() {
+        this.dashboardService.getTotalAmountSpent(this.month, this.year)
+            .subscribe((data: any) => {
+                this.CategoryExpenseData = data;
+                const approvedApprovals = data.find((d: { categoryName: string; }) => d.categoryName === 'OverallAmountSpent');
+                if (approvedApprovals) {
+                    this.totalAmountSpent = approvedApprovals.totalAmountSpent;
+                } else {
+                    this.totalAmountSpent = 'No data Found.';
+                }
+            });
+    }
+
+    initCarryForwardAmount() {
+        let previousMonth = this.month - 1;
+
+        if (previousMonth === 0) {
+            previousMonth = 12; // December
+        }
+
+        this.dashboardService.getCarryForwardAmount(previousMonth, this.year)
+            .subscribe((data: any) => {
+                this.Carrydata = data;
+            });
+    }
+    initBalanceAmount() {
+        this.dashboardService.GetBalanceAmount().subscribe((data: any) => {
+            this.BalanceAmtData = data;
+        });
+    }
+
+
+    inittotalmontlydeposits() {
+        this.dashboardService.GetTotalMonthlyDeposits().subscribe((resp: any) => {
+            if (resp && resp.length > 0) {
+                this.totalMonthlyDepositsDataDtls = resp[0];
+                this.monthlyTotalDeposits = this.totalMonthlyDepositsDataDtls.monthlyTotalDeposits;
+            } else {
+                this.totalMonthlyDepositsDataDtls = null;
+                this.monthlyTotalDeposits = null;
+            }
+        }, error => {
+            console.error('Error fetching total monthly deposits:', error);
+        });
+    }
+
+    initBudgetNotifications() {
+        this.dashboardService.GetMonthlyBudgetNotifications().subscribe((resp: any) => {
+            this.BudgetNotificationsdata = resp;
+        })
+    }
+
+
+    setCurrentMonthName(): void {
+        let previousMonth = this.month - 1;
+
+        if (previousMonth === 0) {
+            previousMonth = 12; // December
+        }
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const currentDate = new Date();
+        this.currentMonthName = monthNames[currentDate.getMonth()];
+        this.previousMonthName = monthNames[previousMonth - 1];
+    }
+
+    getBudgetSummary() {
+        this.budgetCount = [];
+        if (this.creditDebitbar === 'Month') {
+            this.dashboardService.getBudgetChart(this.monthforCD, this.yearforCD).subscribe((resp) => {
+                this.budgetCount = resp as unknown as BudgetChartViewDto[];
+                this.totalbudgetChart();
+            })
+        }
+        else if (this.creditDebitbar === 'Year') {
+            this.dashboardService.getYearlyBudgetChart(this.yearforCD).subscribe((resp) => {
+                this.budgetCount = resp as unknown as BudgetChartViewDto[];
+                this.totalbudgetChart();
+            })
+        }
+    }
+
+    // totalbudgetChart() {
+    //     const documentStyle = getComputedStyle(document.documentElement);
+    //     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    //     console.log(this.budgetCount);
+
+    //     if (this.creditDebitbar === 'Month') {
+    //         const MonthlyCredits = this.budgetCount[0]?.totalMonthlyCredits;
+    //         const MonthlyDebits = this.budgetCount[0]?.totalMonthlyDebits;
+    //         this.barDataforCreditDebit = {
+    //             labels: ['Credit', 'Debit'],
+    //             datasets: [
+    //                 {
+    //                     data: [MonthlyCredits, MonthlyDebits],
+    //                     backgroundColor: [documentStyle.getPropertyValue('--inofc-b'), documentStyle.getPropertyValue('--wfh-b'), documentStyle.getPropertyValue('--pl-b'), documentStyle.getPropertyValue('--cl-b'), documentStyle.getPropertyValue('--ll-b'), documentStyle.getPropertyValue('--lwp-b')],
+    //                     borderColor: surfaceBorder,
+    //                 }
+    //             ]
+    //         };
+    //         this.barOptionsforCreditDebit = {
+    //             animation: {
+    //                 duration: 500
+    //             },
+    //             plugins: {
+    //                 legend: {
+    //                     display: true,
+    //                     position: 'bottom',
+    //                     labels: {
+    //                         display: true,
+    //                         usePointStyle: true,
+    //                         generateLabels: function (chart) {
+    //                             const data = chart.data;
+    //                             if (data.labels.length && data.datasets.length) {
+    //                                 return data.labels.reduce(function (labels, label, i) {
+    //                                     const dataset = data.datasets[0];
+    //                                     const value = dataset.data[i];
+    //                                     if (!isNaN(value)) {
+    //                                         labels.push({
+    //                                             text: label,
+    //                                             fillStyle: dataset.backgroundColor[i],
+    //                                             hidden: isNaN(value),
+    //                                             lineCap: dataset.borderCapStyle,
+    //                                             lineDash: dataset.borderDash,
+    //                                             lineDashOffset: dataset.borderDashOffset,
+    //                                             lineJoin: dataset.borderJoinStyle,
+    //                                             lineWidth: dataset.borderWidth,
+    //                                             strokeStyle: dataset.borderColor[i],
+    //                                             pointStyle: dataset.pointStyle,
+    //                                         });
+    //                                     }
+    //                                     return labels;
+    //                                 }, []);
+    //                             }
+    //                             return [];
+    //                         },
+    //                     },
+    //                     onClick: (event, legendItem) => {
+    //                         this.handleChartClick(legendItem.text);
+    //                         return false;
+    //                     },
+    //                 },
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     grid: {
+    //                         color: surfaceBorder,
+    //                         drawBorder: false
+    //                     },
+    //                     ticks: {
+    //                         precision: 0
+    //                     }
+    //                 },
+    //                 x: {
+    //                     grid: {
+    //                         color: surfaceBorder,
+    //                         drawBorder: false
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     }
+    //     else
+    //     if (this.creditDebitbar === 'Year') {
+    //         const YearlyCredits = this.budgetCount[0]?.totalYearlyCredits;
+    //         const YearlyDebits = this.budgetCount[0]?.totalYearlyDebits;
+    //         this.barDataforCreditDebit = {
+    //             labels: ['Credit', 'Debit'],
+    //             datasets: [
+    //                 {
+    //                     data: [YearlyCredits, YearlyDebits],
+    //                     backgroundColor: [documentStyle.getPropertyValue('--inofc-b'), documentStyle.getPropertyValue('--wfh-b'), documentStyle.getPropertyValue('--pl-b'), documentStyle.getPropertyValue('--cl-b'), documentStyle.getPropertyValue('--ll-b'), documentStyle.getPropertyValue('--lwp-b')],
+    //                     borderColor: surfaceBorder,
+    //                 }
+    //             ]
+    //         };
+    //         this.barOptionsforCreditDebit = {
+    //             animation: {
+    //                 duration: 500
+    //             },
+    //             plugins: {
+    //                 legend: {
+    //                     display: true,
+    //                     position: 'bottom',
+    //                     labels: {
+    //                         display: true,
+    //                         usePointStyle: true,
+    //                         generateLabels: function (chart) {
+    //                             const data = chart.data;
+    //                             if (data.labels.length && data.datasets.length) {
+    //                                 return data.labels.reduce(function (labels, label, i) {
+    //                                     const dataset = data.datasets[0];
+    //                                     const value = dataset.data[i];
+    //                                     if (!isNaN(value)) {
+    //                                         labels.push({
+    //                                             text: label,
+    //                                             fillStyle: dataset.backgroundColor[i],
+    //                                             hidden: isNaN(value),
+    //                                             lineCap: dataset.borderCapStyle,
+    //                                             lineDash: dataset.borderDash,
+    //                                             lineDashOffset: dataset.borderDashOffset,
+    //                                             lineJoin: dataset.borderJoinStyle,
+    //                                             lineWidth: dataset.borderWidth,
+    //                                             strokeStyle: dataset.borderColor[i],
+    //                                             pointStyle: dataset.pointStyle,
+    //                                         });
+    //                                     }
+    //                                     return labels;
+    //                                 }, []);
+    //                             }
+    //                             return [];
+    //                         },
+    //                     },
+    //                     onClick: (event, legendItem) => {
+    //                         this.handleChartClick(legendItem.text);
+    //                         return false;
+    //                     },
+    //                 },
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     grid: {
+    //                         color: surfaceBorder,
+    //                         drawBorder: false
+    //                     },
+    //                     ticks: {
+    //                         precision: 0
+    //                     }
+    //                 },
+    //                 x: {
+    //                     grid: {
+    //                         color: surfaceBorder,
+    //                         drawBorder: false
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     }
+    // }
+    totalbudgetChart() {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+
+        if (this.creditDebitbar === 'Month') {
+            const MonthlyCredits = this.budgetCount[0]?.totalMonthlyCredits;
+            const MonthlyDebits = this.budgetCount[0]?.totalMonthlyDebits;
+            this.barDataforCreditDebit = {
+                labels: ['Credit', 'Debit'],
+                datasets: [
+                    {
+                        data: [MonthlyCredits, MonthlyDebits],
+                        backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
+                        hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+                    }
+                ]
+            };
+
+
+            this.barOptionsforCreditDebit = {
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor
+                        }
+                    }
+                }
+            };
+        }
+        else
+            if (this.creditDebitbar === 'Year') {
+                const YearlyCredits = this.budgetCount[0]?.totalYearlyCredits;
+                const YearlyDebits = this.budgetCount[0]?.totalYearlyDebits;
+                this.barDataforCreditDebit = {
+                    labels: ['Credit', 'Debit'],
+                    datasets: [
+                        {
+                            data: [YearlyCredits, YearlyDebits],
+                            backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
+                            hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+                        }
+                    ]
+                };
+
+
+                this.barOptionsforCreditDebit = {
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: textColor
+                            }
+                        }
+                    }
+                };
+            }
+    }
+
+    getExpenditureBar() {
+        this.ExpenditureCount = [];
+        if (this.expenditurechart === 'Date') {
+            this.selectedDate = DATE_FORMAT(new Date(this.selectedDate));
+            this.dashboardService.getDailyExpenditureBudgetChart(this.selectedDate).subscribe((resp) => {
+                this.ExpenditureCount = resp as unknown as CategoryBudgetChartViewDto[];
+                this.totalExpenditureBar();
+            })
+        }
+        if (this.expenditurechart === 'Month') {
+            this.dashboardService.getMonthlyExpenditureBudgetChart(this.monthforEX, this.yearforEX).subscribe((resp) => {
+                this.ExpenditureCount = resp as unknown as CategoryBudgetChartViewDto[];
+                this.totalExpenditureBar();
+            })
+        }
+        else if (this.expenditurechart === 'Year') {
+            this.dashboardService.getYearlyExpenditureBudgetChart(this.yearforEX).subscribe((resp) => {
+                this.ExpenditureCount = resp as unknown as CategoryBudgetChartViewDto[];
+                this.totalExpenditureBar();
+            })
+        }
+    }
+
+    // totalExpenditureBar() {
+    //     const documentStyle = getComputedStyle(document.documentElement);
+    //     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    //     console.log(this.ExpenditureCount);
+
+    //     const categories = this.ExpenditureCount.map(each => each.categoryName);
+    //     const totalAmounts = this.ExpenditureCount.map(each => each.totalAmountSpent);
+
+    //     console.log(categories);
+    //     console.log(totalAmounts);
+
+    //     this.barDataforExpenditure = {
+    //         labels: categories,
+    //         datasets: [
+    //             {
+    //                 data: totalAmounts,
+    //                 backgroundColor: [documentStyle.getPropertyValue('--inofc-b'), documentStyle.getPropertyValue('--wfh-b'), documentStyle.getPropertyValue('--pl-b'), documentStyle.getPropertyValue('--cl-b'), documentStyle.getPropertyValue('--ll-b'), documentStyle.getPropertyValue('--lwp-b')],
+    //                 borderColor: surfaceBorder,
+    //             }
+    //         ]
+    //     };
+    //     this.barOptionsforExpenditure = {
+    //         animation: {
+    //             duration: 500
+    //         },
+    //         plugins: {
+    //             legend: {
+    //                 display: true,
+    //                 position: 'bottom',
+    //                 labels: {
+    //                     display: true,
+    //                     usePointStyle: true,
+    //                     generateLabels: function (chart) {
+    //                         const data = chart.data;
+    //                         if (data.labels.length && data.datasets.length) {
+    //                             return data.labels.reduce(function (labels, label, i) {
+    //                                 const dataset = data.datasets[0];
+    //                                 const value = dataset.data[i];
+    //                                 if (!isNaN(value)) {
+    //                                     labels.push({
+    //                                         text: label,
+    //                                         fillStyle: dataset.backgroundColor[i],
+    //                                         hidden: isNaN(value),
+    //                                         lineCap: dataset.borderCapStyle,
+    //                                         lineDash: dataset.borderDash,
+    //                                         lineDashOffset: dataset.borderDashOffset,
+    //                                         lineJoin: dataset.borderJoinStyle,
+    //                                         lineWidth: dataset.borderWidth,
+    //                                         strokeStyle: dataset.borderColor[i],
+    //                                         pointStyle: dataset.pointStyle,
+    //                                     });
+    //                                 }
+    //                                 return labels;
+    //                             }, []);
+    //                         }
+    //                         return [];
+    //                     },
+    //                 },
+    //                 onClick: (event, legendItem) => {
+    //                     this.handleChartClick(legendItem.text);
+    //                     return false;
+    //                 },
+    //             },
+    //         },
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true,
+    //                 grid: {
+    //                     color: surfaceBorder,
+    //                     drawBorder: false
+    //                 },
+    //                 ticks: {
+    //                     precision: 0
+    //                 }
+    //             },
+    //             x: {
+    //                 grid: {
+    //                     color: surfaceBorder,
+    //                     drawBorder: false
+    //                 }
+    //             }
+    //         }
+    //     };
+    // }
+    totalExpenditureBar() {
+        const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+
+        const categories = this.ExpenditureCount.map(each => each.categoryName);
+        const totalAmounts = this.ExpenditureCount.map(each => each.totalAmountSpent);
+
+        // console.log(categories);
+        // console.log(totalAmounts);
+
+        this.barDataforExpenditure = {
+            labels: categories,
+            datasets: [
+                {
+                    data: totalAmounts,
+                    backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500'), documentStyle.getPropertyValue('--red-500'), documentStyle.getPropertyValue('--bluegray-500'), documentStyle.getPropertyValue('--orange-500'), documentStyle.getPropertyValue('--indigo-500')],
+                    hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400'), documentStyle.getPropertyValue('--red-400'), documentStyle.getPropertyValue('--bluegray-400'), documentStyle.getPropertyValue('--orange-400'), documentStyle.getPropertyValue('--indigo-400')]
+                }
+            ]
+        };
+
+        this.barOptionsforExpenditure = {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        color: textColor
+                    }
+                }
+            }
+        };
     }
 
 }

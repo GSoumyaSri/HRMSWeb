@@ -127,4 +127,28 @@ export class LookupService extends ApiHttpService {
         console.log('Dependents');
         return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [dependentId])
     }
+    public Categories() {
+        console.log('ExpenseCategories');
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.ExpenseCategories]);
+    }
+    public PaymentMethod() {
+        console.log('PaymentMethod');
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.PaymentMethod]);
+    }
+    public ExpenseStatus() {
+        console.log('ExpenseStatus');
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.ExpenseStatus]);
+    }
+    public Appraisaltypes(){
+        console.log('Appraisal Type',this.LookupKeys.AppraisalType);
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.AppraisalType])
+    }
+    public Departments(){
+        console.log('Departments',this.LookupKeys.Departments);
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.Departments])
+    }
+    public ReviewPoints(){
+        console.log('ReviewPoints',this.LookupKeys.ReviewPoints);
+        return this.getWithParams<LookupViewDto[]>(LOOKUP_DETAILS_URI, [this.LookupKeys.ReviewPoints])
+    }
 }

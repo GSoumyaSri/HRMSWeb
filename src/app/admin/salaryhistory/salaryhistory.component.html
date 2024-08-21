@@ -1,0 +1,181 @@
+<div class="col-12 p-0">
+  <div class="card">
+    <p-confirmDialog [style]="{width: '30%'}" class="confirm_dialog"></p-confirmDialog>
+    <!-- Toolbar -->
+    <p-toolbar styleClass="p-mb-4">
+      <ng-template pTemplate="left">
+        <h4>Salary History</h4>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Add Salary" id="addsalary" icon="pi pi-plus" class="p-button-primary p-mr-2"
+          (click)="addsalaryDialog()">
+        </button>
+      </ng-template>
+    </p-toolbar>
+    <!-- Table -->
+    <p-table #dtSalary [value]="filteredSalary" dataKey="id" [rows]="10" paginatorDropdownAppendTo="body"
+      [rowHover]="true" [alwaysShowPaginator]="false"
+      styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm" [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"
+      [globalFilterFields]="globalFilterFields" [autoLayout]="true" responsiveLayout="scroll" [resizableColumns]="true"
+      [rowsPerPageOptions]="[10,25,50]">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between flex-column sm:flex-row">
+          <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+            (click)="clear(dtSalary)" id="btn-clear"></button>
+          <span class="p-input-icon-left mb-2">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" #filter (input)="onGlobalFilter($event)" placeholder="Search Keyword"
+              class="w-full" id="search-input" />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngIf="permissions?.CanManageUsers"></th>
+          <th *ngFor="let col of headers" [pSortableColumn]="col.header">
+            {{col?.label}}
+            <p-columnFilter type="text" [field]="col.header" display="menu" id="Users_ColumnFilter"></p-columnFilter>
+            <p-sortIcon [field]="col.header" id="Users_sorting"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr [ngClass]="{'read-only-row': user?.isActive === false}">
+          <td *ngFor="let col of headers" [ngClass]="col?.field == 'isActive' ? 'text-center' : ''">
+            <span
+              *ngIf="col?.field != 'createdAt' && col?.field != 'updatedAt'&& col?.field != 'dateofJoin' && col?.field != 'isActive'&& col?.field != 'incrementDate'&& col?.field != 'incrementProposedDate'">
+              {{user[col.field]}}
+            </span>
+            <span
+              *ngIf="col?.field == 'createdAt' || col?.field == 'updatedAt' || col?.field == 'dateofJoin'  || col?.field == 'incrementDate' || col?.field == 'incrementProposedDate'">
+              {{user[col.field] | date: mediumDate}}
+            </span>
+            <span *ngIf="col?.field === 'isActive'">
+              <i class="fa" [ngClass]="{'fa-check': user[col.field], 'fa-close': !user[col.field]}"
+                [style.color]="user[col.field] ? '#119e2f' : '#e24c4c'"
+                style="font-size:18px; vertical-align: sub;"></i>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td class="md:text-center" colspan="50%" *ngIf="loading">Loading....</td>
+          <td class="md:text-center" colspan="50%">No Search Data.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <!-- Dailog -->
+    <p-dialog header="Salary" [(visible)]="dialog" [modal]="true" showEffect="fade"
+      [breakpoints]="{'960px': '70%', '640px': '80%'}" [style]="{width: '60%'}">
+      <div class="flex flex-column align-items-center justify-content-center">
+        <form [formGroup]="fbsalary">
+          <div class="col-12 roles-container">
+            <div class="p-fluid p-formgrid grid">
+              <div class="field col-12 md:col-4">
+                <label class="required">Employee:</label>
+                <p-dropdown id="select-employee" [options]="employeesDropdown" formControlName="employeeId"
+                  optionLabel="employeeName" optionValue="employeeId" [filter]="true"
+                  filterBy="employeeCode,employeeName" placeholder="Select Employee" appendTo="body"
+                  (onChange)="onEmployeeChange($event.value)"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['employeeName']?.touched && FormControls['employeeName'].errors }">
+                  <ng-template let-employee pTemplate="item">
+                    <div class="country-item">
+                      <div>{{ employee.employeeCode }}</div>
+                      <div>{{ employee.employeeName }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <span *ngIf="FormControls['employeeName']?.touched && FormControls['employeeName'].invalid">
+                  <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['employeeName'].errors?.['required']">
+                    Please Select Employee.
+                  </div>
+                </span>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label class="required">Present Gross Salary:</label>
+                <input type="text" id="presentGrossSalary" pInputText placeholder="Enter Present Gross Salary"
+                  formControlName="presentGrossSalary" [readonly]="isReadonly"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['presentGrossSalary']?.touched && FormControls['presentGrossSalary'].errors }" />
+                <div *ngIf="FormControls['presentGrossSalary']?.touched && FormControls['presentGrossSalary'].invalid">
+                  <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['presentGrossSalary'].errors?.['required']">
+                    Please Enter Present GrossSalary.
+                  </div>
+                </div>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label class="required">Salary Increment:</label>
+                <input type="text" id="salaryIncrement" pInputText placeholder="Enter Salary Increment"
+                  formControlName="salaryIncrement"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['salaryIncrement']?.touched && FormControls['salaryIncrement'].errors }" />
+                <div *ngIf="FormControls['salaryIncrement']?.touched && FormControls['salaryIncrement'].invalid">
+                  <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['salaryIncrement'].errors?.['required']">
+                    Please Enter Salary Increment.
+                  </div>
+                </div>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label class="required">Increment Gross Salary:</label>
+                <input type="text" id="presentGrossSalary" pInputText placeholder="Enter Increment Gross Salary"
+                  formControlName="incrementGrossSalary"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementGrossSalary']?.touched && FormControls['incrementGrossSalary'].errors }" />
+                <div *ngIf="FormControls['incrementGrossSalary']?.touched && FormControls['incrementGrossSalary'].invalid">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="FormControls['incrementGrossSalary'].errors?.['required']">
+                    Please Enter Increment GrossSalary.
+                  </div>
+                </div>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label class="required">Increment Date:</label>
+                <p-calendar [readonlyInput]="true" placeholder="Select Increment Date" appendTo="body"
+                  [showIcon]="true" id="incrementDate" dateFormat="dd-MMM-yyyy" mask="99/99/9999"
+                  formControlName="incrementDate" [maxDate]="maxDate" [disabled]="isReadonly"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementDate']?.touched && FormControls['incrementDate'].errors}">
+                </p-calendar>
+                <div class="align-left w-60" style="width:70%">
+                  <span *ngIf="FormControls['incrementDate']?.touched && FormControls['incrementDate'].invalid">
+                    <div class="ng-invalid ng-touched p-error"
+                      *ngIf="FormControls['incrementDate'].errors?.['required']">
+                      Please Select Increment Date.
+                    </div>
+                  </span>
+                </div>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label class="required">Increment Proposed Date:</label>
+                <p-calendar [readonlyInput]="true" placeholder="Select Increment Proposed Date" appendTo="body" [showIcon]="true"
+                  id="incrementProposedDate" formControlName="incrementProposedDate" dateFormat="dd-MMM-yyyy" mask="99/99/9999"
+                  [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementProposedDate']?.touched && FormControls['incrementProposedDate'].errors}">
+                </p-calendar>
+                <div class="flex">
+                  <div class="align-left w-60" style="width:70%">
+                    <span *ngIf="FormControls['incrementProposedDate']?.touched && FormControls['incrementProposedDate'].invalid">
+                      <div class="ng-invalid ng-touched p-error"
+                        *ngIf="FormControls['incrementProposedDate'].errors?.['required']">
+                        Please Select Increment ProposedDate.
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="field col-12 lg:col-4 md:col-6">
+                <label>Is Active: </label>
+                <br> &nbsp; <p-inputSwitch formControlName="isActive" id="Salary_salaryIsActive">
+                </p-inputSwitch>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="col-12 lg:col-4 md:col-4 sm:col-6" style="float:right">
+          <button pButton pRipple type="submit" id="submit" [label]="submitLabel"
+            class="p-button-raised p-button-primary" (click)="onSubmit()" [disabled]="!fbsalary.valid">Submit</button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>
+

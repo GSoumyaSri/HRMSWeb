@@ -99,6 +99,109 @@
         </div>
     </div>
 
+    <div class="col-12 lg:col-12 md:col-12 sm:col-12">
+        <div class="grid" style="margin: -1rem">
+            <div class="col-12 sm:col">
+                <div class="card bg-gray-600 text-white flex justify-content-between pt-4 h-full"
+                    style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-white">Monthly Deposit</h6>
+                        <h1 class="m-0 text-0"
+                            [ngClass]="{'text-white': totalMonthlyDepositsDataDtls, 'text-14': !totalMonthlyDepositsDataDtls}">
+                            {{ totalMonthlyDepositsDataDtls ? (monthlyTotalDeposits | currency:'INR') : 'No data
+                            Found.'}}
+                        </h1>
+                    </div>
+                    <div
+                        *ngIf="permissions?.CanViewProjects && admindashboardDtls?.savedAmcProjects; else disabledproject">
+                        <div>
+                            <i class="pi pi-calendar text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </div>
+                    <ng-template #disabledproject>
+                        <div class="att-pointer" [style.opacity]="0.5" [style.pointer-events]="'none'">
+                            <i class="pi pi-calendar text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card bg-gray-400 text-white flex justify-content-between pt-4 h-full"
+                    style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-white">Monthly Expenditure</h6>
+                        <h1 class="m-0 text-0"
+                            [ngClass]="{'text-white': totalAmountSpent, 'text-14': !totalAmountSpent}">
+                            {{ totalAmountSpent ? (totalAmountSpent | currency:'INR') : 'No data Found.' }}
+                        </h1>
+                    </div>
+                    <div
+                        *ngIf="permissions?.CanViewProjects && admindashboardDtls?.savedAmcProjects; else disabledproject">
+                        <div class="att-pointer" (click)="showCategoryExpenselist()"
+                            id="AdminDashboard_NavigatetoAttendance" pTooltip="View Expenses" tooltipPosition="top">
+                            <i class="pi pi-eye-slash text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </div>
+                    <ng-template #disabledproject>
+                        <div class="att-pointer" [style.opacity]="0.5" [style.pointer-events]="'none'">
+                            <i class="pi pi-eye-slash text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card text-0 flex justify-content-between pt-4 h-full"
+                    style="background-color: var(--primary-color); min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-0">Carry Forward Amount</h6>
+                        <h1 class="m-0 text-0" *ngFor="let data of Carrydata"
+                            [ngStyle]="{'color': data.carryForwardAmount < 0 ? 'red' : 'green'}">
+                            {{data.carryForwardAmount | currency: 'INR' : 'symbol'}}
+                        </h1>
+                    </div>
+                    <div *ngIf="permissions?.CanViewAttendances; else disabledattendece">
+                        <div>
+                            <i class="pi pi-arrow-left text-3xl"></i>
+                            <div class="month-name">{{ previousMonthName }}</div>
+                        </div>
+                    </div>
+                    <ng-template #disabledattendece>
+                        <div class="att-pointer" [style.opacity]="0.5" [style.pointer-events]="'none'">
+                            <i class="pi pi-arrow-left text-3xl"></i>
+                            <div class="month-name">{{ previousMonthName }}</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="col-12 sm:col">
+                <div class="card surface-card text-500 flex justify-content-between pt-4 h-full"
+                    style="min-width: 17rem">
+                    <div class="overview-info">
+                        <h6 class="m-0 mb-1 text-500">Balance Amount</h6>
+                        <h1 class="m-0 text-500">
+                            {{(BalanceAmtData[0]?.balanceAmount | currency: 'INR' : 'symbol')}}
+                        </h1>
+                    </div>
+                    <div *ngIf="permissions?.CanViewEnrollEmployees; else disabledemployee">
+                        <div>
+                            <i class="pi pi-wallet text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </div>
+                    <ng-template #disabledemployee>
+                        <div class="att-pointer" [style.opacity]="0.5" [style.pointer-events]="'none'">
+                            <i class="pi pi-wallet text-3xl ml-2"></i>
+                            <div class="month-name">{{ currentMonthName }}</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-12">
         <div class="card-headr chart_head gap-2 ">
             <div class="card-title text-center">
@@ -637,7 +740,7 @@
                             <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;"
                                 *ngIf="resignationNotifications&& resignationNotifications.length > 0; else employeeResignationsTemplate">
                                 <div class="" *ngFor="let employee of resignationNotifications">
-                                    <li class="border-round-lg pt-3 px-3 pb-3 mb-1" 
+                                    <li class="border-round-lg pt-3 px-3 pb-3 mb-1"
                                         style="background-color: var(--primary-lighter-color)">
                                         <div class="flex  align-items-center mb-0">
                                             <div style="width:60%;" class="flex align-items-center gap-1">
@@ -649,11 +752,11 @@
                                             </div>
                                             <div style="width:40%;">
                                                 <div>
-                                                    <button type="button" pButton 
-                                                    id="navigate_resignation_status"
-                                                    class="p-button-rounded p-button-text p-button-sm flex-shrink-0"
-                                                    (click)="resignatedEmployee(employee)">  {{employee?.resignationStatus}}
-                                                </button>
+                                                    <button type="button" pButton id="navigate_resignation_status"
+                                                        class="p-button-rounded p-button-text p-button-sm flex-shrink-0"
+                                                        (click)="resignatedEmployee(employee)">
+                                                        {{employee?.resignationStatus}}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -671,7 +774,211 @@
                         </div>
                     </ng-template>
                 </p-tabPanel>
+                <p-tabPanel header="Expense Notifications">
+                    <ng-template pTemplate="content">
+                        <div class="overflow-auto">
+                            <ul class="list-none p-0 overflow-auto m-0" style=" max-height: 300px;">
+                                <div class="">
+                                    <li class="border-round-lg pt-2 px-3 pb-2 mb-1"
+                                        style="background-color: var(--primary-lighter-color)">
+                                        <div class="flex  align-items-center mb-0">
+                                            <span class="text-primary" style="width:10%;"><i
+                                                    class="pi pi-bell"></i></span>
+                                            <div style="width:80%;" class="flex align-items-center gap-1">
+                                                <h6 class="line-height-3 m-0 font-medium">
+                                                    {{BudgetNotificationsdata[0]?.notification}}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </div>
+                            </ul>
+                            <ng-template #noBirthdaysTemplate>
+                                <div class="border-round-lg pt-2 px-3 pb-2 mb-3"
+                                    style="background-color: var(--primary-lighter-color)">
+                                    <div class="text-center m-3">
+                                        <p class="m-0">There are no Expense Notifications.</p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
             </p-tabView>
+        </div>
+    </div>
+
+    <div class="col-12 lg:col-5 md:col-6 sm:col-12">
+        <div class="card-headr chart_head gap-2 ">
+            <div class="card-title text-center">
+                <h6 class="m-0">Credit / Debit Based on (Monthly/Yearly) </h6>
+            </div>
+        </div>
+        <div class="card pb-5 pt-5  chart_card employee_card_dashboard2">
+            <div class="mb-0">
+                <div class="mb-1">
+                    <div class="grid p-3">
+                        <div class="col-12 pb-0">
+                            <div class="grid p-0">
+                                <div class="col p-0">
+                                    <div class="flex align-items-center">
+                                        <p-radioButton [(ngModel)]="creditDebitbar" value="Month" id="charts2"
+                                            (click)="getBudgetSummary()"></p-radioButton>
+                                        <label for="charts2" class="mx-2" id="charts-label">Month</label>
+                                    </div>
+                                </div>
+                                <div class="col p-0">
+                                    <div class="flex align-items-center">
+                                        <p-radioButton [(ngModel)]="creditDebitbar" value="Year" id="charts3"
+                                            (click)="getBudgetSummary()"></p-radioButton>
+                                        <label for="charts3" class="mx-2" id="charts-label">Year</label>
+                                    </div>
+                                </div>
+                                <!-- For attendance section -->
+                                <div class="col p-0 text-center d-leave">
+                                    <span *ngIf="creditDebitbar === 'Month'; else attendanceYearContent">
+                                        <i class="pi pi-angle-left d-leave-font" (click)="gotoPreviousMonthforCD()"></i>
+                                        <p-calendar class="charts_date_picker" styleClass="only-icon"
+                                            [(ngModel)]="selectedMonth1" [showIcon]="true"
+                                            id="AdminDashboard_month_picker" view="month" [yearNavigator]="true"
+                                            yearRange="2000:2030" [maxDate]="currentDate" [readonlyInput]="true"
+                                            (onSelect)="onMonthSelectforCD($event)">
+                                        </p-calendar>
+                                        <i class="pi pi-angle-right d-leave-font" (click)="gotoNextMonthforCD()"
+                                            id="AdminDashboard_NextMonth"></i>
+                                        <p class="text-xs">{{formatMonth(this.monthforCD)}}/{{this.yearforCD}}</p>
+                                    </span>
+                                    <ng-template #attendanceYearContent>
+                                        <i class="pi pi-angle-left d-leave-font" (click)="gotoPreviousYearforCD()"></i>
+                                        <p-calendar class="charts_date_picker" styleClass="only-icon" [showIcon]="true"
+                                            id="AdminDashboard_year_picker" view="year" [maxDate]="currentDate"
+                                            [yearNavigator]="true" yearRange="2000:2030" [(ngModel)]="yearToPatch"
+                                            [readonlyInput]="true" (onSelect)="onYearSelectforCD($event)">
+                                        </p-calendar>
+                                        <i class="pi pi-angle-right d-leave-font" (click)="gotoNextYearforCD()"
+                                            id="AdminDashboard_NextYear"></i>
+                                        <p class="text-xs">{{this.yearforCD}}</p>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-leave"
+                    *ngIf="barDataforCreditDebit && barDataforCreditDebit.datasets && barDataforCreditDebit.datasets.length; else noCreditDebitData">
+                        <p-chart type="doughnut" [data]="barDataforCreditDebit" [options]="barOptionsforCreditDebit"
+                            height="330px" width="100%" />
+                    </div>
+                    <ng-template #noCreditDebitData>
+                        <div class="text-center mt-5">
+                            <div class="border-round-lg pt-5 px-5 pb-5 mb-3"
+                                style="background-color: var(--primary-lighter-color)">
+                                <p>No Data Found.</p>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 lg:col-7 md:col-6 sm:col-12" *ngIf="permissions?.CanViewNotifications">
+        <div class="card-headr chart_head gap-2 ">
+            <div class="card-title text-center">
+                <h6 class="m-0">Expenditure Based on Category </h6>
+            </div>
+        </div>
+        <div class="card employee_card_dashboard2 p-1">
+            <div class="card pb-5 pt-5  chart_card employee_card_dashboard2">
+                <div class="mb-0">
+                    <div class="mb-1">
+                        <div class="grid p-3">
+                            <div class="col-12 pb-0">
+                                <div class="grid p-0">
+                                    <div class="col p-0">
+                                        <div class="flex align-items-center">
+                                            <p-radioButton [(ngModel)]="expenditurechart" value="Date" id="charts1"
+                                                (click)="getExpenditureBar()"></p-radioButton>
+                                            <label for="charts1" class="mx-2" id="charts-label">Date</label>
+                                        </div>
+                                    </div>
+                                    <div class="col p-0">
+                                        <div class="flex align-items-center">
+                                            <p-radioButton [(ngModel)]="expenditurechart" value="Month" id="charts2"
+                                                (click)="getExpenditureBar()"></p-radioButton>
+                                            <label for="charts2" class="mx-2" id="charts-label">Month</label>
+                                        </div>
+                                    </div>
+                                    <div class="col p-0">
+                                        <div class="flex align-items-center">
+                                            <p-radioButton [(ngModel)]="expenditurechart" value="Year" id="charts3"
+                                                (click)="getExpenditureBar()"></p-radioButton>
+                                            <label for="charts3" class="mx-2" id="charts-label">Year</label>
+                                        </div>
+                                    </div>
+                                    <!-- For attendance section -->
+                                    <div class="col p-0 text-center d-leave">
+                                        <span *ngIf="expenditurechart === 'Date'; else attendanceMonthContent">
+                                            <i class="pi pi-angle-left d-leave-font"
+                                                (click)="gotoPreviousDayforEX()"></i>
+                                            <p-calendar class="charts_date_picker" styleClass="only-icon"
+                                                [(ngModel)]="selectedDate" [showIcon]="true"
+                                                id="AdminDashboard_date_picker" [yearNavigator]="true"
+                                                yearRange="2000:2030" [readonlyInput]="true" [maxDate]="currentDate"
+                                                (onSelect)="onDaySelectforEX($event)">
+                                            </p-calendar>
+                                            <i class="pi pi-angle-right d-leave-font" (click)="gotoNextDayforEX()"
+                                                id="AdminDashboard_NextDay"></i>
+                                            <p class="text-xs">{{ this.selectedDate}}</p>
+                                        </span>
+                                        <ng-template #attendanceMonthContent>
+                                            <span *ngIf="expenditurechart === 'Month'; else attendanceYearContent">
+                                                <i class="pi pi-angle-left d-leave-font"
+                                                    (click)="gotoPreviousMonthforEX()"></i>
+                                                <p-calendar class="charts_date_picker" styleClass="only-icon"
+                                                    [(ngModel)]="selectedMonth1" [showIcon]="true"
+                                                    id="AdminDashboard_month_picker" view="month" [yearNavigator]="true"
+                                                    yearRange="2000:2030" [maxDate]="currentDate" [readonlyInput]="true"
+                                                    (onSelect)="onMonthSelectforEX($event)">
+                                                </p-calendar>
+                                                <i class="pi pi-angle-right d-leave-font" (click)="gotoNextMonthforEX()"
+                                                    id="AdminDashboard_NextMonth"></i>
+                                                <p class="text-xs">{{formatMonth(this.monthforEX)}}/{{this.yearforEX}}
+                                                </p>
+                                            </span>
+                                            <ng-template #attendanceYearContent>
+                                                <i class="pi pi-angle-left d-leave-font"
+                                                    (click)="gotoPreviousYearforEX()"></i>
+                                                <p-calendar class="charts_date_picker" styleClass="only-icon"
+                                                    [showIcon]="true" id="AdminDashboard_year_picker" view="year"
+                                                    [maxDate]="currentDate" [yearNavigator]="true" yearRange="2000:2030"
+                                                    [(ngModel)]="yearToPatch" [readonlyInput]="true"
+                                                    (onSelect)="onYearSelectforEX($event)">
+                                                </p-calendar>
+                                                <i class="pi pi-angle-right d-leave-font" (click)="gotoNextYearforEX()"
+                                                    id="AdminDashboard_NextYear"></i>
+                                                <p class="text-xs">{{this.yearforEX}}</p>
+                                            </ng-template>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-leave"
+                            *ngIf="barDataforExpenditure && barDataforExpenditure.datasets && barDataforExpenditure.datasets.length; else noData">
+                            <p-chart type="pie" [data]="barDataforExpenditure" [options]="barOptionsforExpenditure"
+                                height="330px" width="100%" />
+                        </div>
+                        <ng-template #noData>
+                            <div class="text-center mt-5">
+                                <div class="border-round-lg pt-5 px-5 pb-5 mb-3"
+                                    style="background-color: var(--primary-lighter-color)">
+                                    <p>No Data Found.</p>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -731,6 +1038,36 @@
                     <td class="text-center">
                         <h6 class="line-height-3 m-0 font-medium font-medium ">
                             {{employee?.leaveType}}
+                        </h6>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-dialog>
+
+<p-dialog header="Expenditure Spent Based on Category" [(visible)]="CategoryExpenselist" [modal]="true"
+    showEffect="fade" [breakpoints]="{'960px': '40%', '640px': '50%'}" class="confirmation_dialog"
+    id="AdminDashboard_confirmationDialog">
+    <div class="content_scroll">
+        <p-table #employeeTable [value]="CategoryExpenseData" [paginator]="true" [rows]="6"
+            [alwaysShowPaginator]="false" styleClass="p-datatable-gridlines p-datatable-striped p-datatable-sm mb-1">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-center">Expense Category</th>
+                    <th class="text-center">Total Amount Spent</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-CategoryExpenseData>
+                <tr>
+                    <td class="text-center">
+                        <h6 class="line-height-3 m-0 font-medium font-medium ">
+                            {{CategoryExpenseData.categoryName}}
+                        </h6>
+                    </td>
+                    <td class="text-center">
+                        <h6 class="line-height-3 m-0 font-medium font-medium ">
+                            {{CategoryExpenseData.totalAmountSpent}}
                         </h6>
                     </td>
                 </tr>
