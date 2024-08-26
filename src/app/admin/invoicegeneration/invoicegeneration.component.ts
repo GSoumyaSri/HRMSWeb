@@ -190,12 +190,16 @@ export class InvoicegenerationComponent implements OnInit {
       companyName: selectedAddress.companyName,
       addressLine2: selectedAddress.addressLine2,
       addressLine3: selectedAddress.addressLine3,
+      city: selectedAddress.city,
+      postalcode: selectedAddress.postalCode,
+      state: selectedAddress.state,
       gstNo: selectedAddress.gstNo
     } : {};
     console.log(clientAddress);
 
     console.log('Selected Address:', selectedAddress);
     if (selectedAddress) {
+      console.log('CompanyName:', selectedAddress.companyName);
       console.log('AddressLine2:', selectedAddress.addressLine2);
       console.log('AddressLine3:', selectedAddress.addressLine3);
       console.log('City:', selectedAddress.city);
@@ -208,15 +212,16 @@ export class InvoicegenerationComponent implements OnInit {
 
       const addressParts = [
         selectedAddress.companyName || '',
-        selectedAddress.addressLine2 || '',
-        selectedAddress.addressLine3 || '',
-        `${selectedAddress.city || ''} ${selectedAddress.postalCode || ''}`,
+        `${selectedAddress.addressLine2 || ''} ${selectedAddress.addressLine3 || ''}`,
+        // selectedAddress.addressLine2 || '',
+        // selectedAddress.addressLine3 || '',
+        `${selectedAddress.city || ''}, ${selectedAddress.postalCode || ''}`,
         selectedAddress.state || ''
       ].filter(part => part.trim() !== '');
 
       console.log('Address Parts:', addressParts);
 
-      const formattedAddress = addressParts.join(', ');
+      const formattedAddress = addressParts.join('\n');
 
       this.fbinvoice.patchValue({
         clientaddress: formattedAddress
@@ -373,8 +378,8 @@ export class InvoicegenerationComponent implements OnInit {
           columns: [
             [
               { text: 'To:', style: 'subheader', bold: true, margin: [0, 5, 0, 5] },
-              clientname ? { text: clientname, bold: true, margin: [0, 5, 0, 5] } : {},
-              clientaddress ? { text: clientaddress, margin: [0, 5, 0, 5] } : {},
+              clientname ? { text: clientname, bold: true, margin: [0, 5, 0, 20] } : {},
+              clientaddress ? { text: clientaddress, margin: [0, 5, 0, 20] } : {},
               // clientaddress.addressLine1 ? { text: clientaddress.addressLine1, margin: [0, 5, 0, 5] } : {},
               // clientaddress.addressLine2 ? { text: clientaddress.addressLine2, margin: [0, 5, 0, 5] } : {},
               // clientaddress.addressLine3 ? { text: clientaddress.addressLine3, margin: [0, 5, 0, 5] } : {},

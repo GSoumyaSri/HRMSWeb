@@ -340,16 +340,23 @@ export class AppraisalreviewComponent {
     });
   }
 
-
   exportPDF() {
     const formValues = this.fbAppraisalForm.value;
     console.log(formValues);
-    const apprisals = this.appraisals.values;
+  
+    // Create a map for role names based on employee IDs
+    const roleMap = new Map<number, string>();
+    this.reviewss.forEach(review => {
+      roleMap.set(review.id, review.roleName);
+    });
+  
+    // Fetch employee details and map roles
     const employeeName = formValues.employeeId ?
       this.employees.find(e => e.employeeId === formValues.employeeId)?.employeeName : 'Unknown';
     const employeeId = formValues.employeeId || 'Unknown';
     const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData.employeeId === formValues.employeeId);
-    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided'; const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
+    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided';
+    const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
     const appraisalTypeName = appraisalType ? appraisalType.name : 'Not Provided';
     const appraisalPeriod = formValues.appraisalPeriod || 'Not Provided';
     const department = this.departments.find(d => d.lookupDetailId === formValues.departmentId);
@@ -359,21 +366,22 @@ export class AppraisalreviewComponent {
       id: rp.lookupDetailId,
       name: rp.name
     }));
-
+  
+    // Create reviews array with role names
     const reviews = formValues.reviews.map((review: any) => {
       const reviewer = this.employees.find(e => e.employeeId === review.reviewerId);
-      console.log(reviewer);
-
       const reviewPoint = reviewPoints.find(rp => rp.id === review.reviewAttributesId);
-
+      const roleName = roleMap.get(review.reviewerId) || 'Not Provided';  // Fetch the role name from the map
+  
       return {
         reviewAttributesName: reviewPoint ? reviewPoint.name : 'Not Provided',
         rating: review.rating || 'Not Provided',
         reviewerName: reviewer ? reviewer.employeeName : 'Unknown',
-        roleName: reviewer ? reviewer.roleName : 'Not Provided'
+        roleName: roleName
       };
     });
-
+  
+    // Define PDF document
     const documentDefinition: any = {
       pageOrientation: 'landscape',
       content: [
@@ -448,18 +456,8 @@ export class AppraisalreviewComponent {
         notes: { fontSize: 12, bold: true, margin: [0, 10, 0, 5] }
       }
     };
-
+  
     pdfMake.createPdf(documentDefinition).download('Employee_Performance_Appraisal_Form.pdf');
   }
-
-
-
-  // patchStarValue(initialValue: number, readonly: boolean): FormControl {
-  //   const roundedValue = Math.floor(initialValue) + (initialValue % 1 >= 0.5 ? 0.5 : 0);
-  //   const control = new FormControl({ value: roundedValue, disabled: readonly });
-  //   return control;
-  // }
-
-
 
 }
