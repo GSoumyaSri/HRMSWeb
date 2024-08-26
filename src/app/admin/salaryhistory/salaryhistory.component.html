@@ -99,39 +99,41 @@
                   formControlName="presentGrossSalary" [readonly]="isReadonly"
                   [ngClass]="{ 'is-invalid ng-dirty': FormControls['presentGrossSalary']?.touched && FormControls['presentGrossSalary'].errors }" />
                 <div *ngIf="FormControls['presentGrossSalary']?.touched && FormControls['presentGrossSalary'].invalid">
-                  <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['presentGrossSalary'].errors?.['required']">
-                    Please Enter Present GrossSalary.
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="FormControls['presentGrossSalary'].errors?.['required']">
+                    Please Enter Present Gross Salary.
                   </div>
                 </div>
               </div>
               <div class="field col-12 lg:col-4 md:col-6">
                 <label class="required">Salary Increment:</label>
                 <input type="text" id="salaryIncrement" pInputText placeholder="Enter Salary Increment"
-                  formControlName="salaryIncrement"
+                  formControlName="salaryIncrement" [readonly]="isSalaryIncrementReadOnly"
                   [ngClass]="{ 'is-invalid ng-dirty': FormControls['salaryIncrement']?.touched && FormControls['salaryIncrement'].errors }" />
                 <div *ngIf="FormControls['salaryIncrement']?.touched && FormControls['salaryIncrement'].invalid">
-                  <div class="ng-invalid ng-touched p-error" *ngIf="FormControls['salaryIncrement'].errors?.['required']">
+                  <div class="ng-invalid ng-touched p-error"
+                    *ngIf="FormControls['salaryIncrement'].errors?.['required']">
                     Please Enter Salary Increment.
                   </div>
                 </div>
               </div>
               <div class="field col-12 lg:col-4 md:col-6">
                 <label class="required">Increment Gross Salary:</label>
-                <input type="text" id="presentGrossSalary" pInputText placeholder="Enter Increment Gross Salary"
+                <input type="text" id="incrementGrossSalary" pInputText placeholder="Enter Increment Gross Salary"
                   formControlName="incrementGrossSalary"
                   [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementGrossSalary']?.touched && FormControls['incrementGrossSalary'].errors }" />
                 <div *ngIf="FormControls['incrementGrossSalary']?.touched && FormControls['incrementGrossSalary'].invalid">
                   <div class="ng-invalid ng-touched p-error"
                     *ngIf="FormControls['incrementGrossSalary'].errors?.['required']">
-                    Please Enter Increment GrossSalary.
+                    Please Enter Increment Gross Salary.
                   </div>
                 </div>
               </div>
               <div class="field col-12 lg:col-4 md:col-6">
                 <label class="required">Increment Date:</label>
-                <p-calendar [readonlyInput]="true" placeholder="Select Increment Date" appendTo="body"
-                  [showIcon]="true" id="incrementDate" dateFormat="dd-MMM-yyyy" mask="99/99/9999"
-                  formControlName="incrementDate" [maxDate]="maxDate" [disabled]="isReadonly"
+                <p-calendar [readonlyInput]="true" placeholder="Select Increment Date" appendTo="body" [showIcon]="true"
+                  id="incrementDate" dateFormat="dd-MMM-yyyy" mask="99/99/9999" formControlName="incrementDate"
+                  [maxDate]="maxDate" [disabled]="isReadonly"
                   [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementDate']?.touched && FormControls['incrementDate'].errors}">
                 </p-calendar>
                 <div class="align-left w-60" style="width:70%">
@@ -145,8 +147,9 @@
               </div>
               <div class="field col-12 lg:col-4 md:col-6">
                 <label class="required">Increment Proposed Date:</label>
-                <p-calendar [readonlyInput]="true" placeholder="Select Increment Proposed Date" appendTo="body" [showIcon]="true"
-                  id="incrementProposedDate" formControlName="incrementProposedDate" dateFormat="dd-MMM-yyyy" mask="99/99/9999"
+                <p-calendar [readonlyInput]="true" placeholder="Select Increment Proposed Date" appendTo="body"
+                  [showIcon]="true" id="incrementProposedDate" formControlName="incrementProposedDate"
+                  dateFormat="dd-MMM-yyyy" mask="99/99/9999"
                   [ngClass]="{ 'is-invalid ng-dirty': FormControls['incrementProposedDate']?.touched && FormControls['incrementProposedDate'].errors}">
                 </p-calendar>
                 <div class="flex">
@@ -154,7 +157,7 @@
                     <span *ngIf="FormControls['incrementProposedDate']?.touched && FormControls['incrementProposedDate'].invalid">
                       <div class="ng-invalid ng-touched p-error"
                         *ngIf="FormControls['incrementProposedDate'].errors?.['required']">
-                        Please Select Increment ProposedDate.
+                        Please Select Increment Proposed Date.
                       </div>
                     </span>
                   </div>
@@ -178,4 +181,3 @@
     </p-dialog>
   </div>
 </div>
-
