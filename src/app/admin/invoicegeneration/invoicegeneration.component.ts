@@ -221,7 +221,7 @@ export class InvoicegenerationComponent implements OnInit {
 
       console.log('Address Parts:', addressParts);
 
-      const formattedAddress = addressParts.join('\n');
+      const formattedAddress = addressParts.join('\n\n');
 
       this.fbinvoice.patchValue({
         clientaddress: formattedAddress
@@ -378,7 +378,7 @@ export class InvoicegenerationComponent implements OnInit {
           columns: [
             [
               { text: 'To:', style: 'subheader', bold: true, margin: [0, 5, 0, 5] },
-              clientname ? { text: clientname, bold: true, margin: [0, 5, 0, 20] } : {},
+              clientname ? { text: clientname, boldText: true, margin: [0, 5, 0, 25] } : {},
               clientaddress ? { text: clientaddress, margin: [0, 5, 0, 20] } : {},
               // clientaddress.addressLine1 ? { text: clientaddress.addressLine1, margin: [0, 5, 0, 5] } : {},
               // clientaddress.addressLine2 ? { text: clientaddress.addressLine2, margin: [0, 5, 0, 5] } : {},
