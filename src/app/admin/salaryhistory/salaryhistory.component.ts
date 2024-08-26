@@ -7,6 +7,8 @@ import { Table } from 'primeng/table';
 import { GlobalFilterService } from 'src/app/_services/global.filter.service';
 import { MEDIUM_DATE } from 'src/app/_helpers/date.formate.pipe';
 import { ALERT_CODES, AlertmessageService } from 'src/app/_alerts/alertmessage.service';
+import { EmployeeService } from 'src/app/_services/employee.service';
+import { EmployeeOfficedetailsviewDto } from 'src/app/_models/employes';
 
 // Define the interface for the table header
 export interface ITableHeader {
@@ -48,10 +50,15 @@ export class SalaryhistoryComponent implements OnInit {
   @ViewChild('filter') filter!: ElementRef;
   isTableVisible: boolean = false;
   isReadonly: boolean=false;
+  dateOfJoin: string | Date | null = null; 
+  employeeofficeDtls: EmployeeOfficedetailsviewDto;
+  isSalaryIncrementReadOnly: boolean = false;
 
+  
   constructor(
     private formBuilder: FormBuilder,
     private adminService: AdminService,
+    private employeeService: EmployeeService,
     private globalFilterService: GlobalFilterService,
     private alertMessage: AlertmessageService
   ) {
@@ -100,7 +107,7 @@ export class SalaryhistoryComponent implements OnInit {
   salaryForm() {
     this.fbsalary = this.formBuilder.group({
       employeeId: new FormControl('', [Validators.required]),
-      salaryIncrement: new FormControl(null, [Validators.required, Validators.minLength(MIN_LENGTH_2), Validators.maxLength(MAX_LENGTH_50)]),
+      salaryIncrement: new FormControl(null, [Validators.required]),
       incrementProposedDate: new FormControl('', [Validators.required]),
       incrementDate: new FormControl('', [Validators.required]),
       isActive: new FormControl(true, [Validators.required]),
@@ -163,22 +170,59 @@ export class SalaryhistoryComponent implements OnInit {
     const latestSalary = this.salary
       .filter(s => s.employeeId === employeeId && s.isActive)
       .sort((a, b) => new Date(b.incrementProposedDate).getTime() - new Date(a.incrementProposedDate).getTime())[0];
-    if (latestSalary) {
+  
+    if (latestSalary && latestSalary.incrementProposedDate) {
       console.log('Patching values with:', latestSalary.incrementGrossSalary, latestSalary.incrementProposedDate);
       this.fbsalary.patchValue({
         presentGrossSalary: latestSalary.incrementGrossSalary,
         incrementDate: new Date(latestSalary.incrementProposedDate)
       });
-      this.isReadonly = true;
-    } else {
-      this.fbsalary.patchValue({
-        presentGrossSalary: 0,
-        incrementDate: ''
+  
+      // Set read-only states based on the presence of active records
+      this.isReadonly = true; // Only presentGrossSalary and incrementDate will be read-only
+      this.isSalaryIncrementReadOnly = false; // Allow editing salaryIncrement
+  
+      // Listen for changes in salaryIncrement to update incrementGrossSalary
+      this.fbsalary.get('salaryIncrement').valueChanges.subscribe(salaryIncrement => {
+        this.updateIncrementGrossSalary(salaryIncrement);
       });
-      this.isReadonly = false;
+    } else {
+      console.log('No active salary record or incrementProposedDate found. Fetching employee details.');
+      this.initofficeEmpDtls(+employeeId); // Convert string to number
     }
   }
   
+  updateIncrementGrossSalary(salaryIncrement: any) {
+    const presentGrossSalary = this.fbsalary.get('presentGrossSalary').value;
+    const presentGrossSalaryNum = parseFloat(presentGrossSalary) || 0;
+    const salaryIncrementNum = parseFloat(salaryIncrement) || 0;
+  
+    const incrementGrossSalary = presentGrossSalaryNum + salaryIncrementNum;
+    this.fbsalary.patchValue({
+      incrementGrossSalary: incrementGrossSalary
+    });
+  }
+  
+  initofficeEmpDtls(employeeId: number) {
+    this.employeeService.EmployeeOfficedetailsviewDto(employeeId).subscribe((resp) => {
+      this.employeeofficeDtls = resp as EmployeeOfficedetailsviewDto;
+  
+      if (this.employeeofficeDtls && this.employeeofficeDtls.dateofJoin) {
+        console.log('Patching with dateOfJoin:', this.employeeofficeDtls.dateofJoin);
+        this.fbsalary.patchValue({
+          presentGrossSalary: 0, // Default value as no salary record is found
+          salaryIncrement: 0,
+          incrementDate: new Date(this.employeeofficeDtls.dateofJoin) // Use dateofJoin if available
+        });
+  
+        // Set read-only states based on the absence of active records
+        this.isReadonly = true; // presentGrossSalary and incrementDate will be read-only
+        this.isSalaryIncrementReadOnly = true; // salaryIncrement will also be read-only
+      } else {
+        console.log('No dateOfJoin available.');
+      }
+    });
+  }    
   save() {
     console.log(this.fbsalary.value);
     if (this.addFlag === true && this.fbsalary.valid) {
