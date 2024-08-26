@@ -287,5 +287,8 @@ export const ALERT_CODES: { [key: string]: string } = {
     'EXP007': 'Deposit Not Added',
     'EXP008': 'Deposit Not Updated',
     'EXP009': 'Expense Deleted Successfully',
+
+    //Salary Hikes
+    'SSH001':'Employee Salary Hike Added Successfully'
 }
 
