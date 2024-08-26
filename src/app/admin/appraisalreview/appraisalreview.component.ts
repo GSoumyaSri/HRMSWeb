@@ -340,16 +340,23 @@ export class AppraisalreviewComponent {
     });
   }
 
-
   exportPDF() {
     const formValues = this.fbAppraisalForm.value;
     console.log(formValues);
-    const apprisals = this.appraisals.values;
+  
+    // Create a map for role names based on employee IDs
+    const roleMap = new Map<number, string>();
+    this.reviewss.forEach(review => {
+      roleMap.set(review.id, review.roleName);
+    });
+  
+    // Fetch employee details and map roles
     const employeeName = formValues.employeeId ?
       this.employees.find(e => e.employeeId === formValues.employeeId)?.employeeName : 'Unknown';
     const employeeId = formValues.employeeId || 'Unknown';
     const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData.employeeId === formValues.employeeId);
-    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided'; const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
+    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided';
+    const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
     const appraisalTypeName = appraisalType ? appraisalType.name : 'Not Provided';
     const appraisalPeriod = formValues.appraisalPeriod || 'Not Provided';
     const department = this.departments.find(d => d.lookupDetailId === formValues.departmentId);
@@ -359,21 +366,22 @@ export class AppraisalreviewComponent {
       id: rp.lookupDetailId,
       name: rp.name
     }));
-
+  
+    // Create reviews array with role names
     const reviews = formValues.reviews.map((review: any) => {
       const reviewer = this.employees.find(e => e.employeeId === review.reviewerId);
-      console.log(reviewer);
-
       const reviewPoint = reviewPoints.find(rp => rp.id === review.reviewAttributesId);
-
+      const roleName = roleMap.get(review.reviewerId) || 'Not Provided';  // Fetch the role name from the map
+  
       return {
         reviewAttributesName: reviewPoint ? reviewPoint.name : 'Not Provided',
         rating: review.rating || 'Not Provided',
         reviewerName: reviewer ? reviewer.employeeName : 'Unknown',
-        roleName: reviewer ? reviewer.roleName : 'Not Provided'
+        roleName: roleName
       };
     });
-
+  
+    // Define PDF document
     const documentDefinition: any = {
       pageOrientation: 'landscape',
       content: [
@@ -448,9 +456,120 @@ export class AppraisalreviewComponent {
         notes: { fontSize: 12, bold: true, margin: [0, 10, 0, 5] }
       }
     };
-
+  
     pdfMake.createPdf(documentDefinition).download('Employee_Performance_Appraisal_Form.pdf');
   }
+  
+  // exportPDF() {
+  //   const formValues = this.fbAppraisalForm.value;
+  //   console.log(formValues);
+  //   const apprisals = this.appraisals.values;
+  //   const employeeName = formValues.employeeId ?
+  //     this.employees.find(e => e.employeeId === formValues.employeeId)?.employeeName : 'Unknown';
+  //   const employeeId = formValues.employeeId || 'Unknown';
+  //   const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData.employeeId === formValues.employeeId);
+  //   const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided'; const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
+  //   const appraisalTypeName = appraisalType ? appraisalType.name : 'Not Provided';
+  //   const appraisalPeriod = formValues.appraisalPeriod || 'Not Provided';
+  //   const department = this.departments.find(d => d.lookupDetailId === formValues.departmentId);
+  //   const departmentName = department ? department.name : 'Not Provided';
+  //   const pointsToBeNoted = formValues.pointsToBeNoted || 'Not Provided';
+  //   const reviewPoints = this.reviewPoints.map(rp => ({
+  //     id: rp.lookupDetailId,
+  //     name: rp.name
+  //   }));
+
+  //   const reviews = formValues.reviews.map((review: any) => {
+  //     const reviewer = this.employees.find(e => e.employeeId === review.reviewerId);
+  //     console.log(reviewer);
+
+  //     const reviewPoint = reviewPoints.find(rp => rp.id === review.reviewAttributesId);
+
+  //     return {
+  //       reviewAttributesName: reviewPoint ? reviewPoint.name : 'Not Provided',
+  //       rating: review.rating || 'Not Provided',
+  //       reviewerName: reviewer ? reviewer.employeeName : 'Unknown',
+  //       roleName: this.displayName ? reviewer.roleName : 'Not Provided'
+  //     };
+  //   });
+
+  //   const documentDefinition: any = {
+  //     pageOrientation: 'landscape',
+  //     content: [
+  //       { text: 'Calibrage Info Systems Private Limited', style: 'header', alignment: 'center' },
+  //       { text: 'Employee Performance Appraisal Form', style: 'subheader', alignment: 'center' },
+  //       {
+  //         table: {
+  //           widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+  //           body: [
+  //             [
+  //               { text: `Name: ${employeeName}`, bold: true, colSpan: 2, border: [true, true, true, true] },
+  //               {},
+  //               { text: `Emp Id: ${employeeId}`, bold: true, colSpan: 2, border: [true, true, true, true] },
+  //               {},
+  //               { text: `DOJ: ${dateofJoin}`, bold: true, colSpan: 2, border: [true, true, true, true] },
+  //               {},
+  //               { text: `Appraisal Type: ${appraisalTypeName}`, bold: true, colSpan: 2, rowSpan: 2, border: [true, true, true, true] },
+  //               {}
+  //             ],
+  //             [
+  //               { text: `Appraisal Period: ${appraisalPeriod}`, colSpan: 4, bold: true, border: [true, true, true, true] },
+  //               {}, {}, {},
+  //               { text: `Department: ${departmentName}`, colSpan: 2, bold: true, border: [true, true, true, true] },
+  //               {}, {}, {}
+  //             ]
+  //           ]
+  //         },
+  //         layout: { defaultBorder: false }
+  //       },
+  //       {
+  //         table: {
+  //           widths: ['*', '*', '*', '*'],
+  //           body: [
+  //             [
+  //               { text: 'Review Attributes', style: 'tableHeader', border: [true, true, true, true] },
+  //               { text: 'Rating', style: 'tableHeader', border: [true, true, true, true] },
+  //               { text: 'Reviewer Name', style: 'tableHeader', border: [true, true, true, true] },
+  //               { text: 'Role Name', style: 'tableHeader', border: [true, true, true, true] }
+  //             ],
+  //             ...reviews.map(review => [
+  //               { text: review.reviewAttributesName, border: [true, true, true, true] },
+  //               { text: review.rating, border: [true, true, true, true] },
+  //               { text: review.reviewerName, border: [true, true, true, true] },
+  //               { text: review.roleName, border: [true, true, true, true] }
+  //             ])
+  //           ]
+  //         }
+  //       },
+  //       {
+  //         table: {
+  //           widths: ['*'],
+  //           body: [
+  //             [
+  //               {
+  //                 stack: [
+  //                   { text: 'Points to be Noted:', style: 'notes', margin: [0, 10, 0, 5] },
+  //                   { text: pointsToBeNoted, margin: [0, 0, 0, 20] }
+  //                 ],
+  //                 border: [true, true, true, true]
+  //               }
+  //             ]
+  //           ]
+  //         },
+  //         layout: { defaultBorder: false },
+  //         margin: [0, 20, 0, 0]
+  //       }
+  //     ],
+  //     styles: {
+  //       header: { fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+  //       subheader: { fontSize: 14, bold: true, margin: [0, 10, 0, 5] },
+  //       tableHeader: { fontSize: 12, bold: true, alignment: 'center' },
+  //       notes: { fontSize: 12, bold: true, margin: [0, 10, 0, 5] }
+  //     }
+  //   };
+
+  //   pdfMake.createPdf(documentDefinition).download('Employee_Performance_Appraisal_Form.pdf');
+  // }
 
 
 
