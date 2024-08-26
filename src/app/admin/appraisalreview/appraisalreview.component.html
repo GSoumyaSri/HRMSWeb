@@ -5,24 +5,13 @@
     </ng-template>
     <ng-template pTemplate="right">
       <button (click)="exportPDF()" pButton class="p-button doc_button" id="holiday_PDFBtn"
-        pTooltip="Download Appraisal PDF" icon="pi pi-file-pdf" style="margin-right: 10px;"></button>
-      <!-- <button pButton class="p-button doc_button mx-2" icon="icon-csv-svgrepo-com-1" class="p-button-primary p-mr-2"
-        id="Assets_downloadCSV" pTooltip="Download Assets CSV" (click)="downloadAssetsReport()" tooltipPosition="left"
-        style="margin-right: 10px;"></button> -->
+      pTooltip="Download Appraisal PDF" icon="pi pi-file-pdf" style="margin-right: 10px;"
+      [disabled]="isPDFDisabled">
+    </button>
       <br>
       <button pButton pRipple label="New Appraisal" icon="pi pi-plus" class="p-button-primary p-mr-2" id="Role_addRole"
         (click)="initApprisal()"></button>
     </ng-template>
-    <!-- <p-dialog header="Export PDF" [(visible)]="displayPDFDialog"  [style]="{width: '50vw'}">
-      <p-dropdown appendTo="body" id="name_dropdown" [autoDisplayFirst]="false" optionLabel="name"
-      [options]="appraisalTypes" optionValue="lookupDetailId" formControlName="apprisalTypeId"
-      placeholder="Select employee Name"
-      [ngClass]="{ 'is-invalid ng-dirty': FormControls['apprisalTypeId'].touched && FormControls['apprisalTypeId'].errors}">
-    </p-dropdown>      
-    <p-footer>
-        <button type="button" pButton icon="pi pi-check" label="OK" (click)="downloadPDF(); displayPDFDialog = false"></button>
-      </p-footer>
-    </p-dialog> -->
   </p-toolbar>
 
   <p-table #dtAppraisal [value]="appraisals" dataKey="commonData.appraisalId" [rows]="10" [rowHover]="true"
@@ -52,9 +41,6 @@
     <ng-template pTemplate="body" let-rowData let-expanded="expanded">
       <tr>
         <td>
-          <!-- <button type="button" (click)="rowData.expanded = !rowData.expanded">
-            <i class="pi" [ngClass]="{'pi-chevron-right': !rowData.expanded, 'pi-chevron-down': rowData.expanded}"></i>
-          </button> -->
           <button type="button" pButton pRipple [pRowToggler]="rowData.expanded" 
           class="p-button-text  p-1"(click)="rowData.expanded = !rowData.expanded"
           [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>

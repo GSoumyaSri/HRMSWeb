@@ -80,7 +80,7 @@ export class AppraisalreviewComponent {
   selectedEmployeeStatus: any;
   displayPDFDialog: boolean = false;  // Variable to control dialog visibility
   searchKeyword: string = '';
-
+  isPDFDisabled: boolean = true;
   constructor(private fb: FormBuilder, private reviewsService: ReviewsService, private jwtService: JwtService,
     private lookupservice: LookupService, private globalFilterService: GlobalFilterService) {
     (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
@@ -117,11 +117,8 @@ export class AppraisalreviewComponent {
     // { field: 'avgRating', label: 'Avg Rating' }
   ];
 
- 
-
   ngOnInit() {
     this.ApprisalForm();
-
     this.loadAppraisalReviews();
     this.loadAppraisalDropDownReviews();
     this.getEmployees();
@@ -199,16 +196,23 @@ export class AppraisalreviewComponent {
     this.fbAppraisalForm.reset();
   }
 
+
   save() {
-    const confirmed = window.confirm("Are you sure you want to downlod pdf?");
     if (this.fbAppraisalForm.valid) {
+      const confirmed = window.confirm("Are you sure you want to download the PDF?");
+      if (!confirmed) {
+        return;
+      }
+
       const formData = this.fbAppraisalForm.value;
       console.log('Form Data:', formData);
+
       this.reviewsService.CreateReview(formData).subscribe(
         response => {
           console.log('Save Success:', response);
           this.showform = false;
-          this.loadAppraisalReviews(); // Reload data
+          this.loadAppraisalReviews();
+          this.isPDFDisabled = false;
           this.exportPDF();
 
         },
@@ -221,13 +225,10 @@ export class AppraisalreviewComponent {
     }
   }
 
-  
-  
-  
+
   loadAppraisalReviews() {
     this.reviewsService.getReviewsDetails().subscribe((resp) => {
       const appraisals = resp as unknown as ReviewDetailsViewDto[];
-
       const groupedAppraisals = appraisals.reduce((acc, curr) => {
         const { employeeId } = curr;
         if (!acc[employeeId]) {
@@ -279,15 +280,14 @@ export class AppraisalreviewComponent {
     reviewsArray.clear(); // Clear the form array
     this.initializeReviewArray(); // Rebuild the form array if needed
   }
-  
+
   initializeReviewArray() {
     const reviewsArray = this.faAppraisal();
     // Add your logic to rebuild the form array
     // e.g., reviewsArray.push(this.createReviewGroup());
   }
-  
-  
-  
+
+
 
   onGlobalFilter(table: Table, event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value;
@@ -341,19 +341,15 @@ export class AppraisalreviewComponent {
   }
 
 
-
   exportPDF() {
     const formValues = this.fbAppraisalForm.value;
     console.log(formValues);
-    const apprisals=this.appraisals.values;
-    
+    const apprisals = this.appraisals.values;
     const employeeName = formValues.employeeId ?
       this.employees.find(e => e.employeeId === formValues.employeeId)?.employeeName : 'Unknown';
     const employeeId = formValues.employeeId || 'Unknown';
-    
-const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData.employeeId === formValues.employeeId);
-
-    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided';    const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
+    const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData.employeeId === formValues.employeeId);
+    const dateofJoin = employeeAppraisal ? formatDate(employeeAppraisal.commonData.dateofJoin, 'dd MMM, YYYY', 'en-US') : 'Not Provided'; const appraisalType = this.appraisalTypes.find(at => at.lookupDetailId === formValues.apprisalTypeId);
     const appraisalTypeName = appraisalType ? appraisalType.name : 'Not Provided';
     const appraisalPeriod = formValues.appraisalPeriod || 'Not Provided';
     const department = this.departments.find(d => d.lookupDetailId === formValues.departmentId);
@@ -367,9 +363,9 @@ const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData
     const reviews = formValues.reviews.map((review: any) => {
       const reviewer = this.employees.find(e => e.employeeId === review.reviewerId);
       console.log(reviewer);
-      
+
       const reviewPoint = reviewPoints.find(rp => rp.id === review.reviewAttributesId);
-      
+
       return {
         reviewAttributesName: reviewPoint ? reviewPoint.name : 'Not Provided',
         rating: review.rating || 'Not Provided',
@@ -463,6 +459,7 @@ const employeeAppraisal = this.appraisals.find(appraisal => appraisal.commonData
   //   const control = new FormControl({ value: roundedValue, disabled: readonly });
   //   return control;
   // }
+
 
 
 }
